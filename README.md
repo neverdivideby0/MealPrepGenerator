@@ -26,6 +26,15 @@ The restaurant recipes are home versions written from public menu descriptions. 
 - **Rough macros.** Approximate kcal and protein per portion, summed per box. These are ballpark figures, not lab values.
 - **Recipe library.** Search, filter by cuisine, slot, vegetarian, spicy, freezes, 30 minutes or less, keeps 5+ days. Open any recipe and put it straight into your box.
 - **Add your own recipes.** Use the in-page form, for either tab. Ingredient lines like `600 g chicken thigh, boneless` scale and merge into the shopping list automatically.
+- **Generate with AI** (claude.ai version only). In the add form, type a dish name with notes ("mala xiang guo, less numbing, for 2") or paste a recipe you found. Claude fills in the form for you to check before you save:
+  - ingredients, steps, servings and times;
+  - category and tags;
+  - for meal prep: fridge life, freezer and reheat notes, and rough macros;
+  - for weekend mains: which of your sauces and sides go with the dish.
+
+  **Suggest ideas** proposes dishes you don't have yet. Pick one and it gets written up.
+
+  It uses the page's built-in connection to Claude, so it needs no API key. Calls count against your own Claude usage, and Claude asks your permission on first use. Nothing is saved until you press Save.
 
 ### Weekend dinners
 
@@ -56,6 +65,8 @@ python3 -m http.server 8000   # then visit http://localhost:8000
 ```
 
 To host it, enable **GitHub Pages** on this repo (Settings → Pages → deploy from the `main` branch, root folder).
+
+Generate with AI is hidden on GitHub Pages and local copies, because it relies on the claude.ai page's Claude connection. Everything else works the same.
 
 ### Where your own recipes are saved
 
