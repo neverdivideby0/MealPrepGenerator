@@ -1,0 +1,1500 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Roll a week of meal-prep boxes: one protein, two vegetables, a sauce and a carb, with full recipes and a merged shopping list.">
+<title>Sunday Prep Box</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Figtree:wght@400;500;600;700&family=Young+Serif&display=swap">
+<style>
+/* Layout: one centred column. The hero is a five-compartment meal-prep tray plus a round sauce pot; below it the prep sheet (shopping list + cook order), then a filterable recipe library. */
+:root{
+  --bg:#EDF1EE;
+  --surface:#FBFCFB;
+  --surface-2:#DDE6E0;
+  --ink:#16221E;
+  --muted:#55635D;
+  --line:#C7D3CB;
+  --accent:#1E5B4B;
+  --accent-ink:#FFFFFF;
+  --accent-soft:#D3E5DC;
+  --protein:#B1402C; --protein-tint:#F5E1DB;
+  --veg:#3B7A36;     --veg-tint:#E0EEDA;
+  --sauce:#A06E06;   --sauce-tint:#F5E9CB;
+  --carb:#76592F;    --carb-tint:#EEE4D3;
+  --tape:#EEDFA9; --tape-ink:#4A3C12;
+  --warn:#8E4300; --warn-tint:#FBE8D3;
+  --scrim:rgba(10,22,18,.5);
+  --shadow:0 1px 0 rgba(22,34,30,.05), 0 14px 32px -18px rgba(22,34,30,.35);
+  --well:inset 0 2px 8px rgba(22,34,30,.08), inset 0 0 0 1px rgba(22,34,30,.04);
+  --font-display:"Young Serif", "Iowan Old Style", Georgia, serif;
+  --font-body:"Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono:"DM Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0F1513; --surface:#172019; --surface-2:#1E2925; --ink:#E3EBE6; --muted:#98A8A0; --line:#2C3A34;
+    --accent:#7BC2A8; --accent-ink:#0C1914; --accent-soft:#22362E;
+    --protein:#F08B76; --protein-tint:#38221E; --veg:#90CB86; --veg-tint:#1D311E;
+    --sauce:#E6B64C; --sauce-tint:#352B13; --carb:#D3B68A; --carb-tint:#30291D;
+    --tape:#5B4F28; --tape-ink:#F4E8C0; --warn:#F2A65A; --warn-tint:#392916; --scrim:rgba(0,0,0,.6);
+    --shadow:0 1px 0 rgba(0,0,0,.3), 0 16px 36px -18px rgba(0,0,0,.7);
+    --well:inset 0 2px 10px rgba(0,0,0,.35), inset 0 0 0 1px rgba(255,255,255,.03);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0F1513; --surface:#172019; --surface-2:#1E2925; --ink:#E3EBE6; --muted:#98A8A0; --line:#2C3A34;
+  --accent:#7BC2A8; --accent-ink:#0C1914; --accent-soft:#22362E;
+  --protein:#F08B76; --protein-tint:#38221E; --veg:#90CB86; --veg-tint:#1D311E;
+  --sauce:#E6B64C; --sauce-tint:#352B13; --carb:#D3B68A; --carb-tint:#30291D;
+  --tape:#5B4F28; --tape-ink:#F4E8C0; --warn:#F2A65A; --warn-tint:#392916; --scrim:rgba(0,0,0,.6);
+  --shadow:0 1px 0 rgba(0,0,0,.3), 0 16px 36px -18px rgba(0,0,0,.7);
+  --well:inset 0 2px 10px rgba(0,0,0,.35), inset 0 0 0 1px rgba(255,255,255,.03);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.55 var(--font-body);-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1120px;margin:0 auto;padding-inline:clamp(16px,4vw,32px);padding-block:28px 72px}
+h1,h2,h3{font-family:var(--font-display);font-weight:400;text-wrap:balance;margin:0}
+.eyebrow{font:500 11px/1 var(--font-mono);letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+
+/* masthead */
+.masthead{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:10px 24px;margin-bottom:22px}
+h1{font-size:clamp(32px,5.2vw,48px);line-height:1.02;letter-spacing:-.01em}
+.lede{color:var(--muted);max-width:58ch;margin:8px 0 0}
+
+/* controls */
+.controls{display:flex;flex-wrap:wrap;gap:14px 20px;align-items:flex-end;justify-content:space-between;margin-bottom:26px}
+.ctl{display:flex;flex-direction:column;gap:8px;min-width:0}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{appearance:none;border:1px solid var(--line);background:var(--surface);font:500 13px/1 var(--font-body);padding:9px 13px;border-radius:999px;cursor:pointer;white-space:nowrap}
+.chip:hover{border-color:var(--ink)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chip.small{padding:7px 11px;font-size:12.5px}
+.right-ctl{display:flex;gap:14px;align-items:flex-end;flex-wrap:wrap}
+.stepper{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:999px;background:var(--surface);height:40px}
+.stepper button{width:38px;height:38px;border:0;background:none;font-size:18px;line-height:1;cursor:pointer;border-radius:999px}
+.stepper button:hover{background:var(--accent-soft)}
+.stepper output{min-width:2.4ch;text-align:center;font:500 15px var(--font-mono);font-variant-numeric:tabular-nums}
+.btn{appearance:none;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:10px 16px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.btn:hover{border-color:var(--ink)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.primary:hover{filter:brightness(1.07)}
+.btn.danger{color:var(--protein)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-roll{font-size:16px;padding:0 22px;height:48px;border-radius:14px;box-shadow:var(--shadow)}
+.btn-roll svg{transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.btn-roll.turn svg{transform:rotate(360deg)}
+
+/* the box */
+.stage{display:grid;grid-template-columns:minmax(0,1fr) 210px;gap:24px;align-items:center;padding-top:14px}
+.tray{position:relative;background:var(--surface-2);border-radius:28px;padding:12px;display:grid;gap:10px;
+  grid-template-columns:minmax(0,1.15fr) minmax(0,1fr) minmax(0,1fr);grid-template-areas:"carb protein protein" "carb veg1 veg2";box-shadow:var(--shadow), inset 0 0 0 1px var(--line)}
+.tape{position:absolute;top:-15px;left:26px;z-index:2;transform:rotate(-1.6deg);background:var(--tape);color:var(--tape-ink);
+  font:500 11.5px/1 var(--font-mono);letter-spacing:.07em;text-transform:uppercase;padding:8px 16px;box-shadow:0 1px 2px rgba(0,0,0,.15);
+  clip-path:polygon(0 0,100% 0,98.6% 25%,100% 50%,98.6% 75%,100% 100%,0 100%,1.4% 75%,0 50%,1.4% 25%);max-width:calc(100% - 40px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cell{--tint:var(--surface);--rc:var(--muted);background:var(--tint);border-radius:18px;padding:14px 14px 12px;min-height:158px;display:flex;flex-direction:column;gap:6px;box-shadow:var(--well);min-width:0}
+.cell[data-role="protein"]{--tint:var(--protein-tint);--rc:var(--protein)}
+.cell[data-role="veg"]{--tint:var(--veg-tint);--rc:var(--veg)}
+.cell[data-role="sauce"]{--tint:var(--sauce-tint);--rc:var(--sauce)}
+.cell[data-role="carb"]{--tint:var(--carb-tint);--rc:var(--carb)}
+.cell[data-slot="protein"]{grid-area:protein}
+.cell[data-slot="veg1"]{grid-area:veg1}
+.cell[data-slot="veg2"]{grid-area:veg2}
+.cell[data-slot="carb"]{grid-area:carb}
+.cell-top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:6px 8px}
+.role{font:500 11px/1 var(--font-mono);letter-spacing:.09em;text-transform:uppercase;color:var(--rc)}
+.cell-name{font-family:var(--font-display);font-size:clamp(18px,2.1vw,22px);line-height:1.15;text-align:left;background:none;border:0;padding:0;cursor:pointer;text-wrap:balance;overflow-wrap:anywhere}
+.cell-name:hover{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
+.cell-sub{font-size:12.5px;color:var(--muted);line-height:1.35}
+.cell-meta{margin-top:auto;font:400 11.5px/1.4 var(--font-mono);color:var(--muted);font-variant-numeric:tabular-nums}
+.cell-actions{display:flex;gap:4px}
+.icon-btn{width:32px;height:32px;border-radius:10px;border:0;background:var(--surface);display:grid;place-items:center;cursor:pointer;color:var(--ink);box-shadow:0 1px 0 rgba(0,0,0,.06)}
+.icon-btn:hover{color:var(--rc)}
+.icon-btn[aria-pressed="true"]{background:var(--rc);color:var(--surface)}
+.cell.spin .cell-name{opacity:.5}
+.cell.spin .cell-sub,.cell.spin .cell-meta{visibility:hidden}
+.pot-wrap{display:flex;flex-direction:column;align-items:center;gap:8px}
+.pot{width:100%;max-width:210px;aspect-ratio:1;border-radius:50%;background:var(--surface-2);padding:11px;box-shadow:var(--shadow), inset 0 0 0 1px var(--line)}
+.pot .cell{border-radius:50%;height:100%;min-height:0;align-items:center;justify-content:center;text-align:center;padding:20px 22px;gap:5px}
+.pot .cell-name{text-align:center;font-size:18px}
+.pot .cell-meta{margin-top:2px}
+.pot .cell-top{justify-content:center}
+.pot-label{font:500 11px/1 var(--font-mono);letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+
+/* facts */
+.facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px 24px;margin-top:26px;padding-block:16px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.fact{display:flex;flex-direction:column;gap:5px;min-width:0}
+.fact b{font-weight:600;font-size:15.5px;font-variant-numeric:tabular-nums}
+.fact span.s{font-size:12.5px;color:var(--muted)}
+.warn{margin-top:14px;background:var(--warn-tint);color:var(--warn);border-radius:12px;padding:11px 14px;font-size:14px;display:flex;gap:10px;align-items:flex-start}
+.warn svg{flex:none;margin-top:2px}
+
+/* prep sheet */
+section{margin-top:56px}
+.sec-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:10px 20px;margin-bottom:18px}
+.sec-head h2{font-size:clamp(26px,3.6vw,34px);line-height:1.1}
+.sec-head p{margin:6px 0 0;color:var(--muted);max-width:62ch}
+.sheet{display:grid;grid-template-columns:310px minmax(0,1fr);gap:26px;align-items:start}
+.shop{position:sticky;top:calc(env(safe-area-inset-top, 0px) + 16px);background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px}
+.shop h3{font-size:21px;margin-bottom:2px}
+.shop .grp{margin-top:16px}
+.shop ul{list-style:none;padding:0;margin:8px 0 0;display:grid;gap:2px}
+.shop li label{display:grid;grid-template-columns:18px minmax(0,1fr) auto;gap:10px;align-items:baseline;padding:5px 2px;border-bottom:1px dashed var(--line);cursor:pointer;font-size:14px}
+.shop li .amt{font:400 12.5px var(--font-mono);color:var(--muted);text-align:right;font-variant-numeric:tabular-nums}
+.shop li input{margin:0;accent-color:var(--accent);transform:translateY(2px)}
+.shop li input:checked ~ span{text-decoration:line-through;color:var(--muted)}
+.shop-actions{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+.copy-fallback{width:100%;min-height:160px;margin-top:10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:10px;font:12px/1.5 var(--font-mono)}
+.plan{list-style:none;padding:0;margin:0;display:grid;gap:16px}
+.rcard{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:20px 22px;min-width:0}
+.rcard-head{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 14px;align-items:start;margin-bottom:14px}
+.order{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--rc);color:var(--rc);display:grid;place-items:center;font:500 13px var(--font-mono);grid-row:span 2}
+.rcard[data-role="protein"]{--rc:var(--protein)} .rcard[data-role="veg"]{--rc:var(--veg)} .rcard[data-role="sauce"]{--rc:var(--sauce)} .rcard[data-role="carb"]{--rc:var(--carb)}
+.rcard h3{font-size:22px;line-height:1.15}
+.rcard h3 button{all:unset;cursor:pointer}
+.rcard h3 button:hover{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
+.rcard h3 button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.metaline{font:400 12px/1.5 var(--font-mono);color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 14px;font-variant-numeric:tabular-nums}
+.rbody{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.3fr);gap:22px}
+.rbody h4{font:500 11px/1 var(--font-mono);letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+.ings{list-style:none;padding:0;margin:0;display:grid;gap:6px;font-size:14.5px}
+.ings li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:baseline}
+.ings .q{font:500 12.5px var(--font-mono);color:var(--rc, var(--accent));min-width:5.2ch;font-variant-numeric:tabular-nums}
+.ings .n{color:var(--muted)}
+.steps{margin:0;padding-left:1.3em;display:grid;gap:8px;font-size:14.5px}
+.steps li::marker{font:500 12.5px var(--font-mono);color:var(--muted)}
+.notes{display:grid;gap:8px;margin-top:16px;font-size:13.5px}
+.note{background:var(--bg);border-radius:10px;padding:9px 12px}
+.note b{font-weight:600}
+
+/* library */
+.filters{display:grid;gap:10px;margin-bottom:22px}
+.search{width:100%;max-width:420px;height:42px;border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:0 14px}
+.filter-row{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.filter-row .lbl{font:500 11px/1 var(--font-mono);letter-spacing:.09em;text-transform:uppercase;color:var(--muted);width:70px;flex:none}
+.group{margin-top:30px}
+.group:first-child{margin-top:0}
+.group-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px;margin-bottom:12px}
+.group-head h3{font-size:24px}
+.group-head p{margin:0;color:var(--muted);font-size:14px;flex:1 1 320px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:12px}
+.card{appearance:none;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px 15px;display:flex;flex-direction:column;gap:6px;cursor:pointer;min-width:0}
+.card:hover{border-color:var(--ink)}
+.card[data-role="protein"]{--rc:var(--protein)} .card[data-role="veg"]{--rc:var(--veg)} .card[data-role="sauce"]{--rc:var(--sauce)} .card[data-role="carb"]{--rc:var(--carb)}
+.card-top{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.dot{display:inline-flex;align-items:center;gap:6px;font:500 11px/1 var(--font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--rc)}
+.dot::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--rc)}
+.card .t{font:400 11.5px var(--font-mono);color:var(--muted)}
+.card .nm{font-family:var(--font-display);font-size:19px;line-height:1.18;text-wrap:balance}
+.card .sb{font-size:12.5px;color:var(--muted);line-height:1.35}
+.card .ft{margin-top:auto;padding-top:6px;font:400 11.5px var(--font-mono);color:var(--muted);display:flex;flex-wrap:wrap;gap:2px 10px}
+.badge{display:inline-block;font:500 10.5px/1 var(--font-mono);letter-spacing:.06em;text-transform:uppercase;padding:4px 7px;border-radius:6px;background:var(--accent-soft);color:var(--accent)}
+.tags{display:flex;flex-wrap:wrap;gap:4px}
+.tag{font-size:11.5px;padding:2px 8px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+.empty{padding:28px;border:1px dashed var(--line);border-radius:16px;text-align:center;color:var(--muted)}
+.dbstate{font-size:13px;color:var(--muted)}
+.foot{margin-top:64px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font-size:13px;max-width:78ch}
+
+/* dialogs */
+dialog{border:0;padding:0;border-radius:22px;background:var(--surface);color:var(--ink);width:min(780px,calc(100vw - 24px));max-height:calc(100dvh - 32px);box-shadow:0 30px 80px -20px rgba(0,0,0,.5)}
+dialog::backdrop{background:var(--scrim)}
+.dlg{padding:22px 26px 26px;overflow:auto;max-height:calc(100dvh - 32px)}
+.dlg-close{position:sticky;top:0;float:right;margin:-6px -10px 0 0;z-index:3;width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--surface);cursor:pointer;display:grid;place-items:center}
+.dlg h2{font-size:clamp(26px,4vw,34px);line-height:1.08;margin-top:8px}
+.dlg .sub{color:var(--muted);margin-top:6px}
+.dlg .blurb{margin:12px 0 0;max-width:62ch}
+.dlg-facts{display:flex;flex-wrap:wrap;gap:10px 26px;margin:18px 0;padding-block:12px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.dlg-facts .fact b{font-size:14.5px}
+.dlg-portions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px;font-size:14px}
+.dlg .ings li{cursor:pointer}
+.dlg .ings input{accent-color:var(--accent);margin:0}
+.dlg .ings li{grid-template-columns:auto auto minmax(0,1fr)}
+.dlg .ings input:checked ~ span{text-decoration:line-through;opacity:.55}
+.dlg-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px;padding-top:16px;border-top:1px solid var(--line)}
+form.add{display:grid;gap:14px;margin-top:16px}
+.frow{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.field{display:flex;flex-direction:column;gap:5px;min-width:0}
+.field label,.field .lab{font-size:13px;font-weight:600}
+.field .hint{font-size:12px;color:var(--muted)}
+.field input[type=text],.field input[type=number],.field select,.field textarea{width:100%;border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:9px 11px}
+.field textarea{min-height:120px;resize:vertical;line-height:1.5}
+.checks{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14px}
+.checks label{display:inline-flex;gap:6px;align-items:center;font-weight:400}
+.form-err{color:var(--protein);font-size:14px;min-height:1.2em}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom, 0px));transform:translate(-50%,20px);opacity:0;background:var(--ink);color:var(--bg);padding:11px 16px;border-radius:12px;font-size:14px;transition:opacity .2s, transform .2s;z-index:50;max-width:calc(100vw - 32px);pointer-events:none}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+@media (max-width: 860px){
+  .sheet{grid-template-columns:minmax(0,1fr)}
+  .shop{position:static}
+  .facts{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width: 720px){
+  .stage{grid-template-columns:minmax(0,1fr);gap:18px}
+  .tray{grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-areas:"protein protein" "carb carb" "veg1 veg2";border-radius:24px;padding:10px;gap:8px}
+  .cell{min-height:132px;padding:12px 12px 10px}
+  .icon-btn{width:30px;height:30px}
+  .pot{max-width:200px}
+  .rbody{grid-template-columns:1fr}
+  .controls{align-items:stretch}
+  .right-ctl{width:100%;justify-content:space-between}
+  .dlg{padding:18px 18px 22px}
+  .filter-row .lbl{width:100%}
+}
+@media (prefers-reduced-motion: reduce){
+  *{transition:none!important;animation:none!important}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="masthead">
+    <div>
+      <div class="eyebrow">Meal prep planner</div>
+      <h1>Sunday Prep Box</h1>
+      <p class="lede">Roll a week of lunch boxes: one protein, two vegetables, a sauce and a carb base. Recipes come from Korean banchan plus home versions of SaladStop!, Stuff'd and Dabba Street favourites.</p>
+    </div>
+  </header>
+
+  <div class="controls">
+    <div class="ctl">
+      <span class="eyebrow" id="mode-lbl">Cuisine for the roll</span>
+      <div class="chips" role="group" aria-labelledby="mode-lbl" id="modeChips"></div>
+    </div>
+    <div class="right-ctl">
+      <div class="ctl">
+        <span class="eyebrow" id="portions-lbl">Boxes</span>
+        <div class="stepper" role="group" aria-labelledby="portions-lbl">
+          <button type="button" data-action="portions" data-d="-1" aria-label="Fewer boxes">−</button>
+          <output id="portionsOut">4</output>
+          <button type="button" data-action="portions" data-d="1" aria-label="More boxes">+</button>
+        </div>
+      </div>
+      <button type="button" class="btn primary btn-roll" data-action="roll" id="rollBtn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8" cy="8" r="1.3" fill="currentColor"/><circle cx="16" cy="8" r="1.3" fill="currentColor"/><circle cx="12" cy="12" r="1.3" fill="currentColor"/><circle cx="8" cy="16" r="1.3" fill="currentColor"/><circle cx="16" cy="16" r="1.3" fill="currentColor"/></svg>
+        Roll the box
+      </button>
+    </div>
+  </div>
+
+  <div class="stage" aria-live="polite">
+    <div class="tray" id="tray">
+      <div class="tape" id="tape">Prep day</div>
+      <div class="cell" data-slot="carb"></div>
+      <div class="cell" data-slot="protein"></div>
+      <div class="cell" data-slot="veg1"></div>
+      <div class="cell" data-slot="veg2"></div>
+    </div>
+    <div class="pot-wrap">
+      <div class="pot"><div class="cell" data-slot="sauce"></div></div>
+      <span class="pot-label">Sauce pot</span>
+    </div>
+  </div>
+
+  <div class="facts" id="facts"></div>
+  <div id="warnings"></div>
+
+  <section id="prep">
+    <div class="sec-head">
+      <div>
+        <h2 id="sheetTitle">Prep sheet</h2>
+        <p>Everything for this box, scaled to your box count. Recipes are ordered longest job first, so marinades and rice get going while you chop.</p>
+      </div>
+    </div>
+    <div class="sheet">
+      <aside class="shop" id="shop" aria-label="Shopping list"></aside>
+      <ol class="plan" id="plan"></ol>
+    </div>
+  </section>
+
+  <section id="library">
+    <div class="sec-head">
+      <div>
+        <h2>Recipe library</h2>
+        <p id="libCount">Browse every component. Open one to see the full recipe, then put it straight into your box.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+        <button type="button" class="btn primary" data-action="add" id="addBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          Add a recipe
+        </button>
+        <span class="dbstate" id="dbState">Connecting to your saved recipes…</span>
+      </div>
+    </div>
+    <div class="filters">
+      <input type="search" class="search" id="q" placeholder="Search recipes or ingredients, e.g. gochujang, paneer, kale" aria-label="Search recipes">
+      <div class="filter-row" id="fSrc"><span class="lbl">Cuisine</span></div>
+      <div class="filter-row" id="fRole"><span class="lbl">Slot</span></div>
+      <div class="filter-row" id="fTag"><span class="lbl">Only</span></div>
+    </div>
+    <div id="groups"></div>
+  </section>
+
+  <p class="foot">SaladStop!, Stuff'd and Dabba Street are named only to say what inspired a recipe. These are home versions written from their public menu descriptions, not the restaurants' own recipes. Calories and protein are rough per-portion estimates. Fridge times assume an airtight box in a fridge at 4°C or colder, with cooked food chilled within an hour.</p>
+</div>
+
+<dialog id="recipeDlg" aria-labelledby="rdTitle"><div class="dlg" id="rd"></div></dialog>
+
+<dialog id="formDlg" aria-labelledby="fdTitle">
+  <div class="dlg">
+    <button type="button" class="dlg-close" data-action="close" aria-label="Close">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <div class="eyebrow">Your recipes</div>
+    <h2 id="fdTitle">Add a recipe</h2>
+    <p class="sub">It joins the library and the randomizer. Saved to this page, so it shows up on your phone and laptop.</p>
+    <form class="add" id="addForm" novalidate>
+      <div class="field">
+        <label for="f-name">Name</label>
+        <input type="text" id="f-name" maxlength="120" required placeholder="e.g. Gochujang chicken">
+      </div>
+      <div class="frow">
+        <div class="field">
+          <label for="f-src">Cuisine</label>
+          <select id="f-src"></select>
+        </div>
+        <div class="field">
+          <label for="f-role">Box slot</label>
+          <select id="f-role"></select>
+        </div>
+        <div class="field">
+          <label for="f-insp">Inspired by (optional)</label>
+          <input type="text" id="f-insp" maxlength="120" placeholder="e.g. Kokoro bowl">
+        </div>
+      </div>
+      <div class="field">
+        <label for="f-blurb">Short description (optional)</label>
+        <input type="text" id="f-blurb" maxlength="400">
+      </div>
+      <div class="frow">
+        <div class="field"><label for="f-serves">Portions it makes</label><input type="number" id="f-serves" min="1" max="20" value="4"></div>
+        <div class="field"><label for="f-prep">Prep (min)</label><input type="number" id="f-prep" min="0" max="600" value="10"></div>
+        <div class="field"><label for="f-cook">Cook (min)</label><input type="number" id="f-cook" min="0" max="600" value="20"></div>
+        <div class="field"><label for="f-wait">Hands-off wait (min)</label><input type="number" id="f-wait" min="0" max="2880" value="0"><span class="hint">Marinating, soaking, resting</span></div>
+      </div>
+      <div class="field">
+        <label for="f-ing">Ingredients</label>
+        <textarea id="f-ing" placeholder="One per line, amount first:&#10;600 g chicken thigh, boneless&#10;2 tbsp gochujang&#10;3 cloves garlic, minced&#10;Salt, to taste"></textarea>
+        <span class="hint">Amounts in g, ml, tbsp, tsp, cups or cloves scale with your box count and merge into the shopping list.</span>
+      </div>
+      <div class="field">
+        <label for="f-steps">Steps</label>
+        <textarea id="f-steps" placeholder="One step per line"></textarea>
+      </div>
+      <div class="frow">
+        <div class="field"><label for="f-fridge">Keeps in fridge (days)</label><input type="number" id="f-fridge" min="0" max="60" value="4"></div>
+        <div class="field"><label for="f-freeze">Freezer note (blank if it doesn't freeze)</label><input type="text" id="f-freeze" maxlength="120" placeholder="e.g. Up to 2 months"></div>
+        <div class="field"><label for="f-kcal">kcal per portion (optional)</label><input type="number" id="f-kcal" min="0" max="3000"></div>
+        <div class="field"><label for="f-p">Protein g per portion (optional)</label><input type="number" id="f-p" min="0" max="300"></div>
+      </div>
+      <div class="field">
+        <label for="f-reheat">Reheating (optional)</label>
+        <input type="text" id="f-reheat" maxlength="300" placeholder="e.g. Microwave 2 minutes, stirring halfway">
+      </div>
+      <div class="field">
+        <label for="f-tip">Tip (optional)</label>
+        <input type="text" id="f-tip" maxlength="400">
+      </div>
+      <div class="field">
+        <span class="lab">Tags</span>
+        <div class="checks" id="f-tags"></div>
+      </div>
+      <div class="form-err" id="formErr" role="alert"></div>
+      <div class="dlg-actions" style="margin-top:0">
+        <button type="submit" class="btn primary" id="saveBtn">Save recipe</button>
+        <button type="button" class="btn" data-action="close">Cancel</button>
+      </div>
+    </form>
+  </div>
+</dialog>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function(){
+"use strict";
+
+/* ---------- reference data ---------- */
+const SOURCES = {
+  banchan:  {label:"Korean banchan", short:"Banchan", desc:"Small Korean side dishes, built to be made ahead. Most keep 3 to 5 days, a few for weeks."},
+  saladstop:{label:"SaladStop!-style", short:"SaladStop!", desc:"Signature salads and warm grain bowls, split into components you can batch."},
+  stuffd:   {label:"Stuff'd-style", short:"Stuff'd", desc:"Kebab, burrito and bowl fillings with the sauce lineup, made at home."},
+  dabba:    {label:"Dabba Street-style", short:"Dabba Street", desc:"Indian street-food bowls: tikka, curries, chutneys and biryani rice, kept light on oil."},
+  mine:     {label:"My recipes", short:"Mine", desc:"Recipes you added that don't belong to one of the four cuisines."}
+};
+const SRC_ORDER = ["banchan","saladstop","stuffd","dabba","mine"];
+const ROLES = {protein:"Protein", veg:"Vegetable", sauce:"Sauce", carb:"Carb base"};
+const TAGS = {veg:"Vegetarian", spicy:"Spicy", seafood:"Seafood", beef:"Beef", pork:"Pork"};
+const SLOTS = [
+  {key:"protein", role:"protein"},
+  {key:"veg1", role:"veg"},
+  {key:"veg2", role:"veg"},
+  {key:"sauce", role:"sauce"},
+  {key:"carb", role:"carb"}
+];
+const SLOT = Object.fromEntries(SLOTS.map(s=>[s.key,s]));
+
+/* ---------- curated recipes (amounts for `serves` portions) ---------- */
+const CURATED = [
+/* ===== Korean banchan ===== */
+{id:"gyeranmari",src:"banchan",role:"protein",name:"Gyeran-mari",ko:"계란말이 · rolled omelette",
+ blurb:"Layered egg roll flecked with carrot and spring onion. Sliced, it packs neatly and tastes good cold.",
+ serves:4,prep:10,cook:15,fridge:3,freeze:"",reheat:"Eat cold or at room temp, or 20 seconds in the microwave.",kcal:160,p:12,tags:["veg"],
+ ing:["8 eggs","1 tbsp milk","½ tsp salt","60 g carrot, finely diced","30 g onion, finely diced","2 spring onions, finely chopped","2 tsp neutral oil"],
+ steps:["Beat the eggs with the milk and salt until no streaks of white remain. Strain if you want a smooth roll.","Stir in the carrot, onion and spring onion.","Heat a non-stick pan (a square tamagoyaki pan is easiest) over medium-low and wipe it with a little oil.","Pour in a thin layer of egg. When the edges set but the top is still a little wet, roll it up from one end.","Push the roll to the far end, oil the pan, pour in another thin layer and let it run under the roll. Roll back over it. Repeat until the egg is used up.","Rest 5 minutes, then slice into 2 cm pieces. Cool fully before boxing."],
+ tip:"Low heat is the whole trick. If the egg browns or bubbles, the pan is too hot."},
+{id:"jangjorim",src:"banchan",role:"protein",name:"Jangjorim",ko:"장조림 · soy-braised beef & eggs",
+ blurb:"Shredded beef and whole eggs braised in sweet soy. One of the longest-keeping banchan, so it carries a whole week.",
+ serves:4,prep:15,cook:75,wait:[20,"soak"],fridge:7,freeze:"Beef only, up to 2 months. Eggs go rubbery.",reheat:"Traditionally eaten cold. Warm briefly if you prefer.",kcal:290,p:33,tags:["beef"],
+ ing:["500 g beef brisket or flank, cut into 5 cm chunks","6 eggs","1.2 l water","1 onion, halved","1 thumb ginger, sliced","100 ml soy sauce","2 tbsp sugar","1 tbsp mirin","8 cloves garlic, peeled","10 shishito peppers"],
+ steps:["Soak the beef in cold water for 20 minutes to draw out blood, then drain.","Simmer the beef with the water, onion and ginger, partly covered, for 45 minutes. Skim the foam in the first 10 minutes.","Meanwhile, boil the eggs for 8 minutes, cool them in iced water and peel.","Strain the broth and keep about 500 ml. Discard the onion and ginger.","Return the beef and broth to the pot with the soy sauce, sugar, mirin, garlic and peeled eggs. Simmer 20 minutes, rolling the eggs so they colour evenly.","Add the shishito peppers for the last 5 minutes. Cool, then shred the beef along the grain into thin strips.","Store everything submerged in the braising liquid."],
+ tip:"The braising liquid is the seasoning. Spoon a little over rice when you eat it."},
+{id:"dubujorim",src:"banchan",role:"protein",name:"Dubu-jorim",ko:"두부조림 · spicy braised tofu",
+ blurb:"Golden pan-fried tofu simmered in a garlicky chilli-soy glaze.",
+ serves:4,prep:10,cook:20,fridge:4,freeze:"",reheat:"Microwave 1 minute, or eat at room temp.",kcal:180,p:15,tags:["veg","spicy"],
+ ing:["600 g firm tofu","Salt, a pinch","1 tbsp neutral oil","3 tbsp soy sauce","1 tbsp gochugaru","1 tsp sugar","3 cloves garlic, minced","2 spring onions, chopped","1 tsp sesame oil","120 ml water","1 tsp toasted sesame seeds"],
+ steps:["Pat the tofu dry and cut it into 1.5 cm slabs. Sprinkle lightly with salt, leave 5 minutes, then pat dry again.","Pan-fry in the oil over medium-high until golden, about 4 minutes per side.","Mix the soy sauce, gochugaru, sugar, garlic, spring onion, sesame oil and water.","Pour the sauce over the tofu, cover and simmer on low for 6 to 8 minutes, spooning the sauce over now and then, until most of it is absorbed.","Finish with sesame seeds."],
+ tip:"Drying the tofu twice is what gets a golden crust instead of a pale, soggy one."},
+{id:"eomuk",src:"banchan",role:"protein",name:"Eomuk-bokkeum",ko:"어묵볶음 · stir-fried fish cakes",
+ blurb:"Sweet-savoury glazed fish cake strips with onion and carrot. Ready in 20 minutes.",
+ serves:4,prep:10,cook:10,fridge:4,freeze:"",reheat:"Eat at room temp or microwave 30 seconds.",kcal:210,p:12,tags:["seafood"],
+ ing:["300 g Korean fish cake sheets (eomuk)","1 tbsp neutral oil","2 cloves garlic, minced","½ onion, sliced","½ carrot, julienned","2 tbsp soy sauce","1 tsp sugar","1 tsp gochugaru, optional","1 tbsp honey","1 green chilli, sliced","1 tsp sesame oil","1 tsp toasted sesame seeds"],
+ steps:["Cut the fish cake into bite-size strips. Blanch in boiling water for 30 seconds to remove excess oil, then drain.","Stir-fry the garlic and onion in the oil over medium-high for 1 minute.","Add the fish cake and carrot and stir-fry for 2 minutes.","Add the soy sauce, sugar and gochugaru and toss until the fish cake soaks up the sauce, about 2 minutes.","Off the heat, add the honey, chilli, sesame oil and seeds. Toss to glaze."],
+ tip:"Adding the honey off the heat keeps the glaze glossy instead of setting hard in the fridge."},
+{id:"kongnamul",src:"banchan",role:"veg",name:"Kongnamul-muchim",ko:"콩나물무침 · seasoned soybean sprouts",
+ blurb:"Crunchy sprouts dressed with sesame oil and garlic. The everyday banchan.",
+ serves:4,prep:5,cook:6,fridge:3,freeze:"",reheat:"Eat cold.",kcal:60,p:4,tags:["veg"],
+ ing:["400 g soybean sprouts, rinsed","250 ml water","1 tsp salt, for cooking","2 cloves garlic, minced","1 spring onion, finely chopped","1 tbsp sesame oil","½ tsp salt","1 tsp toasted sesame seeds","1 tsp gochugaru, optional"],
+ steps:["Put the sprouts in a pot with the water and 1 tsp salt. Cover and cook on medium-high for 5 to 6 minutes. Don't lift the lid while it cooks; that's what causes a raw, beany smell.","Drain and spread out to cool quickly.","Toss with the garlic, spring onion, sesame oil, salt, sesame seeds and gochugaru if using.","Taste and adjust the salt."]},
+{id:"sigeumchi",src:"banchan",role:"veg",name:"Sigeumchi-namul",ko:"시금치나물 · seasoned spinach",
+ blurb:"Blanched spinach squeezed dry and dressed with soy and sesame.",
+ serves:4,prep:5,cook:2,fridge:3,freeze:"",reheat:"Eat cold.",kcal:55,p:4,tags:["veg"],
+ ing:["500 g spinach","1 tbsp soup soy sauce (guk-ganjang) or light soy","1 clove garlic, minced","1 spring onion, finely chopped","1 tbsp sesame oil","1 tsp toasted sesame seeds","Salt, to taste"],
+ steps:["Blanch the spinach in salted boiling water for 30 seconds. Drain and rinse under cold water.","Squeeze out as much water as you can, a handful at a time. This decides how long it keeps.","Cut into 5 cm lengths and loosen the clumps.","Toss with the soy sauce, garlic, spring onion, sesame oil and sesame seeds. Taste and adjust the salt."]},
+{id:"oimuchim",src:"banchan",role:"veg",name:"Oi-muchim",ko:"오이무침 · spicy cucumber salad",
+ blurb:"Salted cucumber tossed in chilli, vinegar and garlic. Bright, crunchy, best early in the week.",
+ serves:4,prep:10,cook:0,wait:[20,"salt"],fridge:2,freeze:"",reheat:"Eat cold.",kcal:40,p:1,tags:["veg","spicy"],
+ ing:["3 Japanese or Korean cucumbers (about 450 g)","1 tsp salt","½ onion, thinly sliced","1 tbsp gochugaru","1 tbsp rice vinegar","2 tsp sugar","1 tsp soy sauce","1 clove garlic, minced","1 tsp sesame oil","1 tsp toasted sesame seeds"],
+ steps:["Halve the cucumbers lengthwise and slice on the diagonal, 5 mm thick.","Toss with the salt and leave 20 minutes. Squeeze out the water and discard it.","Mix with the onion, gochugaru, vinegar, sugar, soy sauce and garlic.","Finish with sesame oil and seeds."],
+ tip:"Even salted, cucumber turns watery after day 2. Eat these boxes first."},
+{id:"musaengchae",src:"banchan",role:"veg",name:"Musaengchae",ko:"무생채 · spicy radish salad",
+ blurb:"Julienned radish in a sweet-sour chilli dressing. Keeps its crunch for days.",
+ serves:4,prep:15,cook:0,fridge:5,freeze:"",reheat:"Eat cold.",kcal:35,p:1,tags:["spicy"],
+ ing:["600 g Korean radish or daikon, julienned","1½ tbsp gochugaru","1 tsp salt","1 tbsp sugar","1 tbsp rice vinegar","1 tbsp fish sauce","2 cloves garlic, minced","2 spring onions, chopped","1 tsp toasted sesame seeds"],
+ steps:["Toss the radish with the gochugaru first so the strands turn evenly red.","Add the salt, sugar, vinegar, fish sauce, garlic and spring onion. Mix well with your hands (gloves help).","Rest 10 minutes, toss again, and finish with sesame seeds."],
+ tip:"Coating with chilli before the salt goes in gives a deeper colour. Salt draws water out and dilutes it."},
+{id:"gajinamul",src:"banchan",role:"veg",name:"Gaji-namul",ko:"가지나물 · steamed eggplant",
+ blurb:"Silky steamed eggplant torn into strips and dressed with soy, garlic and sesame.",
+ serves:4,prep:5,cook:8,fridge:3,freeze:"",reheat:"Eat cold or at room temp.",kcal:60,p:2,tags:["veg"],
+ ing:["3 Asian eggplants (about 450 g)","2 tbsp soy sauce","1 clove garlic, minced","1 spring onion, chopped","1 tsp gochugaru","1 tsp rice vinegar","1 tbsp sesame oil","1 tsp toasted sesame seeds"],
+ steps:["Cut the eggplants into 7 cm lengths, then quarter lengthwise.","Steam for 6 to 8 minutes until soft but not collapsing. Covered in the microwave, 4 to 5 minutes works too.","Cool, then tear into strips along the grain and squeeze gently to remove liquid.","Toss with everything else."]},
+{id:"makkimchi",src:"banchan",role:"veg",name:"Mak-kimchi",ko:"막김치 · quick napa kimchi",batch:true,
+ blurb:"Bite-size napa kimchi with no whole-leaf stuffing. One batch covers several weeks of boxes.",
+ serves:12,prep:30,cook:5,wait:[110,"salt and drain"],fridge:21,freeze:"",reheat:"Eat cold.",kcal:30,p:2,tags:["spicy"],
+ ing:["1 napa cabbage (about 1.5 kg)","60 g coarse sea salt","2 tbsp glutinous rice flour","200 ml water","4 tbsp gochugaru","2 tbsp fish sauce","1 tbsp salted shrimp, minced (optional)","6 cloves garlic, minced","1 thumb ginger, minced","1 tbsp sugar","100 g Korean radish, julienned","4 spring onions, cut into 3 cm lengths"],
+ steps:["Cut the cabbage into bite-size pieces. Toss with the salt and leave 1½ hours, turning every 30 minutes, until a piece bends without snapping.","Meanwhile, whisk the rice flour into the water and cook over low heat, stirring, until it turns into a thin glue. Cool completely.","Mix the cooled paste with the gochugaru, fish sauce, salted shrimp, garlic, ginger and sugar.","Rinse the cabbage 3 times in cold water and drain for 20 minutes.","Wearing gloves, toss the cabbage, radish and spring onion with the paste until coated.","Pack tightly into a jar, pressing out air. Leave 1 day at room temperature, then refrigerate."],
+ tip:"Days 1 to 3 taste fresh; it turns sour and fizzy over 2 to 3 weeks. Sour kimchi is ideal for fried rice or jjigae."},
+{id:"yangnyeomjang",src:"banchan",role:"sauce",name:"Yangnyeom-jang",ko:"양념장 · seasoned soy sauce",
+ blurb:"All-purpose chilli-soy sauce for rice, tofu, eggs or dumplings.",
+ serves:4,prep:5,cook:0,fridge:7,freeze:"",reheat:"",kcal:25,p:1,tags:["veg","spicy"],
+ ing:["4 tbsp soy sauce","2 tbsp water","1 tbsp gochugaru","1 tbsp rice vinegar","1 tsp sugar","1 clove garlic, minced","1 spring onion, finely chopped","1 tsp sesame oil","1 tsp toasted sesame seeds"],
+ steps:["Stir everything together until the sugar dissolves.","Rest 10 minutes so the chilli blooms."]},
+{id:"ssamjang",src:"banchan",role:"sauce",name:"Ssamjang",ko:"쌈장 · soybean-chilli dip",
+ blurb:"Thick, savoury doenjang and gochujang paste. A dip for veg or a dab on rice.",
+ serves:4,prep:5,cook:0,fridge:14,freeze:"",reheat:"",kcal:45,p:2,tags:["veg"],
+ ing:["3 tbsp doenjang","1 tbsp gochujang","1 tsp honey","1 tbsp water","1 clove garlic, minced","1 tbsp onion, finely minced","1 spring onion, finely chopped","1 tsp sesame oil","1 tsp toasted sesame seeds"],
+ steps:["Mix the doenjang, gochujang, honey and water until smooth.","Stir in the garlic, onion, spring onion, sesame oil and seeds."],
+ tip:"Thin with a little water to use it as a drizzle instead of a dip."},
+{id:"chogochujang",src:"banchan",role:"sauce",name:"Chogochujang",ko:"초고추장 · vinegared chilli sauce",
+ blurb:"The sweet-sour-spicy sauce that goes on bibimbap and raw fish.",
+ serves:4,prep:5,cook:0,fridge:14,freeze:"",reheat:"",kcal:40,p:1,tags:["veg","spicy"],
+ ing:["4 tbsp gochujang","2 tbsp rice vinegar","1½ tbsp sugar","1 tbsp lemon juice","1 clove garlic, minced","1 tsp sesame oil","1 tsp toasted sesame seeds"],
+ steps:["Whisk everything until smooth and glossy.","Taste. It should be sweet, sour and spicy in equal measure. Add vinegar or sugar to balance."],
+ tip:"Loosen with a splash of water to drizzle over a rice bowl."},
+{id:"japgokbap",src:"banchan",role:"carb",name:"Japgokbap",ko:"잡곡밥 · multigrain rice",
+ blurb:"Short-grain rice cooked with barley, brown and black rice. Chewier and more filling than plain rice.",
+ serves:4,prep:5,cook:30,wait:[30,"soak"],fridge:3,freeze:"Up to 1 month, portioned while hot",reheat:"Microwave covered with a splash of water, 2 minutes from chilled or 3 from frozen.",kcal:300,p:7,tags:["veg"],
+ ing:["300 g short-grain white rice","100 g mixed grains (brown rice, barley, black rice)","480 ml water"],
+ steps:["Rinse the rice and grains together until the water runs mostly clear.","Soak for 30 minutes (2 hours if your mix is heavy on barley), then drain.","Cook in a rice cooker with the water, or simmer covered on the stove for 15 minutes, then rest 10 minutes off the heat without lifting the lid.","Fluff and portion while hot. Cover immediately so it stays soft, and refrigerate or freeze within an hour."],
+ tip:"Rice frozen while hot reheats far better than rice that has dried out in the fridge."},
+{id:"gamjajorim",src:"banchan",role:"carb",name:"Gamja-jorim",ko:"감자조림 · glazed braised potatoes",
+ blurb:"Potato cubes braised in soy and honey until sticky. A carb that doubles as a side.",
+ serves:4,prep:10,cook:20,wait:[10,"soak"],fridge:4,freeze:"",reheat:"Room temp, or microwave 1 minute.",kcal:180,p:3,tags:["veg"],
+ ing:["600 g potatoes, cut into 2 cm cubes","1 tbsp neutral oil","250 ml water","3 tbsp soy sauce","1 tbsp sugar","2 cloves garlic, minced","1½ tbsp honey","1 tsp sesame oil","1 tsp toasted sesame seeds"],
+ steps:["Soak the potato cubes in cold water for 10 minutes to remove surface starch, then drain.","Fry in the oil over medium heat for 5 minutes until the edges turn translucent.","Add the water, soy sauce, sugar and garlic. Simmer uncovered for 12 to 15 minutes until the potatoes are tender and the liquid has reduced to a glaze.","Stir in the honey and cook 1 minute more until glossy. Finish with sesame oil and seeds."]},
+{id:"japchae",src:"banchan",role:"carb",name:"Japchae",ko:"잡채 · glass noodle stir-fry",
+ blurb:"Chewy sweet-potato noodles with mushrooms, spinach and peppers in sweet soy. Vegetarian as written; add beef if you like.",
+ serves:4,prep:20,cook:20,fridge:3,freeze:"",reheat:"Microwave 1 to 2 minutes with a splash of water to loosen the noodles.",kcal:330,p:9,tags:["veg"],
+ ing:["200 g sweet potato glass noodles (dangmyeon)","4 tbsp soy sauce","2 tbsp sesame oil","150 g spinach","Salt, a pinch","1 tbsp neutral oil","1 onion, sliced","1 carrot, julienned","1 red bell pepper, sliced","6 shiitake mushrooms, sliced","2 tbsp sugar","2 cloves garlic, minced","1 tbsp toasted sesame seeds","2 eggs, optional garnish"],
+ steps:["Boil the noodles for 6 to 7 minutes until chewy-soft. Drain, rinse briefly, and snip into shorter lengths. Toss with 1 tbsp of the sesame oil and 1 tbsp of the soy sauce.","Blanch the spinach for 30 seconds, squeeze dry and season with a pinch of salt.","Stir-fry the onion, carrot, pepper and mushrooms one after another in a little oil with a pinch of salt, about 2 minutes each, so each keeps its colour.","In a large pan, warm the noodles with the remaining soy sauce, the sugar and garlic over medium heat for 2 minutes.","Off the heat, toss in all the vegetables, the remaining sesame oil and the sesame seeds.","Optional: fry the eggs as thin sheets, roll and slice into ribbons for garnish."],
+ tip:"Glass noodles stiffen in the fridge. A splash of water and a minute in the microwave brings them back."},
+
+/* ===== SaladStop!-style ===== */
+{id:"lemongrasschicken",src:"saladstop",role:"protein",name:"Lemongrass chicken",insp:"Sabai Sabai",
+ blurb:"Thai-style thighs marinated in lemongrass, shallot and fish sauce, grilled until charred at the edges.",
+ serves:4,prep:15,cook:15,wait:[30,"marinate"],fridge:4,freeze:"Raw in the marinade, up to 2 months",reheat:"Microwave 1 to 2 minutes, or eat cold over salad.",kcal:270,p:30,tags:[],
+ ing:["600 g boneless chicken thigh","2 stalks lemongrass, bottom third finely minced","3 cloves garlic, minced","2 shallots, minced","2 tbsp fish sauce","1 tbsp brown sugar","½ tsp ground turmeric","½ tsp black pepper","1 tbsp neutral oil","1 tbsp lime juice"],
+ steps:["Mix the lemongrass, garlic, shallot, fish sauce, sugar, turmeric, pepper and oil into a paste.","Coat the chicken and marinate at least 30 minutes, or overnight.","Cook in a hot pan or under the grill for 5 to 6 minutes per side, until charred at the edges and 75°C inside.","Rest 5 minutes, squeeze over the lime and slice."],
+ tip:"Thigh stays juicy through 4 days of reheating; breast is dry by day 2."},
+{id:"bulgogi",src:"saladstop",role:"protein",name:"Beef bulgogi",insp:"Yeobo Yeobo",
+ blurb:"Thin-sliced beef in a grated pear, soy and garlic marinade, seared hard in batches.",
+ serves:4,prep:15,cook:10,wait:[30,"marinate"],fridge:4,freeze:"Raw in the marinade, up to 3 months",reheat:"Microwave 1 minute, or toss in a hot pan.",kcal:300,p:28,tags:["beef"],
+ ing:["500 g thinly sliced beef (ribeye or sirloin)","½ Asian pear or 1 small apple, grated","4 tbsp soy sauce","1 tbsp sugar","1 tbsp honey","4 cloves garlic, minced","1 tsp ginger, grated","1 tbsp sesame oil","½ tsp black pepper","½ onion, thinly sliced","1 tbsp neutral oil","2 spring onions, cut into 4 cm lengths","1 tsp toasted sesame seeds"],
+ steps:["Mix the pear, soy sauce, sugar, honey, garlic, ginger, sesame oil and pepper.","Add the beef and onion, massage in the marinade, and leave at least 30 minutes.","Cook in batches in a very hot pan with a little oil, 2 to 3 minutes per batch, so the beef sears instead of stewing.","Toss in the spring onions with the last batch. Finish with sesame seeds."],
+ tip:"Supermarket shabu-shabu beef is already thin enough. Don't marinate over 24 hours; the pear turns the texture mushy."},
+{id:"misosalmon",src:"saladstop",role:"protein",name:"Miso-baked salmon",insp:"Kokoro",
+ blurb:"Salmon glazed in white miso, mirin and honey, baked and finished under the grill.",
+ serves:4,prep:10,cook:12,wait:[30,"marinate"],fridge:3,freeze:"",reheat:"Eat cold, or microwave at half power for 1 minute so it doesn't dry out.",kcal:340,p:32,tags:["seafood"],
+ ing:["4 salmon fillets (about 150 g each)","3 tbsp white miso","2 tbsp mirin","1 tbsp honey","1 tbsp soy sauce","1 tsp sesame oil","1 spring onion, sliced","1 tsp toasted sesame seeds"],
+ steps:["Whisk the miso, mirin, honey, soy sauce and sesame oil.","Coat the salmon and leave 30 minutes, or up to overnight.","Heat the oven to 220°C. Wipe off excess marinade so it doesn't burn, place on a lined tray and bake 10 to 12 minutes.","Grill on high for the last 1 to 2 minutes for caramelised edges. Top with spring onion and sesame."]},
+{id:"cajunshrimp",src:"saladstop",role:"protein",name:"Cajun prawns",insp:"Inhale Ex-Kale",
+ blurb:"Prawns in a smoky paprika spice rub, seared for two minutes a side.",
+ serves:4,prep:10,cook:6,fridge:3,freeze:"",reheat:"Best cold or at room temp. Reheating makes prawns rubbery.",kcal:170,p:26,tags:["seafood","spicy"],
+ ing:["500 g peeled prawns, deveined","2 tsp smoked paprika","1 tsp garlic powder","1 tsp onion powder","½ tsp dried oregano","½ tsp dried thyme","¼ tsp cayenne pepper","½ tsp salt","¼ tsp black pepper","1½ tbsp olive oil","½ lemon, juiced"],
+ steps:["Pat the prawns very dry.","Mix the spices and salt, then toss with the prawns and 1 tbsp of the oil.","Sear in a single layer in a hot pan with the remaining oil, 1 to 2 minutes per side, until just pink and curled into a C.","Squeeze over the lemon. Cool quickly before boxing."],
+ tip:"A C shape means cooked; a tight O means overcooked."},
+{id:"turmerictofu",src:"saladstop",role:"protein",name:"Grilled turmeric tofu",insp:"Sabai Sabai",
+ blurb:"Pressed tofu slabs rubbed with turmeric and coriander, grilled with proper char lines.",
+ serves:4,prep:10,cook:15,wait:[15,"press"],fridge:4,freeze:"",reheat:"Eat cold or warm for 1 minute.",kcal:190,p:16,tags:["veg"],
+ ing:["600 g firm tofu","1 tbsp soy sauce","1 tsp ground turmeric","½ tsp ground coriander","1 clove garlic, grated","1 tbsp neutral oil","1 tsp lime juice","Salt, a pinch"],
+ steps:["Press the tofu between kitchen towels under something heavy for 15 minutes.","Cut into 2 cm slabs. Coat with the soy sauce, turmeric, coriander, garlic and oil.","Cook in a hot griddle pan, or air-fry at 200°C, for 12 to 15 minutes, turning once, until golden.","Squeeze over the lime, season, and cut into cubes."]},
+{id:"bakedmushrooms",src:"saladstop",role:"veg",name:"Roasted mushrooms",insp:"Yeobo Yeobo",
+ blurb:"Mixed mushrooms roasted with garlic, soy and thyme until browned and meaty.",
+ serves:4,prep:10,cook:20,fridge:4,freeze:"",reheat:"Microwave 45 seconds or eat at room temp.",kcal:70,p:4,tags:["veg"],
+ ing:["500 g mixed mushrooms (shiitake, king oyster, button)","2 tbsp olive oil","2 cloves garlic, minced","1 tbsp soy sauce","½ tsp dried thyme","¼ tsp black pepper"],
+ steps:["Heat the oven to 220°C.","Tear or slice the mushrooms into large pieces and toss with the oil, garlic, soy sauce, thyme and pepper.","Spread on a tray in a single layer. Crowded mushrooms steam instead of browning.","Roast 18 to 20 minutes, tossing once, until browned and slightly shrunk."]},
+{id:"kale",src:"saladstop",role:"veg",name:"Massaged kale, apple & grapes",insp:"Inhale Ex-Kale",
+ blurb:"Kale softened with lemon and oil, with green apple, grapes, tomatoes and feta. Sunflower seeds packed separately.",
+ serves:4,prep:15,cook:0,fridge:3,freeze:"",reheat:"Eat cold.",kcal:130,p:4,tags:["veg"],
+ ing:["1 bunch curly kale (about 250 g), stems removed","1 tbsp olive oil","1 tbsp lemon juice","¼ tsp salt","1 green apple, diced","150 g seedless grapes, halved","200 g cherry tomatoes, halved","40 g feta, crumbled","3 tbsp sunflower seeds, toasted"],
+ steps:["Tear the kale into bite-size pieces.","Add the oil, lemon juice and salt, and squeeze the kale with your hands for 2 minutes until it darkens and softens.","Toss the apple in a little extra lemon juice so it doesn't brown.","Box the kale with the apple, grapes, tomatoes and feta. Keep the sunflower seeds separate so they stay crunchy."],
+ tip:"Massaged kale is the rare salad green that gets better after a day in the fridge."},
+{id:"edamamecorn",src:"saladstop",role:"veg",name:"Garlic edamame & sweetcorn",insp:"Yeobo Yeobo",
+ blurb:"Edamame and corn stir-fried with garlic and sesame. The highest-protein vegetable in the library.",
+ serves:4,prep:5,cook:6,fridge:4,freeze:"Up to 1 month",reheat:"Eat cold or microwave 1 minute.",kcal:140,p:9,tags:["veg"],
+ ing:["300 g shelled edamame (frozen is fine)","1 tbsp neutral oil","2 cloves garlic, minced","300 g sweetcorn kernels","½ tsp salt","1 tsp sesame oil","1 tsp toasted sesame seeds"],
+ steps:["Blanch the edamame for 3 minutes. Drain well.","Fry the garlic in the oil over medium heat for 30 seconds.","Add the edamame and corn and stir-fry for 2 to 3 minutes until the corn takes on a little colour.","Season with the salt and sesame oil, and finish with sesame seeds."]},
+{id:"caesarcrunch",src:"saladstop",role:"veg",name:"Caesar crunch",insp:"Hail Caesar",
+ blurb:"Romaine with grated egg, crisp bacon bits, croutons and parmesan, packed so nothing goes soggy.",
+ serves:4,prep:15,cook:15,fridge:3,freeze:"",reheat:"Eat cold.",kcal:210,p:11,tags:["pork"],
+ ing:["4 eggs","4 rashers streaky bacon","2 slices bread, cubed","1 tbsp olive oil","2 heads romaine lettuce","40 g parmesan, shaved"],
+ steps:["Boil the eggs for 10 minutes, cool in iced water, peel and grate on a box grater.","Fry the bacon until crisp, drain and crumble.","Toss the bread cubes in the oil and bake at 190°C for 10 to 12 minutes until crunchy.","Wash and dry the romaine thoroughly (a salad spinner helps), then chop.","Box the romaine with a paper towel on top. Keep the egg, bacon, croutons and parmesan in a separate small tub and add them with the dressing just before eating."],
+ tip:"Dry leaves last; wet leaves wilt by day 2. The paper towel soaks up condensation."},
+{id:"cucumberpickles",src:"saladstop",role:"veg",name:"Quick cucumber pickles",insp:"Sabai Sabai",
+ blurb:"Thin cucumber slices in a sweet rice-vinegar brine. Crunchy for a full week.",
+ serves:4,prep:10,cook:3,wait:[30,"pickle"],fridge:7,freeze:"",reheat:"Eat cold.",kcal:25,p:1,tags:["veg"],
+ ing:["120 ml rice vinegar","60 ml water","2 tbsp sugar","1 tsp salt","2 Japanese cucumbers, thinly sliced","1 red chilli, sliced (optional)"],
+ steps:["Heat the vinegar, water, sugar and salt just until dissolved. Cool.","Pack the cucumber and chilli into a jar and pour over the brine.","Refrigerate at least 30 minutes before eating."]},
+{id:"thaislaw",src:"saladstop",role:"veg",name:"Thai herb slaw",insp:"Sabai Sabai",
+ blurb:"Red and white cabbage with carrot and tomato. Herbs and crushed peanuts go in at the last minute.",
+ serves:4,prep:15,cook:0,fridge:4,freeze:"",reheat:"Eat cold.",kcal:90,p:3,tags:["veg"],
+ ing:["200 g red cabbage, finely shredded","200 g white cabbage, finely shredded","1 carrot, julienned","200 g cherry tomatoes, halved","1 small bunch coriander, chopped","1 small bunch mint, leaves picked","3 tbsp roasted peanuts, crushed"],
+ steps:["Toss the cabbages, carrot and tomatoes.","Box the slaw. Pack the herbs and peanuts separately so they stay fresh and crunchy.","Add the herbs, peanuts and dressing just before eating."]},
+{id:"caesardressing",src:"saladstop",role:"sauce",name:"Classic Caesar dressing",insp:"Hail Caesar",
+ blurb:"Creamy, garlicky and savoury, with fish sauce standing in for anchovies.",
+ serves:4,prep:5,cook:0,fridge:5,freeze:"",reheat:"",kcal:140,p:2,tags:[],
+ ing:["120 g mayonnaise","2 cloves garlic, grated","2 tsp Worcestershire sauce","1 tsp fish sauce, or 2 anchovy fillets mashed","1 tsp Dijon mustard","1½ tbsp lemon juice","20 g parmesan, finely grated","½ tsp black pepper","1 tbsp water, to thin"],
+ steps:["Whisk everything except the water.","Thin with the water until it pours slowly off a spoon.","Rest 30 minutes for the garlic to mellow."]},
+{id:"wasabihoneysoy",src:"saladstop",role:"sauce",name:"Wasabi honey soy",insp:"Tuna San",
+ blurb:"Light, sweet-salty dressing with a clean wasabi kick.",
+ serves:4,prep:5,cook:0,fridge:7,freeze:"",reheat:"",kcal:70,p:1,tags:["veg","spicy"],
+ ing:["3 tbsp soy sauce","1½ tsp wasabi paste","2 tbsp honey","2 tbsp rice vinegar","1 tsp sesame oil","2 tbsp neutral oil","1 tsp toasted sesame seeds"],
+ steps:["Whisk the wasabi into the soy sauce first so it dissolves without lumps.","Add the honey, vinegar and oils and whisk until combined.","Shake again before each use."],
+ tip:"Wasabi fades in the fridge. Stir in a fresh dab on day 4 or 5 if it tastes flat."},
+{id:"carrotginger",src:"saladstop",role:"sauce",name:"Carrot ginger dressing",insp:"Inhale Ex-Kale",
+ blurb:"The bright orange Japanese-restaurant dressing: carrot, ginger, miso and rice vinegar.",
+ serves:4,prep:10,cook:0,fridge:5,freeze:"",reheat:"",kcal:90,p:1,tags:["veg"],
+ ing:["150 g carrot, roughly chopped","20 g ginger, peeled","1 small shallot","3 tbsp rice vinegar","1 tbsp white miso","1 tbsp honey","3 tbsp water","60 ml neutral oil","1 tsp sesame oil"],
+ steps:["Blend everything except the oils until as smooth as possible.","With the blender running, drizzle in the oils.","Thin with more water if needed. It should be thick but pourable."]},
+{id:"lemongrassvinaigrette",src:"saladstop",role:"sauce",name:"Thai lemongrass vinaigrette",insp:"Sabai Sabai",
+ blurb:"Lime, fish sauce, palm sugar and chilli, infused with fresh lemongrass.",
+ serves:4,prep:10,cook:0,fridge:5,freeze:"",reheat:"",kcal:70,p:0,tags:["spicy"],
+ ing:["3 tbsp lime juice","2 tbsp fish sauce","1½ tbsp palm or brown sugar","1 stalk lemongrass, bottom third finely minced","1 clove garlic, minced","1 red bird's eye chilli, minced","2 tbsp neutral oil","1 tbsp coriander, finely chopped"],
+ steps:["Dissolve the sugar in the lime juice and fish sauce.","Add the lemongrass, garlic, chilli and oil, and whisk.","Stir in the coriander. Rest 15 minutes so the lemongrass infuses."]},
+{id:"koreanchillivinaigrette",src:"saladstop",role:"sauce",name:"Korean chilli vinaigrette",insp:"Yeobo Yeobo",
+ blurb:"Gochujang, rice vinegar and honey whisked with sesame oil. Spicy with a sweet finish.",
+ serves:4,prep:5,cook:0,fridge:7,freeze:"",reheat:"",kcal:80,p:1,tags:["veg","spicy"],
+ ing:["2 tbsp gochujang","3 tbsp rice vinegar","1½ tbsp honey","1 tbsp soy sauce","1 tbsp sesame oil","2 tbsp neutral oil","1 clove garlic, grated","1 tsp toasted sesame seeds"],
+ steps:["Whisk the gochujang, vinegar, honey and soy sauce until smooth.","Whisk in the oils and garlic. Finish with sesame seeds."]},
+{id:"quinoabrownrice",src:"saladstop",role:"carb",name:"Quinoa & brown rice",insp:"Kokoro",
+ blurb:"The warm-bowl base: nutty brown rice cooked with quinoa in one pot.",
+ serves:4,prep:5,cook:35,fridge:4,freeze:"Up to 2 months",reheat:"Microwave covered with a splash of water, or eat cold in a salad.",kcal:280,p:8,tags:["veg"],
+ ing:["150 g brown rice","150 g quinoa","600 ml water","½ tsp salt"],
+ steps:["Rinse the brown rice and quinoa separately. Rinsing removes quinoa's bitter coating.","Simmer the brown rice with 350 ml of the water and the salt, covered, for 20 minutes.","Add the quinoa and the remaining 250 ml water, cover and simmer 15 minutes more.","Rest 5 minutes off the heat, then fluff with a fork. (Or cook both together on the rice cooker's brown rice setting.)"]},
+{id:"soba",src:"saladstop",role:"carb",name:"Cold soba",insp:"Go Geisha",
+ blurb:"Buckwheat noodles rinsed cold and tossed with sesame oil so they don't clump.",
+ serves:4,prep:2,cook:6,fridge:3,freeze:"",reheat:"Eat cold. Rinse under the tap for 5 seconds if the noodles clump.",kcal:290,p:11,tags:["veg"],
+ ing:["300 g dried soba noodles","1 tbsp sesame oil","1 tsp soy sauce","1 spring onion, sliced","1 tbsp toasted sesame seeds"],
+ steps:["Boil the soba as the packet says, usually 4 to 5 minutes. Stir in the first minute so they don't stick.","Drain and rinse under cold water, rubbing gently, until the water runs clear. This removes the starch that makes them clump.","Drain well and toss with the sesame oil and soy sauce.","Portion into nests and top with spring onion and sesame."]},
+
+/* ===== Stuff'd-style ===== */
+{id:"spicychicken",src:"stuffd",role:"protein",name:"Spicy chicken kebab",insp:"Chicken Kebab",
+ blurb:"Yogurt-marinated thighs with paprika, cumin and chilli, grilled and sliced thin like the kebab shop does.",
+ serves:4,prep:15,cook:15,wait:[60,"marinate"],fridge:4,freeze:"Cooked, up to 2 months",reheat:"Microwave 1 to 2 minutes, or air-fry at 180°C for 4 minutes to re-crisp.",kcal:290,p:34,tags:["spicy"],
+ ing:["700 g boneless chicken thigh","100 g Greek yogurt","1 tbsp tomato paste","2 tsp smoked paprika","1½ tsp ground cumin","1 tsp chilli flakes","1 tsp dried oregano","3 cloves garlic, grated","1 lemon, juiced","1 tbsp olive oil","1 tsp salt","½ tsp black pepper"],
+ steps:["Mix everything except the chicken into a marinade.","Coat the chicken and marinate at least 1 hour, up to overnight.","Cook under a hot grill or in a griddle pan for 6 to 7 minutes per side, until charred at the edges.","Rest 5 minutes, then slice thinly across the grain."]},
+{id:"teriyakichicken",src:"stuffd",role:"protein",name:"Teriyaki chicken",insp:"Teriyaki Chicken Roll",
+ blurb:"Pan-fried thighs simmered in a glossy soy, mirin and ginger glaze.",
+ serves:4,prep:5,cook:20,fridge:4,freeze:"Up to 2 months",reheat:"Microwave 1 to 2 minutes.",kcal:300,p:31,tags:[],
+ ing:["600 g boneless chicken thigh","1 tbsp neutral oil","4 tbsp soy sauce","3 tbsp mirin","2 tbsp sake or water","1½ tbsp sugar","1 tsp ginger, grated","1 clove garlic, grated","1 tsp cornstarch, mixed with 1 tbsp water","1 tsp toasted sesame seeds"],
+ steps:["Mix the soy sauce, mirin, sake, sugar, ginger and garlic.","Pan-fry the chicken in the oil, skin side down first if it has skin, over medium heat for 6 to 7 minutes per side until golden and cooked through. Pour off excess fat.","Add the sauce and simmer, turning the chicken, until it thickens. Stir in the cornstarch mix for a thicker glaze.","Slice and spoon over the glaze. Finish with sesame."]},
+{id:"tandoorichicken",src:"stuffd",role:"protein",name:"Tandoori chicken strips",insp:"Spicy Tandoori Roll",
+ blurb:"Strips in a yogurt and tandoori masala marinade, seared hard with red onion wedges. Made for wraps.",
+ serves:4,prep:10,cook:15,wait:[60,"marinate"],fridge:4,freeze:"Up to 2 months",reheat:"Microwave 1 to 2 minutes, or sear in a pan for 2 minutes.",kcal:270,p:34,tags:["spicy"],
+ ing:["700 g boneless chicken thigh, cut into strips","150 g plain yogurt","2 tbsp tandoori masala","1 tsp Kashmiri chilli powder","1 tbsp ginger-garlic paste","1 tbsp lemon juice","1 tsp salt","1 tbsp neutral oil","1 red onion, cut into wedges"],
+ steps:["Mix the yogurt, tandoori masala, chilli, ginger-garlic paste, lemon juice and salt.","Coat the chicken strips and marinate 1 hour or overnight.","Sear in a very hot pan with the oil in batches, 3 to 4 minutes per side, with the onion wedges, until charred at the edges.","Squeeze over a little more lemon before boxing."],
+ tip:"Pair it with the mayo cucumber sauce to copy the cooling raita in the original roll."},
+{id:"donerbeef",src:"stuffd",role:"protein",name:"Doner-style beef",insp:"Beef Kebab",
+ blurb:"Spiced mince kneaded until dense, baked as a loaf, then shaved thin and crisped in a pan.",
+ serves:4,prep:15,cook:45,fridge:4,freeze:"Sliced, up to 3 months",reheat:"Sear the slices in a hot dry pan for 1 to 2 minutes to crisp the edges.",kcal:340,p:27,tags:["beef"],
+ ing:["500 g minced beef (15 to 20% fat)","1 small onion, grated and squeezed dry","3 cloves garlic, grated","1 tsp ground cumin","1 tsp ground coriander","1 tsp smoked paprika","1 tsp dried oregano","½ tsp ground cinnamon","1 tsp salt","½ tsp black pepper"],
+ steps:["Heat the oven to 180°C.","Knead everything together for 3 to 4 minutes until the mix turns sticky and paste-like. This gives doner its dense, sliceable texture.","Press into a tight loaf on a lined tray, about 5 cm tall.","Bake 40 to 45 minutes until 71°C in the centre. Rest 10 minutes.","Slice as thinly as you can, then sear the slices in a hot dry pan until the edges crisp."]},
+{id:"blackbeans",src:"stuffd",role:"protein",name:"Smoky black beans",insp:"Burrito Bowl",
+ blurb:"Black beans simmered with cumin and smoked paprika, partly mashed so they hold together in a bowl.",
+ serves:4,prep:5,cook:15,fridge:5,freeze:"Up to 3 months",reheat:"Microwave 1 to 2 minutes with a splash of water.",kcal:210,p:12,tags:["veg"],
+ ing:["1 tbsp olive oil","½ onion, finely diced","2 cloves garlic, minced","1 tsp ground cumin","1 tsp smoked paprika","½ tsp dried oregano","2 cans black beans (400 g), drained and rinsed","150 ml water or stock","½ lime, juiced","Salt, to taste"],
+ steps:["Soften the onion in the oil over medium heat for 5 minutes. Add the garlic and spices and cook 1 minute.","Add the beans and water. Simmer 8 to 10 minutes, mashing about a quarter of the beans to thicken.","Season with salt and the lime juice."]},
+{id:"pico",src:"stuffd",role:"veg",name:"Pico de gallo",insp:"Burrito & Quesadilla fillings",
+ blurb:"Fresh tomato, onion, chilli and coriander salsa, seeded so it stays firm.",
+ serves:4,prep:10,cook:0,fridge:3,freeze:"",reheat:"Eat cold.",kcal:25,p:1,tags:["veg"],
+ ing:["4 ripe tomatoes, seeded and diced","½ red onion, finely diced","1 jalapeño or green chilli, minced","1 small bunch coriander, chopped","1 lime, juiced","½ tsp salt"],
+ steps:["Seed the tomatoes before dicing. The seeds and jelly make it watery in the fridge.","Mix everything and rest 10 minutes.","Drain off any liquid before boxing."]},
+{id:"cornsalsa",src:"stuffd",role:"veg",name:"Charred corn salsa",insp:"Burrito Bowl",
+ blurb:"Blistered sweetcorn with red pepper, jalapeño and lime.",
+ serves:4,prep:10,cook:8,fridge:4,freeze:"",reheat:"Eat cold.",kcal:100,p:3,tags:["veg"],
+ ing:["400 g sweetcorn kernels","1 tsp neutral oil","½ red onion, finely diced","1 red bell pepper, diced","1 jalapeño, minced","1 small bunch coriander, chopped","1 lime, juiced","½ tsp chilli powder","½ tsp salt"],
+ steps:["Char the corn in a very hot, lightly oiled pan. Leave it alone for the first 2 minutes, then toss until spotted black, about 6 to 8 minutes in total.","Cool, then mix with everything else."]},
+{id:"kebabslaw",src:"stuffd",role:"veg",name:"Kebab-shop red cabbage & onion",insp:"Kebab fillings",
+ blurb:"Sumac-rubbed red onion with lightly pickled red cabbage and parsley.",
+ serves:4,prep:15,cook:0,fridge:4,freeze:"",reheat:"Eat cold.",kcal:40,p:1,tags:["veg"],
+ ing:["1 red onion, thinly sliced","1 tsp sumac","½ tsp salt","300 g red cabbage, finely shredded","1 tbsp red wine vinegar","1 tsp sugar","1 small bunch parsley, chopped","1 tbsp lemon juice","1 tbsp olive oil"],
+ steps:["Rub the onion with the sumac and a pinch of the salt for 1 minute. It softens and turns pink.","Toss the cabbage with the vinegar, sugar and remaining salt, and squeeze for 1 minute.","Combine with the onion, parsley, lemon juice and oil."]},
+{id:"fajitaveg",src:"stuffd",role:"veg",name:"Fajita peppers & onions",insp:"Burrito fillings",
+ blurb:"Mixed peppers and onions charred on high heat with cumin and lime.",
+ serves:4,prep:10,cook:10,fridge:4,freeze:"Up to 2 months",reheat:"Microwave 1 minute or toss in a hot pan.",kcal:70,p:2,tags:["veg"],
+ ing:["1 tbsp neutral oil","3 bell peppers (mixed colours), sliced","2 onions, sliced","1 tsp ground cumin","½ tsp smoked paprika","½ tsp salt","½ lime, juiced"],
+ steps:["Heat the oil in a large pan over high heat until shimmering.","Add the peppers and onions in one layer (in batches if needed) and leave 2 minutes to char.","Add the spices and salt and toss for 4 to 5 minutes more, until soft but not floppy.","Finish with the lime."]},
+{id:"habanero",src:"stuffd",role:"sauce",name:"Spicy habanero sauce",insp:"Spicy Habanero",batch:true,
+ blurb:"Fiery, fruity, vinegar-bright hot sauce. One batch lasts a month of boxes.",
+ serves:12,prep:10,cook:15,fridge:30,freeze:"",reheat:"",kcal:5,p:0,tags:["veg","spicy"],
+ ing:["1 carrot, chopped","½ onion, chopped","4 cloves garlic","120 ml water","180 ml white vinegar","6 habanero chillies, stems removed","1 tsp salt","1 tsp sugar","1 lime, juiced"],
+ steps:["Wear gloves. Habanero oil burns skin and eyes.","Simmer the carrot, onion, garlic, water and vinegar for 10 minutes until the carrot is soft.","Add the habaneros and simmer 2 minutes more. Cool slightly.","Blend until very smooth with the salt, sugar and lime juice.","Pour into a clean jar."],
+ tip:"For a milder sauce, seed half the habaneros. Open a window while it simmers."},
+{id:"mayocucumber",src:"stuffd",role:"sauce",name:"Mayo cucumber sauce",insp:"Mayo Cucumber",
+ blurb:"Cool, creamy garlic sauce with grated cucumber and herbs.",
+ serves:4,prep:10,cook:0,fridge:4,freeze:"",reheat:"",kcal:110,p:2,tags:["veg"],
+ ing:["1 small cucumber, grated","¼ tsp salt","100 g mayonnaise","100 g Greek yogurt","1 clove garlic, grated","1 tbsp dill or mint, chopped","1 tsp lemon juice"],
+ steps:["Salt the grated cucumber and leave 10 minutes, then squeeze hard in a clean cloth.","Mix with everything else."],
+ tip:"Squeezing the cucumber keeps this from turning watery by day 2."},
+{id:"roastedsesame",src:"stuffd",role:"sauce",name:"Roasted sesame sauce",insp:"Roasted Sesame",
+ blurb:"Nutty, creamy goma-style dressing from freshly toasted and ground sesame.",
+ serves:4,prep:10,cook:3,fridge:7,freeze:"",reheat:"",kcal:120,p:2,tags:["veg"],
+ ing:["4 tbsp white sesame seeds","3 tbsp Japanese mayonnaise","1½ tbsp soy sauce","1½ tbsp rice vinegar","1 tbsp sugar","1 tsp sesame oil","2 tbsp water"],
+ steps:["Toast the sesame seeds in a dry pan over medium-low, shaking, until golden and fragrant, about 3 minutes.","Grind in a mortar or spice grinder into a coarse, oily paste.","Whisk in everything else until smooth."]},
+{id:"bbqmayo",src:"stuffd",role:"sauce",name:"Smoky BBQ mayo",insp:"Smoky BBQ Mayonnaise",
+ blurb:"Barbecue sauce and smoked paprika folded into mayo. Five minutes, no cooking.",
+ serves:4,prep:5,cook:0,fridge:7,freeze:"",reheat:"",kcal:130,p:0,tags:["veg"],
+ ing:["120 g mayonnaise","3 tbsp barbecue sauce","½ tsp smoked paprika","¼ tsp garlic powder","1 tsp lemon juice"],
+ steps:["Whisk everything until smooth.","Taste. More barbecue sauce makes it sweeter, more paprika makes it smokier."]},
+{id:"honeymustard",src:"stuffd",role:"sauce",name:"Honey mustard",insp:"Honey Mustard",
+ blurb:"Sharp Dijon and wholegrain mustard softened with honey and yogurt.",
+ serves:4,prep:5,cook:0,fridge:7,freeze:"",reheat:"",kcal:90,p:1,tags:["veg"],
+ ing:["2 tbsp Dijon mustard","1 tbsp wholegrain mustard","2 tbsp honey","3 tbsp Greek yogurt or mayonnaise","1 tbsp lemon juice","Salt, a pinch"],
+ steps:["Whisk everything until smooth.","Thin with a little water if you want a drizzle."]},
+{id:"tortillas",src:"stuffd",role:"carb",name:"Flour tortillas",insp:"Burrito & Quesadilla wraps",
+ blurb:"Soft homemade tortillas, two per box. They freeze well with baking paper between them.",
+ serves:4,prep:20,cook:15,wait:[20,"rest"],fridge:4,freeze:"Up to 3 months, with baking paper between",reheat:"Dry pan 20 seconds per side, or microwave wrapped in a damp towel for 20 seconds.",kcal:260,p:6,tags:["veg"],
+ ing:["300 g plain flour","1 tsp baking powder","¾ tsp salt","45 ml neutral oil","180 ml warm water"],
+ steps:["Mix the flour, baking powder and salt. Add the oil and warm water and knead 3 to 4 minutes into a soft, smooth dough.","Divide into 8 balls, cover and rest 20 minutes. Resting makes them easy to roll thin.","Roll each ball into a thin 20 cm round.","Cook in a hot dry pan for 30 to 45 seconds per side until puffed with brown spots.","Stack inside a clean towel as you go so they steam and stay soft."]},
+{id:"limerice",src:"stuffd",role:"carb",name:"Coriander-lime rice",insp:"Burrito Bowl",
+ blurb:"Long-grain rice toasted before simmering, then finished with lime zest and coriander.",
+ serves:4,prep:5,cook:20,fridge:4,freeze:"Up to 1 month",reheat:"Microwave covered with a splash of water, 2 minutes.",kcal:280,p:5,tags:["veg"],
+ ing:["300 g long-grain rice","1 tbsp neutral oil","480 ml water","¾ tsp salt","1 bay leaf","1 lime, zested and juiced","1 small bunch coriander, chopped"],
+ steps:["Rinse the rice until the water runs clear.","Toast the rice in the oil for 2 minutes. Add the water, salt and bay leaf, bring to a boil, then cover and simmer on low for 15 minutes.","Rest 10 minutes off the heat, then fluff.","Stir through the lime zest, lime juice and coriander. Cool quickly and refrigerate within an hour."]},
+
+/* ===== Dabba Street-style ===== */
+{id:"butterchicken",src:"dabba",role:"protein",name:"Butter chicken",insp:"Butter Chicken Dabba Bowl",
+ blurb:"Charred, yogurt-marinated chicken in a smooth tomato-cashew gravy. Lighter on butter than most.",
+ serves:4,prep:20,cook:35,wait:[30,"marinate"],fridge:4,freeze:"Up to 3 months",reheat:"Microwave 2 minutes, stirring halfway, or simmer in a pan with a splash of water.",kcal:390,p:36,tags:[],
+ ing:["700 g boneless chicken thigh, cut into chunks","100 g plain yogurt","1 tbsp ginger-garlic paste","2 tsp Kashmiri chilli powder","1 tsp garam masala","1 tsp salt","1 tbsp neutral oil","20 g butter","1 onion, finely chopped","½ tsp ground cumin","400 g tomato passata","20 g cashews, soaked 15 minutes","80 ml cooking cream","1 tsp honey","1 tsp kasuri methi (dried fenugreek leaves)"],
+ steps:["Marinate the chicken with the yogurt and half each of the ginger-garlic paste, chilli, garam masala and salt, for 30 minutes or overnight.","Sear the chicken in the oil on high in batches until charred in spots, 3 to 4 minutes. It doesn't need to cook through yet. Set aside.","In the same pan, melt the butter and soften the onion for 6 to 8 minutes. Add the remaining ginger-garlic paste, chilli and garam masala with the cumin, and cook 1 minute.","Add the passata and cashews and simmer 10 minutes. Blend until smooth.","Return the chicken. Add the cream, honey, remaining salt and the kasuri methi crushed between your palms. Simmer 8 to 10 minutes until the chicken is cooked through."],
+ tip:"Kasuri methi is what makes it taste like the restaurant version. Any Little India grocer has it."},
+{id:"chickentikka",src:"dabba",role:"protein",name:"Baked chicken tikka",insp:"Baked Chicken Tikka Biryani",
+ blurb:"Chunky tikka baked hot with peppers and onion, then flashed under the grill for char.",
+ serves:4,prep:15,cook:25,wait:[60,"marinate"],fridge:4,freeze:"Up to 2 months",reheat:"Microwave 1 to 2 minutes, or air-fry at 180°C for 3 minutes.",kcal:280,p:35,tags:["spicy"],
+ ing:["700 g boneless chicken thigh, cut into 4 cm chunks","150 g Greek yogurt","1½ tbsp ginger-garlic paste","2 tsp Kashmiri chilli powder","1½ tsp garam masala","1 tsp ground cumin","½ tsp ground turmeric","1 tsp salt","1 lemon, juiced","1 tbsp mustard oil or neutral oil","1 green bell pepper, cut into chunks","1 red onion, cut into chunks"],
+ steps:["Mix the yogurt, ginger-garlic paste, spices, salt, lemon juice and oil. Coat the chicken and marinate at least 1 hour.","Heat the oven to 230°C. Thread the chicken, pepper and onion onto skewers, or spread on a rack over a lined tray.","Bake 20 to 25 minutes, turning once, until charred at the edges.","Finish under the grill for 2 minutes for more char."]},
+{id:"paneertikka",src:"dabba",role:"protein",name:"Paneer tikka",insp:"Dabba Bowl",
+ blurb:"Paneer cubes in spiced yogurt, roasted with peppers and onion and finished with chaat masala.",
+ serves:4,prep:15,cook:15,wait:[30,"marinate"],fridge:4,freeze:"",reheat:"Sear 2 minutes or microwave 45 seconds. Paneer toughens if overheated.",kcal:340,p:19,tags:["veg","spicy"],
+ ing:["120 g Greek yogurt","1 tbsp ginger-garlic paste","1½ tsp Kashmiri chilli powder","1 tsp garam masala","½ tsp ground turmeric","½ tsp salt","1 tbsp lemon juice","1 tbsp neutral oil","400 g paneer, cut into 3 cm cubes","1 green bell pepper, cut into chunks","1 red onion, cut into chunks","1 tsp chaat masala"],
+ steps:["Mix the yogurt, ginger-garlic paste, spices, salt, lemon juice and oil.","Fold in the paneer, pepper and onion gently. Marinate 30 minutes.","Air-fry at 200°C for 10 to 12 minutes, or roast at 230°C for 15 minutes, until charred at the edges.","Sprinkle with chaat masala before boxing."]},
+{id:"chanamasala",src:"dabba",role:"protein",name:"Chana masala",insp:"Dabba Bowl curry",
+ blurb:"Chickpeas in a deep, tangy onion-tomato masala. Even better on day 2.",
+ serves:4,prep:10,cook:30,fridge:5,freeze:"Up to 3 months",reheat:"Microwave 2 minutes, stirring halfway.",kcal:260,p:11,tags:["veg","spicy"],
+ ing:["1 tbsp neutral oil","1 tsp cumin seeds","1 onion, finely chopped","1 tbsp ginger-garlic paste","1 green chilli, slit","1 tsp Kashmiri chilli powder","1 tsp ground coriander","½ tsp ground turmeric","1½ tsp chana masala or garam masala","2 tomatoes, chopped","2 cans chickpeas (400 g), drained","300 ml water","1 tsp salt","½ tsp amchur (dried mango powder), or 1 tbsp lemon juice","1 small bunch coriander, chopped"],
+ steps:["Fry the cumin seeds in the oil until they sizzle. Add the onion and cook 8 to 10 minutes until deep golden. That colour is where the flavour comes from.","Add the ginger-garlic paste and chilli for 1 minute, then the ground spices for 30 seconds.","Add the tomatoes and cook down until jammy and the oil separates, about 6 minutes.","Add the chickpeas, water and salt. Simmer 12 to 15 minutes, mashing a few chickpeas to thicken.","Stir in the amchur and coriander."]},
+{id:"kachumber",src:"dabba",role:"veg",name:"Kachumber salad",insp:"Dabba Bowl fresh veg",
+ blurb:"Cucumber, tomato and onion with lemon and chaat masala. The dressing travels separately.",
+ serves:4,prep:10,cook:0,fridge:2,freeze:"",reheat:"Eat cold.",kcal:30,p:1,tags:["veg"],
+ ing:["1 cucumber, diced","2 tomatoes, seeded and diced","1 red onion, finely diced","1 green chilli, minced","1 small bunch coriander, chopped","1 lemon, juiced","½ tsp chaat masala","¼ tsp salt"],
+ steps:["Dice everything to the same small size, about 1 cm.","Box it undressed. Mix the lemon juice, chaat masala and salt in a small tub.","Toss with the dressing just before eating."],
+ tip:"Undressed it keeps 2 days. Dressed, it's soggy by the next morning."},
+{id:"pickledonions",src:"dabba",role:"veg",name:"Pink pickled onions",insp:"Dabba Bowl toppings",batch:true,
+ blurb:"Sharp, sweet red onions with cumin. A jar brightens two weeks of bowls.",
+ serves:8,prep:10,cook:2,wait:[30,"pickle"],fridge:14,freeze:"",reheat:"Eat cold.",kcal:15,p:0,tags:["veg"],
+ ing:["2 red onions, thinly sliced","½ tsp cumin seeds","1 slice beetroot, optional, for colour","120 ml white vinegar","120 ml hot water","1 tbsp sugar","1 tsp salt"],
+ steps:["Pack the onions into a jar with the cumin seeds and beetroot.","Dissolve the sugar and salt in the hot water and vinegar, and pour over.","Leave 30 minutes at room temperature, then refrigerate. Ready in an hour, best after a day."]},
+{id:"masalacauli",src:"dabba",role:"veg",name:"Roasted masala cauliflower",insp:"Dabba Bowl sides",
+ blurb:"Cauliflower roasted with cumin, coriander and turmeric until the edges brown.",
+ serves:4,prep:10,cook:25,fridge:4,freeze:"",reheat:"Air-fry at 180°C for 3 minutes, or microwave 1 minute.",kcal:110,p:4,tags:["veg","spicy"],
+ ing:["1 head cauliflower (about 800 g), cut into florets","2 tbsp neutral oil","1 tsp ground cumin","1 tsp ground coriander","½ tsp ground turmeric","1 tsp Kashmiri chilli powder","½ tsp garam masala","¾ tsp salt","1 tbsp lemon juice","1 small bunch coriander, chopped"],
+ steps:["Heat the oven to 220°C.","Toss the florets with the oil, spices and salt.","Roast on a lined tray, spread out, for 22 to 25 minutes, turning once, until browned at the edges.","Finish with the lemon and coriander."]},
+{id:"onionbhaji",src:"dabba",role:"veg",name:"Baked onion bhaji",insp:"Onion Bhaji",
+ blurb:"Crisp chickpea-flour onion fritters, oven-baked instead of deep-fried.",
+ serves:4,prep:15,cook:20,wait:[10,"salt"],fridge:3,freeze:"Up to 1 month",reheat:"Air-fry at 180°C for 4 minutes to re-crisp. The microwave makes them soft.",kcal:160,p:6,tags:["veg","spicy"],
+ ing:["2 onions, thinly sliced","¾ tsp salt","100 g besan (chickpea flour)","1 tbsp rice flour","1 green chilli, minced","1 tsp ginger, grated","½ tsp ground turmeric","1 tsp cumin seeds","½ tsp Kashmiri chilli powder","1 small bunch coriander, chopped","60 ml water","2 tbsp neutral oil"],
+ steps:["Rub the onions with the salt and leave 10 minutes until they release liquid.","Add both flours, the chilli, ginger, spices and coriander. Add the water a little at a time until it just binds into a thick, sticky batter.","Brush a tray with oil. Drop heaped spoonfuls onto it, flatten slightly, and brush the tops with oil.","Bake at 220°C for 18 to 20 minutes, flipping halfway, until crisp and brown. In an air fryer: 190°C for 12 to 14 minutes."]},
+{id:"saag",src:"dabba",role:"veg",name:"Spiced spinach (saag)",insp:"Dabba Bowl sides",
+ blurb:"Spinach cooked down with onion, ginger, garlic and garam masala.",
+ serves:4,prep:10,cook:15,fridge:4,freeze:"Up to 2 months",reheat:"Microwave 1 to 2 minutes.",kcal:90,p:5,tags:["veg"],
+ ing:["600 g spinach","1 tbsp neutral oil","1 tsp cumin seeds","1 onion, finely chopped","1 tbsp ginger-garlic paste","1 green chilli, minced","1 tomato, chopped","½ tsp garam masala","½ tsp salt","2 tbsp plain yogurt, optional"],
+ steps:["Blanch the spinach for 1 minute, cool in cold water, squeeze and roughly chop.","Fry the cumin seeds in the oil, then the onion for 6 minutes until golden.","Add the ginger-garlic paste and chilli for 1 minute, then the tomato until soft.","Add the spinach, garam masala and salt. Cook 4 to 5 minutes. Stir in the yogurt off the heat if using."]},
+{id:"tikkamasala",src:"dabba",role:"sauce",name:"Tikka masala sauce",insp:"Tikka Masala curry",
+ blurb:"A pourable curry sauce to spoon over rice and whatever protein you rolled.",
+ serves:4,prep:10,cook:25,fridge:5,freeze:"Up to 3 months",reheat:"Simmer or microwave until hot all the way through.",kcal:130,p:3,tags:["veg","spicy"],
+ ing:["1 tbsp neutral oil","1 onion, finely chopped","1 tbsp ginger-garlic paste","1 green chilli, minced","2 tsp Kashmiri chilli powder","1½ tsp garam masala","1 tsp ground cumin","1 tsp ground coriander","½ tsp ground turmeric","400 g tomato passata","¾ tsp salt","1 tsp sugar","100 ml light coconut milk or cream","1 tsp kasuri methi"],
+ steps:["Soften the onion in the oil for 8 minutes until golden.","Add the ginger-garlic paste and chilli for 1 minute, then the ground spices for 30 seconds.","Add the passata, salt and sugar. Simmer 12 minutes, stirring now and then.","Blend smooth if you like it restaurant-style. Stir in the coconut milk and crushed kasuri methi and simmer 3 minutes."]},
+{id:"mintchutney",src:"dabba",role:"sauce",name:"Mint chutney",insp:"Mint Chutney",
+ blurb:"Fresh green herb paste stirred into yogurt. Cooling next to anything spiced.",
+ serves:4,prep:10,cook:0,fridge:4,freeze:"",reheat:"",kcal:35,p:2,tags:["veg"],
+ ing:["1 bunch mint, leaves only","1 bunch coriander, leaves and soft stems","1 green chilli","1 tsp ginger, grated","1 tbsp lemon juice","½ tsp sugar","½ tsp salt","2 tbsp cold water","120 g plain yogurt"],
+ steps:["Blend the mint, coriander, chilli, ginger, lemon juice, sugar, salt and cold water to a smooth paste.","Stir the paste into the yogurt by hand. Blending the yogurt makes it runny.","Taste and adjust the salt and lemon."],
+ tip:"Lemon and very cold water keep the green bright. Skip the yogurt for a sharper chutney that keeps 5 days."},
+{id:"tzatziki",src:"dabba",role:"sauce",name:"Tzatziki",insp:"Tzatziki",
+ blurb:"Thick garlic yogurt with squeezed cucumber, dill and lemon.",
+ serves:4,prep:10,cook:0,fridge:4,freeze:"",reheat:"",kcal:70,p:4,tags:["veg"],
+ ing:["1 small cucumber, grated","¼ tsp salt","250 g Greek yogurt","1 clove garlic, grated","1 tbsp dill or mint, chopped","1 tbsp lemon juice","1 tbsp olive oil"],
+ steps:["Salt the grated cucumber, leave 10 minutes, then squeeze it dry in a cloth.","Mix with everything else. Rest 30 minutes for the garlic to mellow."]},
+{id:"beethummus",src:"dabba",role:"sauce",name:"Beetroot hummus",insp:"Beetroot Hummus",
+ blurb:"Vivid pink hummus whipped with tahini and lemon. Doubles as a protein top-up.",
+ serves:4,prep:10,cook:0,fridge:5,freeze:"Up to 2 months",reheat:"",kcal:160,p:5,tags:["veg"],
+ ing:["3 tbsp tahini","2 tbsp lemon juice","150 g cooked beetroot","1 clove garlic","½ tsp ground cumin","½ tsp salt","1 can chickpeas (400 g), drained, liquid kept","3 tbsp chickpea liquid (aquafaba)","2 tbsp olive oil"],
+ steps:["Blend the tahini and lemon juice for 1 minute until whipped and pale.","Add the beetroot, garlic, cumin and salt and blend.","Add the chickpeas and blend 2 to 3 minutes, adding chickpea liquid until very smooth.","Drizzle with the olive oil."],
+ tip:"Vacuum-packed cooked beetroot from the supermarket saves an hour of roasting."},
+{id:"pineapplehabanero",src:"dabba",role:"sauce",name:"Pineapple habanero sauce",insp:"Pineapple Habanero",batch:true,
+ blurb:"Sweet-hot fruity chilli sauce. A small jar lasts weeks.",
+ serves:8,prep:10,cook:15,fridge:21,freeze:"",reheat:"",kcal:25,p:0,tags:["veg","spicy"],
+ ing:["250 g pineapple, chopped","2 habanero chillies, stems removed","2 cloves garlic","80 ml apple cider vinegar","60 ml water","1 tbsp honey","1 lime, juiced","½ tsp salt"],
+ steps:["Wear gloves when handling habaneros.","Simmer the pineapple, habaneros, garlic, vinegar and water for 10 minutes until the pineapple is soft.","Blend with the honey, lime juice and salt until smooth.","Simmer 3 to 5 minutes more to thicken slightly. Cool and jar."]},
+{id:"biryanirice",src:"dabba",role:"carb",name:"Spiced biryani rice",insp:"Biryani",
+ blurb:"Basmati cooked with whole spices and browned onions, folded with mint and coriander.",
+ serves:4,prep:10,cook:30,wait:[20,"soak"],fridge:4,freeze:"Up to 1 month",reheat:"Microwave covered with a splash of water, 2 minutes.",kcal:310,p:6,tags:["veg"],
+ ing:["300 g basmati rice","1 tbsp neutral oil","1 onion, thinly sliced","1 bay leaf","4 green cardamom pods","4 whole cloves","1 cinnamon stick","1 tsp cumin seeds","½ tsp ground turmeric","450 ml water","1 tsp salt","Saffron, a pinch, soaked in 2 tbsp warm milk (optional)","1 small bunch mint, chopped","1 small bunch coriander, chopped"],
+ steps:["Rinse the basmati until the water runs clear, then soak 20 minutes. Drain.","Fry the onion in the oil over medium heat for 10 to 12 minutes until deep brown. Set half aside for garnish.","Add the whole spices and cumin seeds to the pan for 30 seconds until fragrant.","Add the rice and turmeric and stir gently for 1 minute. Add the water and salt, bring to a boil, then cover and cook on the lowest heat for 12 minutes.","Drizzle over the saffron milk, cover again and rest 10 minutes off the heat.","Fluff gently with a fork and fold through the mint, coriander and reserved onions."],
+ tip:"Pick out the whole spices before boxing, or warn whoever eats it."},
+{id:"roti",src:"dabba",role:"carb",name:"Whole-wheat roti",insp:"Roti",
+ blurb:"Soft atta flatbreads, two per box. Stack them in a cloth so they stay pliable.",
+ serves:4,prep:20,cook:15,wait:[20,"rest"],fridge:3,freeze:"Up to 2 months, with baking paper between",reheat:"Dry pan 20 seconds per side, or microwave in a damp paper towel for 15 seconds.",kcal:220,p:7,tags:["veg"],
+ ing:["300 g atta (whole-wheat flour)","½ tsp salt","1 tbsp neutral oil","200 ml warm water"],
+ steps:["Mix the atta and salt, add the oil, then add the water gradually and knead 5 minutes into a soft dough. Cover and rest 20 minutes.","Divide into 8 balls. Roll each into a thin 18 cm circle, dusting with flour as needed.","Cook on a hot dry pan for 30 seconds until bubbles appear, flip, and cook 1 minute.","Flip again and press gently with a folded towel so it puffs. Stack in a cloth-lined container."]},
+{id:"pita",src:"dabba",role:"carb",name:"Soft yogurt pita",insp:"Pita",
+ blurb:"No-yeast flatbreads from flour, yogurt and baking powder. Ready in under an hour.",
+ serves:4,prep:15,cook:15,wait:[30,"rest"],fridge:3,freeze:"Up to 2 months",reheat:"Dry pan 30 seconds per side, or the toaster.",kcal:250,p:9,tags:["veg"],
+ ing:["300 g plain flour","2 tsp baking powder","½ tsp salt","250 g Greek yogurt"],
+ steps:["Mix the flour, baking powder and salt. Add the yogurt and knead 2 to 3 minutes into a soft, slightly tacky dough.","Cover and rest 30 minutes.","Divide into 8 pieces and roll each to about 5 mm thick.","Cook in a hot dry pan for 1 to 2 minutes per side until puffed and spotted brown.","Stack in a towel so they stay soft."]}
+];
+
+/* ---------- ingredient parsing, scaling, formatting ---------- */
+const FRAC = {"¼":.25,"½":.5,"¾":.75,"⅓":1/3,"⅔":2/3,"⅛":.125};
+const UNITS = ["small bunches","small bunch","bunches","bunch","tbsp","tsp","cups","cup","kg","g","ml","l","cloves","clove","stalks","stalk","cans","can","thumbs","thumb","slices","slice","heads","head","rashers","rasher","sheets","sheet","pinches","pinch","handfuls","handful","sprigs","sprig"];
+const UNIT_CANON = {"small bunches":"small bunch","bunches":"bunch","cups":"cup","cloves":"clove","stalks":"stalk","cans":"can","thumbs":"thumb","slices":"slice","heads":"head","rashers":"rasher","sheets":"sheet","pinches":"pinch","handfuls":"handful","sprigs":"sprig"};
+const UNIT_PLURAL = {"small bunch":"small bunches","bunch":"bunches","cup":"cups","clove":"cloves","stalk":"stalks","can":"cans","thumb":"thumbs","slice":"slices","head":"heads","rasher":"rashers","sheet":"sheets","pinch":"pinches","handful":"handfuls","sprig":"sprigs"};
+
+function parseIng(line){
+  let s = String(line||"").trim(), q = null, m;
+  if((m = s.match(/^(\d+)\s+(\d+)\/(\d+)\s+/))){ q = +m[1] + m[2]/m[3]; s = s.slice(m[0].length); }
+  else if((m = s.match(/^(\d+)\/(\d+)\s+/))){ q = m[1]/m[2]; s = s.slice(m[0].length); }
+  else if((m = s.match(/^(\d+(?:\.\d+)?)?\s?([¼½¾⅓⅔⅛])\s*/))){ q = (m[1] ? +m[1] : 0) + FRAC[m[2]]; s = s.slice(m[0].length); }
+  else if((m = s.match(/^(\d+(?:\.\d+)?)\s*/))){ q = +m[1]; s = s.slice(m[0].length); }
+  let u = "";
+  if(q !== null){
+    const lower = s.toLowerCase();
+    for(const unit of UNITS){
+      if(lower.startsWith(unit + " ")){ u = UNIT_CANON[unit] || unit; s = s.slice(unit.length + 1); break; }
+    }
+  }
+  let depth = 0, cut = -1;
+  for(let i = 0; i < s.length; i++){
+    const c = s[i];
+    if(c === "(") depth++; else if(c === ")") depth = Math.max(0, depth-1);
+    else if(c === "," && depth === 0){ cut = i; break; }
+  }
+  const item = (cut < 0 ? s : s.slice(0, cut)).trim();
+  const note = cut < 0 ? "" : s.slice(cut + 1).trim();
+  return {q, u, item, note};
+}
+function fracStr(q){
+  let r = Math.round(q * 4) / 4;
+  if(r === 0) r = 0.25;
+  const w = Math.floor(r), f = r - w;
+  const fs = {0:"", 0.25:"¼", 0.5:"½", 0.75:"¾"}[f];
+  return (w ? String(w) : "") + fs;
+}
+function fmtAmount(q, u, loose){
+  if(q === null || q === undefined) return "";
+  if(loose && u === "tsp" && q >= 3) return fracStr(q / 3) + " tbsp";
+  if(u === "g" || u === "ml"){
+    if(q >= 1000) return (Math.round(q / 100) / 10) + (u === "g" ? " kg" : " l");
+    const r = q >= 50 ? Math.round(q / 5) * 5 : Math.max(1, Math.round(q));
+    return r + " " + u;
+  }
+  if(u === "kg" || u === "l") return (Math.round(q * 10) / 10) + " " + u;
+  if(u === "tsp" && q >= 3 && Math.abs(q/3 - Math.round(q/3*4)/4) < 0.01) return fracStr(q/3) + " tbsp";
+  const n = (!u && q >= 2) ? Math.round(q * 2) / 2 : q;
+  const num = fracStr(n);
+  if(!u) return num;
+  const plural = n > 1 && UNIT_PLURAL[u] ? UNIT_PLURAL[u] : u;
+  return num + " " + plural;
+}
+function scaleFor(r, portions){ return r.batch ? 1 : portions / (r.serves || 4); }
+
+/* ---------- pantry + shopping list ---------- */
+const PANTRY = ["salt","black pepper","cayenne pepper","sugar","soy sauce","sesame oil","neutral oil","olive oil","sesame seeds","vinegar","honey","mirin","fish sauce","gochugaru","gochujang","doenjang","ground ","garam masala","chana masala","chilli powder","paprika","dried oregano","dried thyme","cumin seeds","chilli flakes","cornstarch","baking powder","garlic powder","onion powder","mayonnaise","mustard","worcestershire","kasuri methi","chaat masala","sumac","cinnamon","bay leaf","cardamom","whole cloves","turmeric","tandoori masala","ginger-garlic paste","amchur","saffron","tomato paste","barbecue sauce","wasabi","miso","sake","tahini","rice flour","glutinous rice flour","plain flour","coarse sea salt","salted shrimp"];
+function normKey(item){
+  let k = item.toLowerCase().replace(/\(optional\)/g, "").replace(/\s+/g, " ").trim();
+  k = k.replace(/(\w+)$/, w => /ies$/.test(w) ? w.slice(0,-3)+"y" : /oes$/.test(w) ? w.slice(0,-2) : (/s$/.test(w) && !/ss$/.test(w)) ? w.slice(0,-1) : w);
+  return k;
+}
+function isWater(key){ return /^(cold |warm |hot )?water( or stock)?$/.test(key); }
+function isPantry(item){ const a = item.toLowerCase(), b = normKey(item); return PANTRY.some(p => a.includes(p) || b.includes(p)); }
+function normUnit(u, q){
+  if(u === "kg") return ["g", q * 1000];
+  if(u === "l") return ["ml", q * 1000];
+  if(u === "tbsp") return ["tsp", q * 3];
+  return [u || "", q];
+}
+/* Shopping amounts: whole items and bunches round up to what you can buy. */
+const WHOLE_UNITS = ["", "bunch", "can", "head", "stalk", "thumb", "clove", "slice", "rasher", "sheet", "sprig"];
+function buildShopping(recipes, portions){
+  const groups = new Map();
+  recipes.forEach(r => {
+    const sc = scaleFor(r, portions);
+    (r.ing || []).forEach(line => {
+      const p = parseIng(line);
+      if(!p.item) return;
+      const key = normKey(p.item);
+      if(isWater(key)) return;
+      let g = groups.get(key);
+      if(!g){ g = {key, item:p.item, amounts:new Map(), taste:"", pantry:isPantry(p.item)}; groups.set(key, g); }
+      if(p.item.length > g.item.length) g.item = p.item;
+      if(p.q === null){ const n = (p.note.split(",")[0] || "").trim(); g.taste = g.taste || (/^(a pinch|to taste|a handful)$/i.test(n) ? n : "to taste"); }
+      else {
+        let [uk, v] = normUnit(p.u, p.q * sc);
+        if(uk === "small bunch"){ uk = "bunch"; v = v / 2; }
+        g.amounts.set(uk, (g.amounts.get(uk) || 0) + v);
+      }
+    });
+  });
+  const list = [...groups.values()].map(g => {
+    const parts = [...g.amounts.entries()].map(([u, v]) => fmtAmount(WHOLE_UNITS.includes(u) ? Math.ceil(v - 0.01) : v, u, true));
+    const amt = parts.length ? parts.join(" + ") : g.taste;
+    return {key:g.key, item:cap(g.item), amt, pantry:g.pantry};
+  }).sort((a, b) => a.item.localeCompare(b.item));
+  return {buy:list.filter(x => !x.pantry), pantry:list.filter(x => x.pantry)};
+}
+
+/* ---------- helpers ---------- */
+const $ = (s, el) => (el || document).querySelector(s);
+const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+const cap = s => s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
+const pick = a => a.length ? a[Math.floor(Math.random() * a.length)] : null;
+const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+function lsGet(k){ try { return JSON.parse(localStorage.getItem(k)); } catch(e){ return null; } }
+function lsSet(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} }
+function fmtMin(m){
+  m = Math.round(m || 0);
+  if(m < 60) return m + " min";
+  const h = Math.floor(m / 60), r = m % 60;
+  return r ? h + " h " + r + " min" : h + " h";
+}
+function dayLabel(offset){
+  const d = new Date(); d.setDate(d.getDate() + offset);
+  try { return d.toLocaleDateString("en-SG", {weekday:"short", day:"numeric", month:"short"}).replace(",", ""); }
+  catch(e){ return d.toDateString().slice(0, 10); }
+}
+function totalTime(r){ return (r.prep || 0) + (r.cook || 0) + (r.wait ? r.wait[0] : 0); }
+function waitText(r){ if(!r.wait || !r.wait[0]) return ""; return "+" + fmtMin(r.wait[0]) + " to " + r.wait[1]; }
+function srcLabel(src){ return (SOURCES[src] || SOURCES.mine).label; }
+function keepsText(r){ return r.fridge >= 14 ? Math.round(r.fridge / 7) + " wks" : r.fridge + "d"; }
+let toastTimer = null;
+function toast(msg){
+  const t = $("#toast"); t.textContent = msg; t.classList.add("show");
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove("show"), 2600);
+}
+
+/* ---------- store (your own recipes, via the db capability) ---------- */
+const store = {db:null, status:"connecting", canWrite:null, mine:[]};
+let INDEX = new Map();
+function all(){ return CURATED.concat(store.mine); }
+function reindex(){ INDEX = new Map(all().map(r => [r.id, r])); }
+function byId(id){ return INDEX.get(id) || null; }
+reindex();
+
+function normalizeUser(docId, d){
+  d = d || {};
+  const num = (v, def) => { const n = Number(v); return (v !== "" && v !== null && Number.isFinite(n) && n >= 0) ? n : def; };
+  const str = (v, max) => typeof v === "string" ? v.slice(0, max || 300) : "";
+  const arr = v => Array.isArray(v) ? v.filter(x => typeof x === "string" && x.trim()).map(x => x.slice(0, 300)).slice(0, 80) : [];
+  const wait = num(d.wait, 0);
+  return {
+    id:"u_" + docId, docId, own:true,
+    src: SOURCES[d.src] ? d.src : "mine",
+    role: ROLES[d.role] ? d.role : "veg",
+    name: str(d.name, 120) || "Untitled recipe",
+    insp: str(d.insp, 120), blurb: str(d.blurb, 400),
+    serves: Math.max(1, num(d.serves, 4)),
+    prep: num(d.prep, 0), cook: num(d.cook, 0),
+    wait: wait ? [wait, "rest"] : null,
+    fridge: num(d.fridge, 3), freeze: str(d.freeze, 120), reheat: str(d.reheat, 300),
+    kcal: num(d.kcal, null), p: num(d.p, null),
+    tags: arr(d.tags).filter(t => TAGS[t]),
+    ing: arr(d.ing), steps: arr(d.steps), tip: str(d.tip, 400)
+  };
+}
+
+/* Outside claude.ai (e.g. opened from the repo or GitHub Pages) there is no shared
+   store, so your recipes fall back to this browser's local storage. */
+const LOCAL_RECIPES = "sundayPrepBox.recipes.v1";
+function loadLocal(){
+  const map = lsGet(LOCAL_RECIPES);
+  store.mine = map && typeof map === "object" ? Object.entries(map).map(([id, d]) => normalizeUser(id, d)) : [];
+  store.status = "local";
+  onRecipesChanged();
+}
+function writeLocal(mutate){
+  const map = lsGet(LOCAL_RECIPES) || {};
+  mutate(map);
+  try { localStorage.setItem(LOCAL_RECIPES, JSON.stringify(map)); }
+  catch(e){ throw {code:"local_blocked"}; }
+  loadLocal();
+}
+function canWriteRecipes(){ return store.status === "local" || (store.status === "ready" && store.canWrite !== false); }
+async function saveRecipe(docId, payload){
+  if(store.status === "local"){
+    const id = docId || ("l" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6));
+    writeLocal(map => { map[id] = payload; });
+    return id;
+  }
+  if(!store.db) throw {code:"no_store"};
+  const col = store.db.collection("recipes");
+  const ref = docId ? col.doc(docId) : col.doc();
+  await ref.set(payload);
+  return ref.id;
+}
+async function removeRecipe(docId){
+  if(store.status === "local"){ writeLocal(map => { delete map[docId]; }); return; }
+  if(!store.db) throw {code:"no_store"};
+  await store.db.collection("recipes").doc(docId).delete();
+}
+
+async function connectDb(){
+  if(!window.claude || typeof window.claude.use !== "function"){ loadLocal(); return; }
+  try {
+    const [db, user] = await Promise.all([window.claude.use("db"), window.claude.use("user").catch(() => null)]);
+    if(user){ try { store.canWrite = await user.can("data.write"); } catch(e){} }
+    if(!db){ store.status = "off"; onRecipesChanged(); return; }
+    store.db = db;
+    db.collection("recipes").onSnapshot(snap => {
+      store.mine = snap.docs.filter(d => d.exists).map(d => normalizeUser(d.id, d.data()));
+      store.status = "ready";
+      onRecipesChanged();
+    }, err => {
+      store.status = (err && err.code === "revoked") ? "off" : "error";
+      onRecipesChanged();
+    });
+  } catch(e){ store.status = "off"; onRecipesChanged(); }
+}
+
+function renderDbState(){
+  const el = $("#dbState"), btn = $("#addBtn");
+  const n = store.mine.length;
+  let msg = "";
+  if(store.status === "connecting") msg = "Connecting to your saved recipes…";
+  else if(store.status === "ready") msg = store.canWrite === false ? "View only. You can browse but not add recipes." : (n ? n + " recipe" + (n === 1 ? "" : "s") + " of your own, synced" : "Your recipes sync across devices");
+  else if(store.status === "local") msg = n ? n + " recipe" + (n === 1 ? "" : "s") + " of your own, saved in this browser" : "Recipes you add are saved in this browser";
+  else if(store.status === "error") msg = "Couldn't load your saved recipes. Reload to try again.";
+  else msg = "Adding recipes needs you signed in to claude.ai.";
+  el.textContent = msg;
+  btn.disabled = !canWriteRecipes();
+}
+
+/* ---------- box state ---------- */
+const LS_KEY = "sundayPrepBox.v1";
+let state = lsGet(LS_KEY);
+if(!state || typeof state !== "object" || !state.slots) state = null;
+state = Object.assign({mode:"surprise", portions:4, cuisine:null, checked:[], slots:{}}, state || {});
+SLOTS.forEach(s => { if(!state.slots[s.key]) state.slots[s.key] = {id:null, locked:false}; });
+state.portions = Math.min(10, Math.max(1, Number(state.portions) || 4));
+const MODES = ["surprise","banchan","saladstop","stuffd","dabba","mix"];
+if(!MODES.includes(state.mode)) state.mode = "surprise";
+function save(){ lsSet(LS_KEY, state); }
+
+function recipesFor(role, src){ return all().filter(r => r.role === role && (!src || r.src === src)); }
+function feasibleSources(){
+  return SRC_ORDER.filter(s => recipesFor("protein", s).length >= 1 && recipesFor("veg", s).length >= 2 && recipesFor("sauce", s).length >= 1 && recipesFor("carb", s).length >= 1);
+}
+function sourceForRoll(single){
+  if(state.mode === "mix") return null;
+  if(state.mode !== "surprise") return state.mode;
+  if(single) return state.cuisine;
+  const locked = SLOTS.map(s => state.slots[s.key]).filter(x => x.locked && byId(x.id));
+  if(locked.length) return byId(locked[0].id).src;
+  const options = feasibleSources();
+  const fresh = options.filter(s => s !== state.cuisine);
+  return pick(fresh.length ? fresh : options);
+}
+function rollSlots(keys, src){
+  const used = new Set(SLOTS.filter(s => !keys.includes(s.key)).map(s => state.slots[s.key].id).filter(Boolean));
+  keys.forEach(key => {
+    const role = SLOT[key].role, prev = state.slots[key].id;
+    const choose = from => {
+      const cands = recipesFor(role, from).filter(r => !used.has(r.id));
+      const fresh = cands.filter(r => r.id !== prev);
+      return pick(fresh.length ? fresh : cands);
+    };
+    const choice = choose(src) || choose(null);
+    state.slots[key].id = choice ? choice.id : null;
+    if(choice) used.add(choice.id);
+  });
+}
+function boxRecipes(){ return SLOTS.map(s => byId(state.slots[s.key].id)).filter(Boolean); }
+function boxSignature(){ return SLOTS.map(s => state.slots[s.key].id).join("|"); }
+
+function doRoll(keys){
+  const before = boxSignature();
+  const src = sourceForRoll(keys.length === 1);
+  if(keys.length > 1) state.cuisine = src || null;
+  rollSlots(keys, src);
+  if(boxSignature() !== before) state.checked = [];
+  save();
+  animate(keys);
+  renderAfterBox();
+}
+
+/* ---------- rendering: box ---------- */
+const ICONS = {
+  lock:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>',
+  unlock:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 7.5-2"/></svg>',
+  reroll:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg>',
+  close:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+  warn:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l9.5 17h-19z"/><path d="M12 10v4M12 17.5v.5"/></svg>'
+};
+function renderSlot(key){
+  const cell = $('.cell[data-slot="' + key + '"]');
+  const s = state.slots[key], r = byId(s.id), role = SLOT[key].role;
+  cell.dataset.role = role;
+  if(!r){
+    const loading = s.id && String(s.id).startsWith("u_") && store.status === "connecting";
+    cell.innerHTML = '<div class="cell-top"><span class="role">' + esc(ROLES[role]) + '</span></div><div class="cell-sub">' + (loading ? "Loading your recipe…" : "Nothing here yet. Roll the box.") + '</div>';
+    return;
+  }
+  const meta = [fmtMin((r.prep||0) + (r.cook||0)), "keeps " + keepsText(r)];
+  if(r.kcal != null) meta.push(r.kcal + " kcal");
+  cell.innerHTML =
+    '<div class="cell-top"><span class="role">' + esc(ROLES[role]) + '</span>' +
+    '<span class="cell-actions">' +
+      '<button type="button" class="icon-btn" data-action="lock" data-slot="' + key + '" aria-pressed="' + (s.locked ? "true" : "false") + '" aria-label="' + (s.locked ? "Unlock " : "Lock ") + esc(r.name) + '" title="' + (s.locked ? "Locked: rolls skip this" : "Lock to keep it when you roll") + '">' + (s.locked ? ICONS.lock : ICONS.unlock) + '</button>' +
+      '<button type="button" class="icon-btn" data-action="reroll" data-slot="' + key + '" aria-label="Swap ' + esc(r.name) + ' for another ' + esc(ROLES[role].toLowerCase()) + '" title="Swap just this one">' + ICONS.reroll + '</button>' +
+    '</span></div>' +
+    '<button type="button" class="cell-name" data-action="open" data-id="' + esc(r.id) + '">' + esc(r.name) + '</button>' +
+    '<div class="cell-sub">' + esc(srcLabel(r.src)) + (r.insp ? " · " + esc(r.insp) : "") + (r.own ? " · yours" : "") + '</div>' +
+    '<div class="cell-meta">' + esc(meta.join(" · ")) + '</div>';
+}
+function renderBox(){ SLOTS.forEach(s => renderSlot(s.key)); }
+
+const spinTimers = {};
+function animate(keys){
+  if(reduceMotion){ renderBox(); return; }
+  const btn = $("#rollBtn"); btn.classList.remove("turn"); void btn.offsetWidth; btn.classList.add("turn");
+  keys.forEach((key, i) => {
+    clearInterval(spinTimers[key + "i"]); clearTimeout(spinTimers[key + "t"]);
+    const cell = $('.cell[data-slot="' + key + '"]');
+    renderSlot(key);
+    const nameEl = cell.querySelector(".cell-name");
+    if(!nameEl) return;
+    const names = recipesFor(SLOT[key].role, null).map(r => r.name);
+    cell.classList.add("spin");
+    spinTimers[key + "i"] = setInterval(() => { nameEl.textContent = pick(names); }, 65);
+    spinTimers[key + "t"] = setTimeout(() => {
+      clearInterval(spinTimers[key + "i"]);
+      cell.classList.remove("spin");
+      renderSlot(key);
+    }, 360 + i * 110);
+  });
+}
+
+/* ---------- rendering: controls, facts, warnings ---------- */
+function renderControls(){
+  const labels = {surprise:"Surprise me", banchan:"Banchan", saladstop:"SaladStop!", stuffd:"Stuff'd", dabba:"Dabba Street", mix:"Mix all four"};
+  const titles = {surprise:"One cuisine per roll, picked at random", mix:"Any component from any cuisine"};
+  $("#modeChips").innerHTML = MODES.map(m =>
+    '<button type="button" class="chip" data-action="mode" data-mode="' + m + '" aria-pressed="' + (state.mode === m) + '"' + (titles[m] ? ' title="' + titles[m] + '"' : "") + '>' + esc(labels[m]) + '</button>').join("");
+  $("#portionsOut").textContent = state.portions;
+}
+function cuisineSummary(rs){
+  const srcs = [...new Set(rs.map(r => r.src))];
+  if(!rs.length) return "";
+  return srcs.length === 1 ? "All " + srcLabel(srcs[0]) : "Mixed: " + srcs.map(s => (SOURCES[s] || SOURCES.mine).short).join(", ");
+}
+function renderFacts(){
+  const rs = boxRecipes();
+  const facts = $("#facts"), warns = $("#warnings");
+  if(rs.length < SLOTS.length){ facts.innerHTML = ""; warns.innerHTML = ""; $("#tape").textContent = "Prep day · " + dayLabel(0); return; }
+  const kcalKnown = rs.filter(r => r.kcal != null), pKnown = rs.filter(r => r.p != null);
+  const kcal = kcalKnown.reduce((a, r) => a + r.kcal, 0), prot = pKnown.reduce((a, r) => a + r.p, 0);
+  const partial = kcalKnown.length < rs.length;
+  const hands = rs.reduce((a, r) => a + (r.prep || 0), 0);
+  const longest = rs.slice().sort((a, b) => totalTime(b) - totalTime(a))[0];
+  const keep = Math.min.apply(null, rs.map(r => r.fridge));
+  const shortest = rs.filter(r => r.fridge === keep);
+  const noFreeze = rs.filter(r => !r.freeze);
+  facts.innerHTML =
+    '<div class="fact"><span class="eyebrow">Per box</span><b>≈ ' + kcal + ' kcal · ' + prot + ' g protein</b><span class="s">' + (partial ? "Some of your recipes have no estimate" : "Rough estimate, one portion of each") + '</span></div>' +
+    '<div class="fact"><span class="eyebrow">Hands-on</span><b>≈ ' + fmtMin(hands) + '</b><span class="s">Longest job: ' + esc(longest.name) + ', ' + fmtMin(totalTime(longest)) + '</span></div>' +
+    '<div class="fact"><span class="eyebrow">Fridge life</span><b>' + keep + ' day' + (keep === 1 ? "" : "s") + ' · eat by ' + esc(dayLabel(keep)) + '</b><span class="s">First to go: ' + esc(shortest.map(r => r.name).join(", ")) + '</span></div>' +
+    '<div class="fact"><span class="eyebrow">Freezer</span><b>' + (noFreeze.length ? "Not as a whole box" : "Whole box freezes") + '</b><span class="s">' + (noFreeze.length ? "Doesn't freeze: " + esc(noFreeze.map(r => r.name).join(", ")) : "Freeze any extra boxes on prep day") +'</span></div>';
+  $("#tape").textContent = "Prep " + dayLabel(0) + " · " + state.portions + " box" + (state.portions === 1 ? "" : "es") + " · eat by " + dayLabel(keep);
+  let w = "";
+  if(state.portions > keep){
+    const first = keep + 1;
+    w = '<div class="warn">' + ICONS.warn + '<div>At one box a day, box' + (first === state.portions ? " " + first : "es " + first + " to " + state.portions) + ' land after ' + esc(shortest[0].name) + ' expires (keeps ' + keep + ' day' + (keep === 1 ? "" : "s") + '). Make that component fresh mid-week, ' + (noFreeze.length ? "or swap it for something that keeps longer." : "or freeze those boxes on prep day.") + '</div></div>';
+  }
+  warns.innerHTML = w;
+}
+
+/* ---------- rendering: prep sheet ---------- */
+function ingListHTML(r, portions, checkable){
+  const sc = scaleFor(r, portions);
+  return '<ul class="ings">' + (r.ing || []).map((line, i) => {
+    const p = parseIng(line);
+    const q = p.q === null ? "" : fmtAmount(p.q * sc, p.u);
+    const body = '<span class="q">' + esc(q || "·") + '</span><span>' + esc(p.item) + (p.note ? ' <span class="n">' + esc(p.note) + '</span>' : "") + '</span>';
+    return checkable ? '<li><input type="checkbox" id="ri-' + i + '" aria-label="Got ' + esc(p.item) + '">' + '<label for="ri-' + i + '" style="display:contents">' + body + '</label></li>' : '<li>' + body + '</li>';
+  }).join("") + '</ul>';
+}
+function stepsHTML(r){ return '<ol class="steps">' + (r.steps || []).map(s => '<li>' + esc(s) + '</li>').join("") + '</ol>'; }
+function notesHTML(r){
+  const n = [];
+  const keep = "<b>Keeps:</b> " + r.fridge + " day" + (r.fridge === 1 ? "" : "s") + " in the fridge" + (r.freeze ? ". Freezer: " + esc(r.freeze) : ". Doesn't freeze well");
+  n.push('<div class="note">' + keep + (r.reheat ? ". <b>Reheat:</b> " + esc(r.reheat) : "") + '</div>');
+  if(r.tip) n.push('<div class="note"><b>Tip:</b> ' + esc(r.tip) + '</div>');
+  return '<div class="notes">' + n.join("") + '</div>';
+}
+function metaBits(r){
+  const b = ["Prep " + fmtMin(r.prep)];
+  if(r.cook) b.push("Cook " + fmtMin(r.cook));
+  const w = waitText(r); if(w) b.push(w);
+  if(r.kcal != null) b.push("≈ " + r.kcal + " kcal" + (r.p != null ? " · " + r.p + " g protein" : "") + " per portion");
+  return b;
+}
+function renderSheet(){
+  const rs = boxRecipes();
+  $("#sheetTitle").textContent = "Prep sheet for " + state.portions + " box" + (state.portions === 1 ? "" : "es");
+  if(rs.length < SLOTS.length){ $("#shop").innerHTML = '<div class="empty">Roll the box to build a shopping list.</div>'; $("#plan").innerHTML = ""; return; }
+  const shop = buildShopping(rs, state.portions);
+  const checked = new Set(state.checked || []);
+  const li = x => '<li><label><input type="checkbox" data-action="check" data-key="' + esc(x.key) + '"' + (checked.has(x.key) ? " checked" : "") + '><span>' + esc(x.item) + '</span><span class="amt">' + esc(x.amt) + '</span></label></li>';
+  $("#shop").innerHTML =
+    '<div class="eyebrow">' + esc(cuisineSummary(rs)) + '</div><h3>Shopping list</h3>' +
+    '<div class="grp"><div class="eyebrow">Buy</div><ul>' + shop.buy.map(li).join("") + '</ul></div>' +
+    (shop.pantry.length ? '<div class="grp"><div class="eyebrow">Check the pantry</div><ul>' + shop.pantry.map(li).join("") + '</ul></div>' : "") +
+    '<div class="shop-actions"><button type="button" class="btn" data-action="copy">Copy list</button></div><div id="copyFallback"></div>';
+  const ordered = rs.slice().sort((a, b) => totalTime(b) - totalTime(a));
+  $("#plan").innerHTML = ordered.map((r, i) =>
+    '<li class="rcard" data-role="' + r.role + '">' +
+      '<div class="rcard-head"><span class="order" aria-label="Step ' + (i + 1) + '">' + (i + 1) + '</span>' +
+      '<div><div class="eyebrow">' + esc(ROLES[r.role]) + ' · ' + esc(srcLabel(r.src)) + (r.batch ? " · batch recipe" : "") + '</div>' +
+      '<h3><button type="button" data-action="open" data-id="' + esc(r.id) + '">' + esc(r.name) + '</button></h3></div>' +
+      '<div class="metaline" style="grid-column:2">' + metaBits(r).map(esc).map(x => '<span>' + x + '</span>').join("") + '</div></div>' +
+      '<div class="rbody"><div><h4>Ingredients' + (r.batch ? " (full batch)" : "") + '</h4>' + ingListHTML(r, state.portions, false) + '</div>' +
+      '<div><h4>Method</h4>' + stepsHTML(r) + '</div></div>' + notesHTML(r) +
+    '</li>').join("");
+}
+function shoppingText(){
+  const rs = boxRecipes(); const shop = buildShopping(rs, state.portions);
+  const line = x => "- " + x.item + (x.amt ? ": " + x.amt : "");
+  return "Sunday Prep Box, " + state.portions + " boxes\n" + rs.map(r => "  " + ROLES[r.role] + ": " + r.name).join("\n") +
+    "\n\nBuy\n" + shop.buy.map(line).join("\n") + (shop.pantry.length ? "\n\nCheck the pantry\n" + shop.pantry.map(line).join("\n") : "");
+}
+
+/* ---------- rendering: library ---------- */
+const lib = {q:"", src:"all", role:"all", tags:new Set()};
+function renderFilters(){
+  const srcOpts = [["all","All"]].concat(SRC_ORDER.filter(s => s !== "mine" || store.mine.some(r => r.src === "mine")).map(s => [s, SOURCES[s].short]));
+  if(store.mine.length) srcOpts.push(["yours","Yours"]);
+  $("#fSrc").innerHTML = '<span class="lbl">Cuisine</span>' + srcOpts.map(([k, l]) => '<button type="button" class="chip small" data-action="fsrc" data-v="' + k + '" aria-pressed="' + (lib.src === k) + '">' + esc(l) + '</button>').join("");
+  $("#fRole").innerHTML = '<span class="lbl">Slot</span>' + [["all","All"]].concat(Object.entries(ROLES)).map(([k, l]) => '<button type="button" class="chip small" data-action="frole" data-v="' + k + '" aria-pressed="' + (lib.role === k) + '">' + esc(l) + '</button>').join("");
+  const tagOpts = [["veg","Vegetarian"],["spicy","Spicy"],["freezes","Freezes"],["quick","30 min or less"],["keeps5","Keeps 5+ days"]];
+  $("#fTag").innerHTML = '<span class="lbl">Only</span>' + tagOpts.map(([k, l]) => '<button type="button" class="chip small" data-action="ftag" data-v="' + k + '" aria-pressed="' + lib.tags.has(k) + '">' + esc(l) + '</button>').join("");
+}
+function matches(r){
+  if(lib.src === "yours" ? !r.own : (lib.src !== "all" && r.src !== lib.src)) return false;
+  if(lib.role !== "all" && r.role !== lib.role) return false;
+  for(const t of lib.tags){
+    if(t === "veg" && !(r.tags || []).includes("veg")) return false;
+    if(t === "spicy" && !(r.tags || []).includes("spicy")) return false;
+    if(t === "freezes" && !r.freeze) return false;
+    if(t === "quick" && (r.prep || 0) + (r.cook || 0) > 30) return false;
+    if(t === "keeps5" && r.fridge < 5) return false;
+  }
+  if(lib.q){
+    const hay = [r.name, r.ko, r.insp, r.blurb, (r.ing || []).join(" "), srcLabel(r.src)].join(" ").toLowerCase();
+    if(!lib.q.split(/\s+/).every(w => hay.includes(w))) return false;
+  }
+  return true;
+}
+function cardHTML(r){
+  const inBox = SLOTS.some(s => state.slots[s.key].id === r.id);
+  const foot = ["keeps " + keepsText(r)];
+  if(r.kcal != null) foot.push(r.kcal + " kcal");
+  if(r.p != null) foot.push(r.p + " g P");
+  if(r.freeze) foot.push("freezes");
+  const tags = (r.tags || []).map(t => '<span class="tag">' + esc(TAGS[t]) + '</span>').join("");
+  return '<button type="button" class="card" data-role="' + r.role + '" data-action="open" data-id="' + esc(r.id) + '">' +
+    '<span class="card-top"><span class="dot">' + esc(ROLES[r.role]) + '</span><span class="t">' + fmtMin((r.prep||0) + (r.cook||0)) + '</span></span>' +
+    '<span class="nm">' + esc(r.name) + '</span>' +
+    '<span class="sb">' + esc(r.ko || (r.insp ? "Inspired by " + r.insp : r.blurb || "")) + '</span>' +
+    ((tags || r.own || inBox) ? '<span class="tags">' + (inBox ? '<span class="badge">In your box</span>' : "") + (r.own ? '<span class="badge">Yours</span>' : "") + tags + '</span>' : "") +
+    '<span class="ft">' + foot.map(esc).map(x => '<span>' + x + '</span>').join("") + '</span>' +
+  '</button>';
+}
+function renderLibrary(){
+  renderFilters();
+  const roleOrder = {protein:0, veg:1, sauce:2, carb:3};
+  const list = all().filter(matches).sort((a, b) => (roleOrder[a.role] - roleOrder[b.role]) || a.name.localeCompare(b.name));
+  $("#libCount").textContent = all().length + " recipes. Open one to see the full recipe, then put it straight into your box.";
+  if(!list.length){
+    $("#groups").innerHTML = '<div class="empty">No recipes match those filters. Clear a filter or try another search word.</div>';
+    return;
+  }
+  $("#groups").innerHTML = SRC_ORDER.map(src => {
+    const items = list.filter(r => r.src === src);
+    if(!items.length) return "";
+    return '<div class="group"><div class="group-head"><h3>' + esc(SOURCES[src].label) + '</h3><p>' + esc(SOURCES[src].desc) + '</p></div>' +
+      '<div class="cards">' + items.map(cardHTML).join("") + '</div></div>';
+  }).join("");
+}
+
+/* ---------- recipe dialog ---------- */
+const dlg = $("#recipeDlg");
+const dlgState = {id:null, portions:4, armed:false};
+function openRecipe(id){
+  const r = byId(id); if(!r) return;
+  dlgState.id = id; dlgState.portions = state.portions; dlgState.armed = false;
+  renderRecipeDlg();
+  if(!dlg.open) dlg.showModal();
+  $("#rd").scrollTop = 0;
+}
+function renderRecipeDlg(){
+  const r = byId(dlgState.id);
+  if(!r){ if(dlg.open) dlg.close(); return; }
+  const inSlot = SLOTS.find(s => state.slots[s.key].id === r.id);
+  const facts = [["Prep", fmtMin(r.prep)], ["Cook", r.cook ? fmtMin(r.cook) : "No cooking"]];
+  if(r.wait) facts.push(["Waiting", waitText(r).slice(1)]);
+  facts.push(["Fridge", r.fridge + " day" + (r.fridge === 1 ? "" : "s")]);
+  facts.push(["Freezer", r.freeze ? "Yes" : "No"]);
+  if(r.kcal != null) facts.push(["Per portion", "≈ " + r.kcal + " kcal" + (r.p != null ? " · " + r.p + " g protein" : "")]);
+  const canEdit = r.own && canWriteRecipes();
+  $("#rd").innerHTML =
+    '<button type="button" class="dlg-close" data-action="close" aria-label="Close">' + ICONS.close + '</button>' +
+    '<div class="eyebrow" style="color:var(--' + r.role + ')">' + esc(ROLES[r.role]) + ' · ' + esc(srcLabel(r.src)) + (r.own ? " · yours" : "") + '</div>' +
+    '<h2 id="rdTitle">' + esc(r.name) + '</h2>' +
+    ((r.ko || r.insp) ? '<div class="sub">' + esc(r.ko || "Inspired by " + r.insp) + '</div>' : "") +
+    (r.blurb ? '<p class="blurb">' + esc(r.blurb) + '</p>' : "") +
+    '<div class="dlg-facts">' + facts.map(([k, v]) => '<div class="fact"><span class="eyebrow">' + esc(k) + '</span><b>' + esc(v) + '</b></div>').join("") + '</div>' +
+    (r.batch
+      ? '<div class="dlg-portions"><span>Batch recipe. One batch covers about ' + r.serves + ' portions, so it isn\'t scaled to your box count.</span></div>'
+      : '<div class="dlg-portions"><span>Amounts for</span><div class="stepper" role="group" aria-label="Portions"><button type="button" data-action="dlgportions" data-d="-1" aria-label="Fewer portions">−</button><output>' + dlgState.portions + '</output><button type="button" data-action="dlgportions" data-d="1" aria-label="More portions">+</button></div><span>portions</span></div>') +
+    '<div class="rbody" style="--rc:var(--' + r.role + ')"><div><h4>Ingredients</h4>' + ingListHTML(r, dlgState.portions, true) + '</div><div><h4>Method</h4>' + stepsHTML(r) + '</div></div>' +
+    notesHTML(r) +
+    '<div class="dlg-actions">' +
+      (inSlot ? '<span class="badge" style="align-self:center">In your box</span>' : '<button type="button" class="btn primary" data-action="putinbox" data-id="' + esc(r.id) + '">Put in my box</button>') +
+      (canEdit ? '<button type="button" class="btn" data-action="edit" data-id="' + esc(r.id) + '">Edit</button><button type="button" class="btn danger" data-action="delete" data-id="' + esc(r.id) + '">' + (dlgState.armed ? "Tap again to delete" : "Delete") + '</button>' : "") +
+    '</div>';
+}
+function putInBox(id){
+  const r = byId(id); if(!r) return;
+  if(SLOTS.some(s => state.slots[s.key].id === id)){ toast("Already in your box"); return; }
+  let key = r.role === "veg" ? (!state.slots.veg1.locked ? "veg1" : (!state.slots.veg2.locked ? "veg2" : "veg1")) : r.role;
+  state.slots[key] = {id, locked:true};
+  state.checked = [];
+  save();
+  renderBox(); renderAfterBox();
+  if(dlg.open) dlg.close();
+  toast(r.name + " is in your box and locked");
+  const tray = $("#tray");
+  if(tray.scrollIntoView) tray.scrollIntoView({behavior: reduceMotion ? "auto" : "smooth", block:"center"});
+}
+
+/* ---------- add / edit form ---------- */
+const fdlg = $("#formDlg");
+let editing = null;
+function setupForm(){
+  $("#f-src").innerHTML = SRC_ORDER.map(s => '<option value="' + s + '">' + esc(SOURCES[s].label) + '</option>').join("");
+  $("#f-role").innerHTML = Object.entries(ROLES).map(([k, l]) => '<option value="' + k + '">' + esc(l) + '</option>').join("");
+  $("#f-tags").innerHTML = Object.entries(TAGS).map(([k, l]) => '<label><input type="checkbox" id="f-tag-' + k + '" value="' + k + '"> ' + esc(l) + '</label>').join("");
+}
+function openForm(r){
+  editing = r || null;
+  $("#fdTitle").textContent = r ? "Edit recipe" : "Add a recipe";
+  $("#saveBtn").textContent = r ? "Save changes" : "Save recipe";
+  $("#formErr").textContent = "";
+  const v = (id, val) => { $(id).value = val == null ? "" : val; };
+  v("#f-name", r ? r.name : ""); v("#f-src", r ? r.src : (["banchan","saladstop","stuffd","dabba"].includes(lib.src) ? lib.src : "banchan"));
+  v("#f-role", r ? r.role : (ROLES[lib.role] ? lib.role : "protein")); v("#f-insp", r ? r.insp : ""); v("#f-blurb", r ? r.blurb : "");
+  v("#f-serves", r ? r.serves : 4); v("#f-prep", r ? r.prep : 10); v("#f-cook", r ? r.cook : 20); v("#f-wait", r && r.wait ? r.wait[0] : 0);
+  v("#f-ing", r ? r.ing.join("\n") : ""); v("#f-steps", r ? r.steps.join("\n") : "");
+  v("#f-fridge", r ? r.fridge : 4); v("#f-freeze", r ? r.freeze : ""); v("#f-kcal", r && r.kcal != null ? r.kcal : ""); v("#f-p", r && r.p != null ? r.p : "");
+  v("#f-reheat", r ? r.reheat : ""); v("#f-tip", r ? r.tip : "");
+  Object.keys(TAGS).forEach(k => { $("#f-tag-" + k).checked = !!(r && r.tags.includes(k)); });
+  if(dlg.open) dlg.close();
+  fdlg.showModal();
+  setTimeout(() => $("#f-name").focus(), 30);
+}
+async function submitForm(e){
+  e.preventDefault();
+  const err = $("#formErr");
+  const lines = id => $(id).value.split("\n").map(s => s.replace(/^\s*(?:[-*•]|\d+[.)])\s+/, "").trim()).filter(Boolean);
+  const name = $("#f-name").value.trim(), ing = lines("#f-ing"), steps = lines("#f-steps");
+  if(!name){ err.textContent = "Give the recipe a name."; $("#f-name").focus(); return; }
+  if(!ing.length){ err.textContent = "Add at least one ingredient, one per line."; $("#f-ing").focus(); return; }
+  if(!steps.length){ err.textContent = "Add at least one step, one per line."; $("#f-steps").focus(); return; }
+  if(!canWriteRecipes()){ err.textContent = "Saving isn't available here. Sign in to claude.ai to save recipes to this page."; return; }
+  const n =(id, def) => { const raw = $(id).value; if(raw === "") return def; const x = Number(raw); return Number.isFinite(x) && x >= 0 ? x : def; };
+  const payload = {
+    name, src:$("#f-src").value, role:$("#f-role").value,
+    insp:$("#f-insp").value.trim(), blurb:$("#f-blurb").value.trim(),
+    serves:Math.max(1, n("#f-serves", 4)), prep:n("#f-prep", 0), cook:n("#f-cook", 0), wait:n("#f-wait", 0),
+    fridge:n("#f-fridge", 3), freeze:$("#f-freeze").value.trim(), reheat:$("#f-reheat").value.trim(),
+    kcal:n("#f-kcal", null), p:n("#f-p", null),
+    tags:Object.keys(TAGS).filter(k => $("#f-tag-" + k).checked),
+    ing, steps, tip:$("#f-tip").value.trim(), updatedAt:new Date().toISOString()
+  };
+  const btn = $("#saveBtn"); btn.disabled = true; err.textContent = "";
+  try {
+    const docId = await saveRecipe(editing ? editing.docId : null, payload);
+    fdlg.close();
+    toast(editing ? "Saved your changes" : name + " added to the library");
+    const newId = "u_" + docId;
+    if(!editing){ lib.src = payload.src; lib.role = "all"; renderLibrary(); }
+    setTimeout(() => { if(byId(newId)) openRecipe(newId); }, 250);
+  } catch(ex){
+    const code = ex && ex.code;
+    err.textContent = code === "invalid_argument" ? "This page is view-only for you, so the recipe couldn't be saved."
+      : code === "quota_exceeded" ? "The recipe store is full. Delete a few of your recipes and try again."
+      : code === "resource_exhausted" ? "Too many saves at once. Wait a moment and try again."
+      : code === "local_blocked" ? "This browser is blocking storage (private window?), so the recipe couldn't be saved."
+      : "Couldn't save just now. Check your connection and try again.";
+  } finally { btn.disabled = false; }
+}
+async function deleteRecipe(id){
+  const r = byId(id); if(!r || !r.own || !canWriteRecipes()) return;
+  if(!dlgState.armed){ dlgState.armed = true; renderRecipeDlg(); setTimeout(() => { if(dlgState.armed){ dlgState.armed = false; if(dlg.open) renderRecipeDlg(); } }, 4000); return; }
+  try {
+    dlgState.armed = false;
+    await removeRecipe(r.docId);
+    if(dlg.open) dlg.close();
+    toast("Deleted " + r.name);
+  } catch(ex){ toast("Couldn't delete. Try again in a moment."); }
+}
+
+/* ---------- glue ---------- */
+function renderAfterBox(){ renderFacts(); renderSheet(); renderLibrary(); }
+function resolveMissing(){
+  if(store.status === "connecting") return false;
+  const missing = SLOTS.filter(s => !byId(state.slots[s.key].id)).map(s => s.key);
+  if(!missing.length) return false;
+  missing.forEach(k => { state.slots[k].locked = false; });
+  const src = state.mode === "surprise" ? (state.cuisine || null) : (state.mode === "mix" ? null : state.mode);
+  rollSlots(missing, src);
+  save();
+  return true;
+}
+function onRecipesChanged(){
+  reindex();
+  resolveMissing();
+  renderDbState();
+  renderBox(); renderAfterBox();
+  if(dlg.open) renderRecipeDlg();
+}
+
+document.addEventListener("click", e => {
+  const t = e.target.closest("[data-action]");
+  if(!t) return;
+  const a = t.dataset.action;
+  if(a === "roll"){ doRoll(SLOTS.filter(s => !state.slots[s.key].locked).map(s => s.key)); }
+  else if(a === "reroll"){ state.slots[t.dataset.slot].locked = false; doRoll([t.dataset.slot]); }
+  else if(a === "lock"){ const s = state.slots[t.dataset.slot]; s.locked = !s.locked; save(); renderSlot(t.dataset.slot); const b = $('.cell[data-slot="' + t.dataset.slot + '"] [data-action="lock"]'); if(b) b.focus(); }
+  else if(a === "mode"){ state.mode = t.dataset.mode; save(); renderControls(); doRoll(SLOTS.filter(s => !state.slots[s.key].locked).map(s => s.key)); }
+  else if(a === "portions"){ state.portions = Math.min(10, Math.max(1, state.portions + Number(t.dataset.d))); save(); renderControls(); renderFacts(); renderSheet(); }
+  else if(a === "open"){ openRecipe(t.dataset.id); }
+  else if(a === "close"){ const d = t.closest("dialog"); if(d) d.close(); }
+  else if(a === "putinbox"){ putInBox(t.dataset.id); }
+  else if(a === "dlgportions"){ dlgState.portions = Math.min(20, Math.max(1, dlgState.portions + Number(t.dataset.d))); renderRecipeDlg(); }
+  else if(a === "add"){ if(!t.disabled) openForm(null); }
+  else if(a === "edit"){ openForm(byId(t.dataset.id)); }
+  else if(a === "delete"){ deleteRecipe(t.dataset.id); }
+  else if(a === "fsrc"){ lib.src = t.dataset.v; renderLibrary(); }
+  else if(a === "frole"){ lib.role = t.dataset.v; renderLibrary(); }
+  else if(a === "ftag"){ const v = t.dataset.v; if(lib.tags.has(v)) lib.tags.delete(v); else lib.tags.add(v); renderLibrary(); }
+  else if(a === "copy"){
+    const text = shoppingText();
+    const fallback = () => { const box = $("#copyFallback"); box.innerHTML = '<textarea class="copy-fallback" readonly aria-label="Shopping list text"></textarea>'; const ta = box.querySelector("textarea"); ta.value = text; ta.focus(); ta.select(); toast("Select all and copy the list below"); };
+    try {
+      if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(() => toast("Shopping list copied"), fallback);
+      else fallback();
+    } catch(ex){ fallback(); }
+  }
+});
+document.addEventListener("change", e => {
+  const t = e.target;
+  if(t.dataset && t.dataset.action === "check"){
+    const set = new Set(state.checked || []);
+    if(t.checked) set.add(t.dataset.key); else set.delete(t.dataset.key);
+    state.checked = [...set]; save();
+  }
+});
+dlg.addEventListener("click", e => { if(e.target === dlg) dlg.close(); });
+fdlg.addEventListener("click", e => { if(e.target === fdlg) fdlg.close(); });
+let qTimer = null;
+$("#q").addEventListener("input", e => { clearTimeout(qTimer); qTimer = setTimeout(() => { lib.q = e.target.value.trim().toLowerCase(); renderLibrary(); }, 120); });
+$("#addForm").addEventListener("submit", submitForm);
+
+/* ---------- boot ---------- */
+setupForm();
+renderControls();
+/* Fill empty slots on first visit. Slots holding one of your own recipes wait for the store to load. */
+const missingAtBoot = SLOTS.filter(s => !byId(state.slots[s.key].id) && !String(state.slots[s.key].id || "").startsWith("u_")).map(s => s.key);
+if(missingAtBoot.length){
+  if(missingAtBoot.length === SLOTS.length){ const src = sourceForRoll(false); state.cuisine = src || null; rollSlots(missingAtBoot, src); }
+  else rollSlots(missingAtBoot, state.mode === "surprise" ? state.cuisine : (state.mode === "mix" ? null : state.mode));
+  save();
+}
+renderDbState();
+renderBox();
+renderAfterBox();
+connectDb();
+})();
+</script>
+
+</body>
+</html>
