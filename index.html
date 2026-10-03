@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Roll a week of meal-prep boxes: one protein, two vegetables, a sauce and a carb, with full recipes and a merged shopping list.">
+<meta name="description" content="Roll a week of meal-prep boxes or plan a weekend dinner, with full recipes and a merged shopping list.">
 <title>Sunday Prep Box</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -231,6 +231,28 @@ form.add{display:grid;gap:14px;margin-top:16px}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom, 0px));transform:translate(-50%,20px);opacity:0;background:var(--ink);color:var(--bg);padding:11px 16px;border-radius:12px;font-size:14px;transition:opacity .2s, transform .2s;z-index:50;max-width:calc(100vw - 32px);pointer-events:none}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 
+/* tabs + weekend */
+.tabs{display:flex;gap:26px;border-bottom:1px solid var(--line);margin:0 0 22px;overflow-x:auto}
+.tab{appearance:none;background:none;border:0;border-bottom:2px solid transparent;margin-bottom:-1px;padding:10px 0 12px;font:600 16px/1.2 var(--font-body);color:var(--muted);cursor:pointer;text-align:left;white-space:nowrap}
+.tab .tab-sub{display:block;margin-top:3px;font:400 12.5px var(--font-body);color:var(--muted)}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.tab:hover{color:var(--ink)}
+.panel-intro{color:var(--muted);margin:0 0 20px;max-width:64ch}
+.select{height:40px;border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:0 12px;max-width:260px;min-width:0}
+.tray.dinner{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);grid-template-areas:"main side1" "main side2"}
+.cell[data-slot="w-main"]{grid-area:main}
+.cell[data-slot="w-side1"]{grid-area:side1}
+.cell[data-slot="w-side2"]{grid-area:side2}
+.cell.empty-slot .cell-name{color:var(--muted);cursor:default;text-decoration:none}
+.yours{margin:0;padding:10px 12px;border-radius:10px;background:var(--accent-soft);color:var(--ink);font-size:13.5px}
+.lists{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px 20px;margin-top:16px}
+.lists h5{margin:0 0 6px;font:500 11px/1 var(--font-mono);letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.lists ul{margin:0;padding-left:1.1em;font-size:13.5px;display:grid;gap:2px}
+.pairs{margin-top:18px}
+.pairs h4{font:500 11px/1 var(--font-mono);letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+.pairs .chips{margin-bottom:10px}
+.card .quote{font-style:italic}
+
 @media (max-width: 860px){
   .sheet{grid-template-columns:minmax(0,1fr)}
   .shop{position:static}
@@ -239,6 +261,8 @@ form.add{display:grid;gap:14px;margin-top:16px}
 @media (max-width: 720px){
   .stage{grid-template-columns:minmax(0,1fr);gap:18px}
   .tray{grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-areas:"protein protein" "carb carb" "veg1 veg2";border-radius:24px;padding:10px;gap:8px}
+  .tray.dinner{grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-areas:"main main" "side1 side2"}
+  .select{max-width:100%;width:100%}
   .cell{min-height:132px;padding:12px 12px 10px}
   .icon-btn{width:30px;height:30px}
   .pot{max-width:200px}
@@ -260,10 +284,17 @@ form.add{display:grid;gap:14px;margin-top:16px}
     <div>
       <div class="eyebrow">Meal prep planner</div>
       <h1>Sunday Prep Box</h1>
-      <p class="lede">Roll a week of lunch boxes: one protein, two vegetables, a sauce and a carb base. Recipes come from Korean banchan plus home versions of SaladStop!, Stuff'd and Dabba Street favourites.</p>
+      <p class="lede">Roll a week of lunch boxes, or plan a weekend dinner. Every pick comes with the full recipe and a shopping list.</p>
     </div>
   </header>
 
+  <div class="tabs" role="tablist" aria-label="Sections">
+    <button type="button" class="tab" role="tab" id="tab-prep" aria-controls="panel-prep" aria-selected="true" data-action="tab" data-tab="prep">Meal prep<span class="tab-sub">Lunch boxes for the week</span></button>
+    <button type="button" class="tab" role="tab" id="tab-weekend" aria-controls="panel-weekend" aria-selected="false" tabindex="-1" data-action="tab" data-tab="weekend">Weekend dinners<span class="tab-sub">Mains, sauces and sides</span></button>
+  </div>
+
+  <div class="panel" id="panel-prep" role="tabpanel" aria-labelledby="tab-prep">
+  <p class="panel-intro">One protein, two vegetables, a sauce and a carb base. Recipes come from Korean banchan plus home versions of SaladStop!, Stuff'd and Dabba Street favourites.</p>
   <div class="controls">
     <div class="ctl">
       <span class="eyebrow" id="mode-lbl">Cuisine for the roll</span>
@@ -302,7 +333,7 @@ form.add{display:grid;gap:14px;margin-top:16px}
   <div class="facts" id="facts"></div>
   <div id="warnings"></div>
 
-  <section id="prep">
+  <section id="prep-sheet">
     <div class="sec-head">
       <div>
         <h2 id="sheetTitle">Prep sheet</h2>
@@ -315,7 +346,7 @@ form.add{display:grid;gap:14px;margin-top:16px}
     </div>
   </section>
 
-  <section id="library">
+  <section id="prep-library">
     <div class="sec-head">
       <div>
         <h2>Recipe library</h2>
@@ -337,8 +368,84 @@ form.add{display:grid;gap:14px;margin-top:16px}
     </div>
     <div id="groups"></div>
   </section>
+  </div>
 
-  <p class="foot">SaladStop!, Stuff'd and Dabba Street are named only to say what inspired a recipe. These are home versions written from their public menu descriptions, not the restaurants' own recipes. Calories and protein are rough per-portion estimates. Fridge times assume an airtight box in a fridge at 4°C or colder, with cooked food chilled within an hour.</p>
+  <div class="panel" id="panel-weekend" role="tabpanel" aria-labelledby="tab-weekend" hidden>
+    <p class="panel-intro">Dinners you've made or want to try. Roll a main and it suggests a sauce and two sides that go with it, or choose the main yourself.</p>
+    <div class="controls">
+      <div class="ctl">
+        <span class="eyebrow" id="wkc-lbl">Cuisine for the main</span>
+        <div class="chips" role="group" aria-labelledby="wkc-lbl" id="wkCuisineChips"></div>
+      </div>
+      <div class="right-ctl">
+        <div class="ctl">
+          <label class="eyebrow" for="wkMainSel">Or choose the main</label>
+          <select id="wkMainSel" class="select"></select>
+        </div>
+        <div class="ctl">
+          <span class="eyebrow" id="wks-lbl">Servings</span>
+          <div class="stepper" role="group" aria-labelledby="wks-lbl">
+            <button type="button" data-action="wkservings" data-d="-1" aria-label="Fewer servings">−</button>
+            <output id="wkServingsOut">2</output>
+            <button type="button" data-action="wkservings" data-d="1" aria-label="More servings">+</button>
+          </div>
+        </div>
+        <button type="button" class="btn primary btn-roll" data-action="wkroll" id="wkRollBtn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8" cy="8" r="1.3" fill="currentColor"/><circle cx="16" cy="8" r="1.3" fill="currentColor"/><circle cx="12" cy="12" r="1.3" fill="currentColor"/><circle cx="8" cy="16" r="1.3" fill="currentColor"/><circle cx="16" cy="16" r="1.3" fill="currentColor"/></svg>
+          Roll dinner
+        </button>
+      </div>
+    </div>
+
+    <div class="stage" aria-live="polite">
+      <div class="tray dinner" id="wkTray">
+        <div class="tape" id="wkTape">Tonight</div>
+        <div class="cell" data-slot="w-main"></div>
+        <div class="cell" data-slot="w-side1"></div>
+        <div class="cell" data-slot="w-side2"></div>
+      </div>
+      <div class="pot-wrap">
+        <div class="pot"><div class="cell" data-slot="w-sauce"></div></div>
+        <span class="pot-label">Sauce</span>
+      </div>
+    </div>
+
+    <div class="facts" id="wkFacts"></div>
+
+    <section>
+      <div class="sec-head">
+        <div>
+          <h2 id="wkSheetTitle">Cook it</h2>
+          <p>Shopping list and recipes for this dinner, scaled to your servings. Start with the longest job and the rest fits around it.</p>
+        </div>
+      </div>
+      <div class="sheet">
+        <aside class="shop" id="wkShop" aria-label="Dinner shopping list"></aside>
+        <ol class="plan" id="wkPlan"></ol>
+      </div>
+    </section>
+
+    <section>
+      <div class="sec-head">
+        <div>
+          <h2>Weekend recipes</h2>
+          <p id="wkCount">Open any dish for the full recipe and what goes with it.</p>
+        </div>
+        <button type="button" class="btn primary" data-action="add" data-section="weekend" id="wkAddBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          Add a dinner recipe
+        </button>
+      </div>
+      <div class="filters">
+        <input type="search" class="search" id="wq" placeholder="Search dishes or ingredients, e.g. miso, steak, pasta" aria-label="Search weekend recipes">
+        <div class="filter-row" id="wfCourse"><span class="lbl">Course</span></div>
+        <div class="filter-row" id="wfCuisine"><span class="lbl">Cuisine</span></div>
+      </div>
+      <div id="wkGroups"></div>
+    </section>
+  </div>
+
+  <p class="foot">SaladStop!, Stuff'd and Dabba Street are named only to say what inspired a recipe. These are home versions written from their public menu descriptions, not the restaurants' own recipes. Calories and protein are rough per-portion estimates. Fridge times assume an airtight box in a fridge at 4°C or colder, with cooked food chilled within an hour. Weekend dinner recipes are written up from your own notes; treat the amounts as starting points.</p>
 </div>
 
 <dialog id="recipeDlg" aria-labelledby="rdTitle"><div class="dlg" id="rd"></div></dialog>
@@ -350,13 +457,30 @@ form.add{display:grid;gap:14px;margin-top:16px}
     </button>
     <div class="eyebrow">Your recipes</div>
     <h2 id="fdTitle">Add a recipe</h2>
-    <p class="sub">It joins the library and the randomizer. Saved to this page, so it shows up on your phone and laptop.</p>
+    <p class="sub" id="fdSub">It joins the library and the randomizer.</p>
     <form class="add" id="addForm" novalidate>
       <div class="field">
         <label for="f-name">Name</label>
         <input type="text" id="f-name" maxlength="120" required placeholder="e.g. Gochujang chicken">
       </div>
-      <div class="frow">
+      <div class="field">
+        <label for="f-section">Section</label>
+        <select id="f-section">
+          <option value="prep">Meal prep (lunch box component)</option>
+          <option value="weekend">Weekend dinner</option>
+        </select>
+      </div>
+      <div class="frow" data-for="weekend" hidden>
+        <div class="field">
+          <label for="f-course">Course</label>
+          <select id="f-course"></select>
+        </div>
+        <div class="field">
+          <label for="f-cuisine">Cuisine</label>
+          <select id="f-cuisine"></select>
+        </div>
+      </div>
+      <div class="frow" data-for="prep">
         <div class="field">
           <label for="f-src">Cuisine</label>
           <select id="f-src"></select>
@@ -389,13 +513,17 @@ form.add{display:grid;gap:14px;margin-top:16px}
         <label for="f-steps">Steps</label>
         <textarea id="f-steps" placeholder="One step per line"></textarea>
       </div>
-      <div class="frow">
+      <div class="field" data-for="weekend" hidden>
+        <label for="f-notes">Your notes (optional)</label>
+        <input type="text" id="f-notes" maxlength="600" placeholder="e.g. Use lots of butter">
+      </div>
+      <div class="frow" data-for="prep">
         <div class="field"><label for="f-fridge">Keeps in fridge (days)</label><input type="number" id="f-fridge" min="0" max="60" value="4"></div>
         <div class="field"><label for="f-freeze">Freezer note (blank if it doesn't freeze)</label><input type="text" id="f-freeze" maxlength="120" placeholder="e.g. Up to 2 months"></div>
         <div class="field"><label for="f-kcal">kcal per portion (optional)</label><input type="number" id="f-kcal" min="0" max="3000"></div>
         <div class="field"><label for="f-p">Protein g per portion (optional)</label><input type="number" id="f-p" min="0" max="300"></div>
       </div>
-      <div class="field">
+      <div class="field" data-for="prep">
         <label for="f-reheat">Reheating (optional)</label>
         <input type="text" id="f-reheat" maxlength="300" placeholder="e.g. Microwave 2 minutes, stirring halfway">
       </div>
@@ -813,6 +941,249 @@ const CURATED = [
  steps:["Mix the flour, baking powder and salt. Add the yogurt and knead 2 to 3 minutes into a soft, slightly tacky dough.","Cover and rest 30 minutes.","Divide into 8 pieces and roll each to about 5 mm thick.","Cook in a hot dry pan for 1 to 2 minutes per side until puffed and spotted brown.","Stack in a towel so they stay soft."]}
 ];
 
+/* ---------- weekend dinners (not meal prep). `notes` holds the owner's own comments. ---------- */
+const COURSES = {main:"Main", soup:"Soup & stew", side:"Side", sauce:"Sauce"};
+const COURSE_PLURAL = {main:"Mains", soup:"Soups & stews", side:"Sides", sauce:"Sauces"};
+const COURSE_ORDER = ["main","soup","side","sauce"];
+const COURSE_ROLE = {main:"protein", soup:"carb", side:"veg", sauce:"sauce"};
+const CUISINES = {western:"Western", italian:"Italian", japanese:"Japanese", korean:"Korean", singaporean:"Singaporean", mexican:"Mexican", hawaiian:"Hawaiian", latin:"Latin American"};
+const STEAK_SAUCES = ["w_blackpepper","w_redwine","w_mushroomcream","w_chimichurri","w_brownsauce"];
+const WEEKEND = [
+/* ===== Sauces ===== */
+{id:"w_brownsauce",course:"sauce",cuisine:"western",name:"Brown Sauce",
+ blurb:"A classic roux-thickened gravy. Make it in the steak pan to pick up the browned bits.",
+ serves:2,prep:2,cook:12,
+ ing:["15 g butter","1 tbsp plain flour","250 ml beef stock","1 tsp Worcestershire sauce","½ tsp soy sauce, optional, for colour","Black pepper, to taste","Salt, to taste"],
+ steps:["Melt the butter in a small pan over medium-low heat. Whisk in the flour and cook, stirring, for 3 to 4 minutes until it smells nutty and turns light brown.","Pour in the stock a splash at a time, whisking so no lumps form.","Add the Worcestershire (and soy sauce if using) and simmer 5 to 8 minutes until it coats the back of a spoon.","Season with pepper, then taste before salting. Stock is often salty already.","Loosen with a splash of stock or water if it gets too thick."],
+ tip:"Cooking the roux until it turns light brown is what gives the sauce its colour and flavour. A pale roux gives a pale, floury sauce."},
+{id:"w_blackpepper",course:"sauce",cuisine:"western",name:"Black Pepper Sauce",
+ blurb:"Creamy, punchy pepper sauce with shallots and beef stock. The Singapore western-stall favourite.",
+ serves:2,prep:5,cook:12,
+ ing:["1 tbsp black peppercorns, coarsely crushed","15 g butter","2 shallots, finely chopped","150 ml beef stock","100 ml cream or milk","1 tsp Worcestershire sauce, optional","Salt, to taste"],
+ steps:["Toast the crushed peppercorns in a dry pan over medium heat for 1 minute until fragrant.","Add the butter and shallots and cook 3 minutes until soft.","Pour in the stock and simmer until reduced by about half, 4 to 5 minutes.","Add the cream and simmer gently 2 to 3 minutes until it coats a spoon. With milk, keep it at a gentle simmer so it doesn't split.","Season with salt (and Worcestershire if using)."],
+ tip:"Crush whole peppercorns in a mortar or under a heavy pan. Pre-ground pepper tastes dusty and turns the sauce grey."},
+{id:"w_redwine",course:"sauce",cuisine:"western",name:"Red Wine Sauce",
+ blurb:"Wine and stock reduced with shallot and thyme, finished glossy with cold butter.",
+ serves:2,prep:5,cook:20,
+ ing:["30 g cold butter, cubed","1 shallot, finely chopped","200 ml red wine","2 sprigs thyme","200 ml beef stock","Salt, to taste","Black pepper, to taste"],
+ steps:["Soften the shallot in a third of the butter over medium heat, 2 to 3 minutes.","Add the wine and thyme and boil until reduced to about a third, 6 to 8 minutes.","Add the stock and reduce again by half, about 8 minutes, until syrupy.","Take it off the heat, remove the thyme, and whisk in the remaining cold butter a cube at a time until glossy.","Season. Don't let it boil once the butter is in, or it will split."],
+ tip:"Use a wine you'd drink. Reducing it concentrates any harshness."},
+{id:"w_mushroomcream",course:"sauce",cuisine:"western",name:"Mushroom Cream Sauce",
+ blurb:"Browned mushrooms and garlic in cream, thickened with Parmesan.",
+ serves:2,prep:5,cook:12,
+ ing:["15 g butter","200 g mushrooms, sliced","2 cloves garlic, minced","150 ml cream or milk","20 g Parmesan, finely grated","Black pepper, to taste","Salt, to taste"],
+ steps:["Melt the butter over medium-high heat. Add the mushrooms in one layer and leave them 2 minutes before stirring, so they brown instead of steaming. Cook 5 to 6 minutes in total.","Add the garlic and cook 30 seconds.","Lower the heat, pour in the cream and simmer 2 to 3 minutes until slightly thickened.","Stir in the Parmesan until smooth. Season with pepper, then salt to taste (Parmesan is salty)."]},
+{id:"w_chimichurri",course:"sauce",cuisine:"latin",name:"Chimichurri",
+ blurb:"Sharp, garlicky Argentine herb sauce. Cuts through rich steak.",
+ serves:4,prep:10,cook:0,wait:[15,"rest"],
+ ing:["1 bunch flat-leaf parsley (about 40 g), leaves and soft stems","3 cloves garlic","2 tbsp red wine vinegar","½ tsp chilli flakes","½ tsp dried oregano, optional","½ tsp salt","120 ml olive oil"],
+ steps:["Finely chop the parsley and garlic by hand, or pulse a few times in a blender. Pulse, don't purée: it should be loose and chunky.","Stir in the vinegar, chilli flakes, oregano and salt.","Stir in the olive oil.","Rest 15 to 20 minutes before serving so the garlic mellows."],
+ tip:"Keeps 3 days in the fridge under a layer of oil. Bring it back to room temperature before serving."},
+
+/* ===== Sides ===== */
+{id:"w_koreanspinach",course:"side",cuisine:"korean",name:"Korean Spinach Banchan",aka:"Sigeumchi-namul",
+ blurb:"Blanched spinach in a sesame, garlic and soy dressing. Served chilled.",
+ serves:2,prep:5,cook:2,
+ ing:["250 g spinach","1 tsp sesame oil","1 clove garlic, minced","2 tsp soy sauce","Salt, a pinch","1 tsp toasted sesame seeds"],
+ steps:["Blanch the spinach in boiling water for 30 seconds, then rinse in cold water.","Squeeze out as much water as you can, a handful at a time.","Mix the sesame oil, garlic, soy sauce and a pinch of salt.","Toss the spinach in the dressing and sprinkle with sesame seeds. Serve chilled."]},
+{id:"w_mashed",course:"side",cuisine:"western",name:"Mashed Potatoes",
+ blurb:"Very rich, very smooth mash with a lot of butter.",
+ serves:2,prep:10,cook:20,
+ ing:["500 g floury potatoes (Russet or Yukon Gold)","1 tsp salt, for the water","125 g cold butter, cubed","80 ml cream or milk, warmed","Salt, to taste","Black pepper, to taste"],
+ steps:["Peel the potatoes and cut into even 4 cm chunks. Start them in cold salted water, bring to a boil and simmer 15 to 20 minutes until a knife slides in with no resistance.","Drain well and return to the hot pot for 1 minute to steam off excess water.","Mash or rice the potatoes, then beat in the cold butter a few cubes at a time.","Beat in the warm cream until smooth. Season with salt and pepper."],
+ notes:"Use lots of butter. Almost 1 to 1 ratio",
+ tip:"This uses 4 parts potato to 1 part butter by weight, the same ratio as Joël Robuchon's famous purée. Push it further if you like. A ricer gives the smoothest result; a blender turns potatoes gluey."},
+{id:"w_bakedpotato",course:"side",cuisine:"western",name:"Baked Potato",
+ blurb:"Crisp-skinned jacket potato loaded with butter, sour cream, bacon and spring onion.",
+ serves:2,prep:5,cook:60,
+ ing:["2 large baking potatoes (about 300 g each)","1 tsp olive oil","Coarse salt, for the skins","4 rashers streaky bacon","20 g butter","4 tbsp sour cream","1 spring onion, sliced","Salt, to taste","Black pepper, to taste"],
+ steps:["Heat the oven to 200°C. Scrub and dry the potatoes, prick them a few times with a fork, and rub with oil and coarse salt.","Bake directly on the oven rack for 50 to 60 minutes until the skin is crisp and a knife slides through easily.","Meanwhile, fry the bacon until crisp and crumble it.","Slice each potato down the middle, squeeze the ends to open it, and fluff the inside with a fork.","Add the butter, season, then top with sour cream, bacon bits and spring onion."]},
+{id:"w_creamedspinach",course:"side",cuisine:"western",name:"Creamed Spinach",
+ blurb:"Steakhouse-style spinach in a cream cheese and Parmesan sauce.",
+ serves:2,prep:5,cook:10,
+ ing:["15 g butter","2 cloves garlic, minced","300 g spinach","60 g cream cheese","20 g Parmesan, grated","Nutmeg, a pinch, optional","Salt, to taste","Black pepper, to taste"],
+ steps:["Melt the butter over medium heat and cook the garlic for 30 seconds.","Add the spinach in handfuls, letting each wilt before adding more. Keep cooking until the liquid has evaporated.","Lower the heat, fold in the cream cheese and Parmesan, and stir until smooth.","Season with salt, pepper and a pinch of nutmeg."],
+ tip:"Cook off the spinach water before the cheese goes in, or the sauce turns thin."},
+{id:"w_roastveg",course:"side",cuisine:"western",name:"Roast Vegetables",
+ blurb:"A tray of mixed vegetables added in stages, so each one is done at the same time.",
+ serves:4,prep:15,cook:30,
+ ing:["2 carrots, cut into 1 cm batons","300 g squash or pumpkin, cut into 2 cm cubes","1 onion, cut into wedges","½ head cauliflower, cut into florets","½ head broccoli, cut into florets","4 cloves garlic, smashed","1 bell pepper, cut into chunks","1 zucchini, cut into thick half-moons","150 g asparagus, trimmed","3 tbsp olive oil","1 tsp salt","½ tsp black pepper","1 tsp dried mixed herbs"],
+ steps:["Heat the oven to 200°C.","Toss the vegetables with the oil, salt, pepper and herbs, keeping them in three groups by cook time.","Roast the dense ones first: carrots, squash and onion, for 10 minutes.","Add the cauliflower, broccoli and garlic and roast 10 minutes more.","Add the pepper, zucchini and asparagus and roast a final 10 minutes, stirring once, until everything is browned at the edges."],
+ notes:"Different cook times",
+ tip:"Use two trays if needed. Crowded vegetables steam instead of browning."},
+{id:"w_pumpkinrice",course:"side",cuisine:"singaporean",name:"Pumpkin Rice",
+ blurb:"Rice-cooker pumpkin rice with dried shrimp, Chinese sausage and garlic.",
+ serves:4,prep:15,cook:30,wait:[15,"soak"],
+ ing:["2 tbsp dried shrimp, soaked 15 minutes and chopped","1 Chinese sausage (lap cheong), diced","4 cloves garlic, minced","1 shallot, sliced","1 tbsp neutral oil","300 g pumpkin, peeled and cut into 2 cm cubes","300 g jasmine rice, rinsed","1 tbsp light soy sauce","1 tsp dark soy sauce","½ tsp sugar","¼ tsp white pepper","420 ml water","1 spring onion, sliced"],
+ steps:["Fry the garlic, shallot, dried shrimp and sausage in the oil over medium heat for 3 minutes until fragrant.","Add the pumpkin and stir-fry 2 minutes.","Add the rice, both soy sauces, sugar and pepper, and stir until the rice is coated.","Transfer to a rice cooker with the water and cook as normal, or simmer covered on the stove for 15 minutes and rest 10.","Fluff gently and top with spring onion."],
+ tip:"Use raw rice here, not cooked. It soaks up the pumpkin and shrimp flavour as it cooks."},
+{id:"w_japeggs",course:"side",cuisine:"japanese",name:"Japanese Marinated Eggs",aka:"Ajitsuke tamago",
+ blurb:"Jammy soft-boiled eggs soaked in sweet soy. The ramen-shop egg.",
+ serves:2,prep:5,cook:10,wait:[240,"marinate"],
+ ing:["4 eggs","60 ml soy sauce","60 ml mirin","60 ml water","1 tbsp sugar"],
+ steps:["Bring a pot of water to a rolling boil. Lower the cold eggs in gently and boil 6½ minutes for jammy yolks (7 for firmer).","Move straight into iced water for 5 minutes, then peel carefully.","Heat the soy sauce, mirin, water and sugar just until the sugar dissolves. Cool completely.","Submerge the eggs in the marinade (a zip bag works well) and refrigerate 4 to 12 hours.","Slice in half to serve."],
+ tip:"Past 24 hours the whites turn rubbery and too salty. Lift them out of the marinade by then."},
+{id:"w_salad",course:"side",cuisine:"western",name:"Build-a-Salad",
+ blurb:"A base recipe with a house vinaigrette, plus your lists of what to mix in.",
+ serves:2,prep:15,cook:3,
+ ing:["120 g mixed leaves (lettuce, kale or rocket)","1 cucumber, sliced","1 bell pepper, sliced","1 carrot, shredded","100 g cabbage, finely shredded","150 g cherry tomatoes, halved","1 apple or pear, sliced","40 g cheese (feta, goat cheese or Parmesan)","2 tbsp pine nuts","3 tbsp olive oil","1 tbsp lemon juice or vinegar","1 tsp Dijon mustard","1 tsp honey","Salt, to taste","Black pepper, to taste"],
+ steps:["Wash and thoroughly dry the leaves. Wet leaves dilute the dressing and wilt fast.","Shake the olive oil, lemon juice, mustard, honey, salt and pepper in a jar until creamy.","Toast the pine nuts in a dry pan for 2 to 3 minutes until golden.","Pick one or two things from each list below and swap them in for the base ingredients.","Toss the leaves and vegetables with the dressing just before serving, then scatter the fruit, cheese, nuts and any protein on top."],
+ tip:"Per person: 2 big handfuls of leaves, about 1 cup of chopped veg, a palm-sized protein, 20 g cheese, 1 tbsp nuts and 1½ tbsp dressing.",
+ lists:{
+  "Lettuce varieties":["Romaine","Iceberg","Butterhead (Bibb or Boston)","Red leaf lettuce","Green leaf lettuce"],
+  "Fruits":["Apples (sliced or diced)","Pears (sliced)","Grapes (halved)","Berries (blueberries, strawberries, raspberries)","Oranges or mandarins (segments)","Pomegranate seeds","Mango (sliced or diced)"],
+  "Proteins":["Grilled chicken","Hard-boiled eggs (sliced or diced)","Tuna or salmon (canned or grilled)","Shrimp or prawns (grilled or boiled)","Bacon bits","Chickpeas","Tofu (grilled, baked, or marinated)","Edamame"],
+  "Cheeses":["Feta cheese (crumbled)","Parmesan (shaved)","Goat cheese","Cheddar (shredded)","Blue cheese (crumbled)","Mozzarella (fresh or shredded)"],
+  "Nuts & seeds":["Almonds (sliced or slivered)","Walnuts (chopped)","Pecans (chopped)","Cashews","Sunflower seeds","Pumpkin seeds","Sesame seeds","Flaxseeds","Chia seeds"],
+  "Grains & legumes":["Quinoa","Couscous","Farro","Brown rice","Lentils","Barley"],
+  "Herbs":["Fresh basil","Parsley","Cilantro (coriander)","Dill","Mint","Chives","Oregano"],
+  "Optional toppings":["Croutons","Tortilla strips","Crispy onions","Pickled onions","Olives (black or green)","Capers"]
+ }},
+
+/* ===== Mains ===== */
+{id:"w_misosalmon",course:"main",cuisine:"japanese",name:"Miso Marinated Salmon",
+ blurb:"Salmon in a sweet-savoury miso glaze, baked until just flaky.",
+ serves:2,prep:5,cook:12,wait:[30,"marinate"],
+ ing:["2 salmon fillets (about 150 g each)","1½ tbsp white miso paste","1 tbsp mirin","1 tsp soy sauce","1 tsp honey or brown sugar","½ tsp sesame oil","1 spring onion, sliced"],
+ steps:["Mix the miso, mirin, soy sauce, honey and sesame oil.","Coat the salmon and leave it 30 minutes, or overnight in the fridge.","Heat the oven to 200°C. Wipe off the excess marinade so it doesn't burn, and lay the salmon on a lined tray.","Bake 10 to 12 minutes until it flakes, or grill on high for 6 to 8 minutes.","Top with spring onion."],
+ pairs:{sauces:[], sides:["w_koreanspinach","w_japeggs","w_pumpkinrice","w_roastveg","w_salad"]}, sauceNote:"The miso glaze is the sauce."},
+{id:"w_steak",course:"main",cuisine:"western",name:"Pan-Seared Steak",
+ blurb:"Hard-seared, butter-basted steak. Pick a sauce and two sides below.",
+ serves:2,prep:5,cook:10,wait:[30,"come to room temp"],
+ ing:["2 steaks (ribeye or sirloin, about 250 g each, 2.5 cm thick)","1 tsp salt","½ tsp black pepper, coarsely ground","1 tbsp neutral oil","30 g butter","3 cloves garlic, smashed","2 sprigs thyme or rosemary, optional"],
+ steps:["Take the steaks out of the fridge 30 minutes ahead and pat them very dry. Season generously with salt and pepper.","Heat a heavy pan (cast iron is best) until smoking, add the oil, and lay the steaks in.","Sear 3 to 4 minutes per side for medium-rare (52 to 54°C inside) without moving them, so a crust forms. For sirloin, hold the fat cap against the pan for a minute to render it.","In the last minute, add the butter, garlic and herbs and spoon the foaming butter over the steaks.","Rest 5 minutes on a board, then slice against the grain. Make the sauce in the same pan while it rests."],
+ notes:"Ribeye more expensive. Sirloin has a fat cap. Important to make a sauce. Type of potatoes matter.",
+ tip:"For mash, use floury potatoes (Russet, Yukon Gold). For roasting or baking, floury potatoes also give the fluffiest inside. Waxy potatoes are better boiled whole.",
+ pairs:{sauces:STEAK_SAUCES, sides:["w_mashed","w_bakedpotato","w_creamedspinach","w_roastveg","w_salad","w_macncheese"]}},
+{id:"w_tacos",course:"main",cuisine:"mexican",name:"Minced Meat Tacos",
+ blurb:"Crispy-edged spiced beef in warm tortillas with the classic toppings.",
+ serves:2,prep:10,cook:15,
+ ing:["300 g minced beef","1 tsp neutral oil","½ onion, finely chopped","1 clove garlic, minced","1½ tbsp taco seasoning","80 ml water","6 small tortillas","2 leaves lettuce, shredded","2 tomatoes, diced","50 g cheddar, grated, optional","4 tbsp sour cream","1 lime, cut into wedges"],
+ steps:["Brown the beef in the oil over high heat, breaking it up, for 5 minutes. Let it catch and crisp in places.","Add the onion and garlic and cook 3 minutes.","Stir in the taco seasoning and water and simmer 3 to 5 minutes until saucy but not wet.","Warm the tortillas in a dry pan for 20 seconds per side.","Fill with the beef and top with lettuce, tomato, cheese, sour cream and a squeeze of lime."],
+ notes:"Might as well get Guzman Y Gomez or other mexican restaurants",
+ pairs:{sauces:[], sides:["w_salad"]}, sauceNote:"Sour cream and lime do the job."},
+{id:"w_pepperlunch",course:"main",cuisine:"japanese",name:"Pepper Lunch",aka:"Beef pepper rice",
+ blurb:"Sizzling-skillet beef pepper rice with corn and a honey-garlic soy sauce.",
+ serves:2,prep:10,cook:10,
+ ing:["2 tbsp soy sauce","1 tbsp honey","1 clove garlic, grated","20 g butter","400 g cooked rice","100 g sweetcorn kernels","1 tsp black pepper, coarsely ground","250 g thinly sliced beef","1 spring onion, sliced"],
+ steps:["Mix the soy sauce, honey and garlic for the sauce.","Heat a cast-iron skillet until very hot, then turn the heat to low and add the butter.","Mound the rice in the centre, top with the corn and plenty of pepper, and lay the beef slices around the rice against the hot pan.","Pour half the sauce over the beef. Let it sizzle 1 minute, then stir everything together over the heat until the beef is cooked, 2 to 3 minutes.","Add the rest of the sauce and the spring onion and toss until the rice crisps a little on the bottom."],
+ pairs:{sauces:[], sides:["w_japeggs","w_koreanspinach"]}, sauceNote:"The honey-garlic soy goes in the pan."},
+{id:"w_poke",course:"main",cuisine:"hawaiian",name:"Salmon Poke Bowl",
+ blurb:"Soy-sesame marinated raw salmon over rice with edamame, carrot and cucumber.",
+ serves:2,prep:20,cook:0,wait:[15,"marinate"],
+ ing:["250 g sashimi-grade salmon, cut into 2 cm cubes","2 tbsp soy sauce","1 tsp sesame oil","1 tsp honey","½ tsp rice vinegar","1 spring onion, sliced","400 g cooked sushi or short-grain rice","100 g shelled edamame, blanched","1 carrot, julienned","½ cucumber, diced","½ avocado, sliced, optional","1 tsp toasted sesame seeds"],
+ steps:["Mix the soy sauce, sesame oil, honey and vinegar. Toss the salmon in it with the spring onion and leave 10 to 15 minutes in the fridge.","Divide the rice between bowls.","Arrange the edamame, carrot, cucumber and avocado around each bowl.","Top with the salmon and its marinade, then the sesame seeds."],
+ notes:"Different ways to marinate. Can steal sauce from Poke Theory",
+ tip:"Buy salmon labelled sashimi-grade and eat it the day you buy it.",
+ pairs:{sauces:[], sides:["w_japeggs","w_koreanspinach"]}, sauceNote:"The marinade doubles as the dressing."},
+{id:"w_smashburger",course:"main",cuisine:"western",name:"Smashed Burgers",
+ blurb:"Thin, crispy-edged double patties smashed on a ripping hot pan.",
+ serves:2,prep:10,cook:10,
+ ing:["300 g minced beef (20% fat)","Salt, to taste","Black pepper, to taste","2 burger buns","10 g butter","2 slices cheddar or American cheese","2 leaves lettuce","½ onion, thinly sliced, optional","4 pickle slices, optional","1 tbsp ketchup","1 tbsp mustard","1 tbsp mayonnaise"],
+ steps:["Roll the beef into 4 loose 75 g balls. Don't season or pack them yet.","Toast the cut sides of the buns in the butter and set aside.","Heat a cast-iron pan or griddle until smoking. Add 2 balls and smash each flat with a sturdy spatula (press down with a second spatula or a small pan). Season the tops with salt and pepper.","Cook 2 minutes without moving, until the edges are deeply browned. Scrape under each patty, flip, add cheese and cook 30 to 60 seconds more. Repeat with the other 2 balls.","Stack 2 patties per bun with lettuce, onion, pickles, ketchup, mustard and mayo."],
+ notes:"Actually can be healthy.",
+ pairs:{sauces:[], sides:["w_salad","w_roastveg","w_bakedpotato"]}, sauceNote:"Ketchup, mustard and mayo go on the burger."},
+{id:"w_macncheese",course:"main",cuisine:"western",name:"Mac and Cheese",alsoSide:true,
+ blurb:"Stovetop mac in a proper cheddar sauce, optionally grilled until bubbling. Also works as a side.",
+ serves:2,prep:5,cook:20,
+ ing:["200 g macaroni","25 g butter","2 tbsp plain flour","400 ml milk","150 g mature cheddar, grated","30 g Parmesan, grated","½ tsp Dijon mustard","Salt, to taste","Black pepper, to taste"],
+ steps:["Boil the macaroni in salted water for 1 minute less than the packet says. Drain, keeping a mug of pasta water.","Melt the butter, whisk in the flour and cook 1 to 2 minutes without browning.","Whisk in the milk gradually and simmer 3 to 4 minutes until it coats a spoon.","Take the pan off the heat and stir in the cheddar, Parmesan and mustard until melted. Season.","Fold in the macaroni, loosening with pasta water if needed.","Optional: top with more cheese and grill 3 to 4 minutes until bubbling."],
+ tip:"Take the sauce off the heat before adding the cheese, or it turns grainy.",
+ pairs:{sauces:[], sides:["w_salad","w_roastveg"]}, sauceNote:"It's all sauce."},
+{id:"w_gyudon",course:"main",cuisine:"japanese",name:"Gyudon",aka:"Japanese beef bowl",
+ blurb:"Thin beef and onion simmered in sweet soy and mirin, over rice.",
+ serves:2,prep:10,cook:15,
+ ing:["120 ml water or dashi","2 tbsp soy sauce","2 tbsp mirin","1 tbsp sugar","1 tbsp sake, optional","1 tsp ginger, grated","1 onion, thinly sliced","250 g thinly sliced beef (shabu-shabu cut)","400 g cooked rice","Pickled red ginger (beni shoga), to serve","2 eggs, optional"],
+ steps:["Bring the water, soy sauce, mirin, sugar, sake and ginger to a simmer.","Add the onion and simmer 5 minutes until soft.","Add the beef, separating the slices, and simmer 2 to 3 minutes until just cooked. Skim off any foam.","Spoon the beef, onion and some sauce over bowls of hot rice.","Top with pickled ginger and a soft or raw egg if you like."],
+ pairs:{sauces:[], sides:["w_japeggs","w_koreanspinach"]}, sauceNote:"The simmering liquid soaks into the rice."},
+{id:"w_steakdon",course:"main",cuisine:"japanese",name:"Beef Steak Don",
+ blurb:"Seared, sliced steak over rice with a sweet soy-mirin glaze and an egg yolk.",
+ serves:2,prep:10,cook:10,
+ ing:["2 tbsp soy sauce","2 tbsp mirin","1 tsp sugar","1 clove garlic, grated","1 steak (ribeye or sirloin, about 300 g)","Salt, to taste","Black pepper, to taste","1 tsp sesame oil","400 g cooked rice","1 spring onion, sliced","2 egg yolks, optional"],
+ steps:["Simmer the soy sauce, mirin, sugar and garlic for 1 to 2 minutes until slightly syrupy. Set aside.","Pat the steak dry and season it. Sear in the sesame oil in a very hot pan for 2 to 3 minutes per side for medium-rare.","Rest 5 minutes, then slice thinly against the grain.","Lay the slices over bowls of rice, drizzle with the sauce and pour over any resting juices.","Top with spring onion and an egg yolk in the centre."],
+ pairs:{sauces:[], sides:["w_japeggs","w_koreanspinach"]}, sauceNote:"The soy-mirin glaze comes with it."},
+{id:"w_shepherdspie",course:"main",cuisine:"western",name:"Shepherd's Pie",aka:"Cottage pie, when it's made with beef",
+ blurb:"Beef, carrots and peas in a rich gravy under a cheesy mash lid.",
+ serves:4,prep:20,cook:50,
+ ing:["800 g floury potatoes, peeled and chunked","40 g butter","80 ml milk","1 tbsp olive oil","500 g minced beef","1 onion, finely chopped","2 carrots, diced","2 cloves garlic, minced","2 tbsp tomato paste","1 tbsp plain flour","250 ml beef stock","1 tbsp Worcestershire sauce","1 tsp dried thyme","120 g frozen peas","60 g cheddar, grated","Salt, to taste","Black pepper, to taste"],
+ steps:["Boil the potatoes in salted water for 15 to 20 minutes until tender. Drain, mash with the butter and milk, and season.","Meanwhile, brown the beef in the oil over high heat for 5 to 6 minutes. Add the onion, carrot and garlic and cook 5 minutes.","Stir in the tomato paste and flour for 1 minute, then add the stock, Worcestershire and thyme. Simmer 10 to 15 minutes until thick. Stir in the peas and season.","Heat the oven to 200°C. Spread the filling in a baking dish and top with the mash, roughing the surface with a fork.","Scatter over the cheddar and bake 20 minutes until golden and bubbling at the edges."],
+ tip:"Strictly, shepherd's pie is made with lamb and cottage pie with beef. Swap in lamb mince for the original; the method is the same.",
+ pairs:{sauces:[], sides:["w_salad","w_roastveg","w_creamedspinach"]}, sauceNote:"The gravy is in the filling."},
+{id:"w_bolognese",course:"main",cuisine:"italian",name:"Beef Bolognese Pasta",
+ blurb:"Weeknight-style beef and tomato ragù over spaghetti.",
+ serves:4,prep:10,cook:35,
+ ing:["2 tbsp olive oil","1 onion, finely chopped","3 cloves garlic, minced","500 g minced beef","2 tbsp tomato paste","1 can chopped tomatoes (400 g)","1 tsp dried oregano","1 tsp salt","½ tsp black pepper","400 g spaghetti","40 g Parmesan, grated"],
+ steps:["Heat the oil and sauté the onion for 5 minutes, then the garlic for 1 minute.","Add the beef and cook over high heat until browned, breaking it up. Drain off excess fat.","Stir in the tomato paste for 1 minute, then add the tomatoes, oregano, salt and pepper. Simmer 15 to 20 minutes (longer is better), adding a splash of water if it gets dry.","Meanwhile, boil the spaghetti in well-salted water until al dente. Keep a mug of pasta water.","Toss the pasta into the sauce with a splash of pasta water, and serve with Parmesan."],
+ pairs:{sauces:[], sides:["w_salad","w_roastveg"]}, sauceNote:"The ragù is the sauce."},
+{id:"w_aglioolio",course:"main",cuisine:"italian",name:"Aglio Olio",
+ blurb:"Spaghetti with slow-golden garlic, chilli and olive oil. Ten minutes from start to finish.",
+ serves:2,prep:5,cook:12,
+ ing:["200 g spaghetti","5 tbsp olive oil","6 cloves garlic, thinly sliced","½ tsp chilli flakes","200 g prawns or scallops, optional","1 small bunch parsley, chopped","Salt, to taste","20 g Parmesan, grated, optional"],
+ steps:["Boil the spaghetti in well-salted water until 1 minute short of al dente. Keep a mug of pasta water.","Meanwhile, put the oil and garlic in a cold pan and warm over medium-low heat for 3 to 4 minutes until the garlic is pale gold. Don't let it brown or it turns bitter. Add the chilli flakes.","If using prawns or scallops, sear them in a separate hot pan for 1 to 2 minutes per side.","Add the pasta and a ladle of pasta water to the garlic oil and toss hard for 1 minute until glossy.","Toss in the parsley and seafood, season, and serve with Parmesan."],
+ notes:"Best served with Shrimp, Scallops, etc",
+ pairs:{sauces:[], sides:["w_salad"]}, sauceNote:"The garlic oil and pasta water make the sauce."},
+{id:"w_carbonara",course:"main",cuisine:"italian",name:"Authentic Carbonara",
+ blurb:"Guanciale, egg, pecorino and black pepper. No cream.",
+ serves:2,prep:10,cook:15,
+ ing:["200 g spaghetti or rigatoni","120 g guanciale (or thick-cut bacon), cut into strips","3 egg yolks","1 egg","50 g pecorino romano, finely grated (or Parmesan)","1 tsp black pepper, coarsely ground","Salt, for the pasta water"],
+ steps:["Boil the pasta in lightly salted water (the guanciale and cheese are salty). Keep a mug of pasta water.","Put the guanciale in a cold pan and bring it up to medium heat. Fry 6 to 8 minutes until crisp and the fat has rendered. Turn off the heat.","Whisk the yolks, egg, cheese and most of the pepper into a thick paste.","Add the drained pasta to the guanciale pan, off the heat, and toss it in the fat. Wait 30 seconds so the pan is hot but not sizzling.","Pour in the egg mix with a splash of pasta water and toss fast until creamy. Add more pasta water to loosen it. If it's too runny, toss over very low heat for a few seconds.","Serve right away with the rest of the pepper and more cheese."],
+ notes:"Quite jelak",
+ tip:"Scrambled egg means the pan was too hot; taking it off the heat first is the whole trick. Bacon works, but guanciale and pecorino are what make it the Roman original. A sharp salad on the side helps with the richness.",
+ pairs:{sauces:[], sides:["w_salad"]}, sauceNote:"Egg and cheese make the sauce."},
+{id:"w_pesto",course:"main",cuisine:"italian",name:"Pesto Pasta",
+ blurb:"Fresh basil, pine nut and Parmesan pesto tossed through pasta off the heat.",
+ serves:2,prep:10,cook:12,
+ ing:["30 g pine nuts","50 g basil leaves","1 clove garlic","40 g Parmesan, grated","80 ml olive oil","Salt, a pinch","1 tsp lemon juice, optional","200 g pasta (trofie, linguine or fusilli)"],
+ steps:["Toast the pine nuts in a dry pan for 2 to 3 minutes until golden. Cool.","Blend the basil, pine nuts, garlic, Parmesan and salt, drizzling in the oil, into a loose paste. Pulse rather than run the blender, so the basil doesn't heat up and darken.","Boil the pasta until al dente. Keep a mug of pasta water.","Toss the pasta off the heat with the pesto and a splash of pasta water until glossy.","Serve with extra Parmesan."],
+ notes:"Dont buy store bought sauce.",
+ tip:"Never cook pesto in the pan. Heat turns basil dark and bitter.",
+ pairs:{sauces:[], sides:["w_salad","w_roastveg"]}, sauceNote:"The pesto is the sauce."},
+
+/* ===== Soups & stews ===== */
+{id:"w_abcsoup",course:"soup",cuisine:"singaporean",name:"Singaporean ABC Soup",
+ blurb:"Clear, sweet pork rib soup with carrot, potato, corn, onion and tomato.",
+ serves:4,prep:15,cook:120,
+ ing:["500 g pork ribs, cut into pieces","1 onion, quartered","2 sweetcorn cobs, each cut into 4","2 l water","2 carrots, cut into chunks","2 potatoes, cut into chunks","2 tomatoes, quartered","1 tsp salt","¼ tsp white pepper"],
+ steps:["Blanch the ribs in boiling water for 3 to 5 minutes, then drain and rinse off the scum.","Put the ribs, onion, corn and water in a pot. Bring to a boil, then simmer on low for 1 hour.","Add the carrot and potato and simmer 45 minutes more.","Add the tomatoes for the last 15 minutes so they soften without falling apart completely.","Season with salt and white pepper."],
+ notes:"Slow Cooker",
+ tip:"Slow cooker: blanch the ribs, then put everything in on low for 6 to 8 hours. Add the tomatoes in the last hour.",
+ pairs:{sides:["w_pumpkinrice"]}},
+{id:"w_lotussoup",course:"soup",cuisine:"singaporean",name:"Pork Lotus Root Soup",
+ blurb:"Slow-simmered pork rib soup with lotus root, peanuts, dried cuttlefish and goji.",
+ serves:4,prep:15,cook:120,wait:[60,"soak the peanuts"],
+ ing:["60 g raw peanuts, soaked 1 hour","1 dried cuttlefish (about 30 g), soaked 20 minutes and cut into strips","500 g pork ribs, cut into pieces","500 g lotus root, peeled and sliced 1 cm thick","4 dried red dates, optional","2 l water","1 tbsp goji berries","1 tsp salt"],
+ steps:["Blanch the ribs in boiling water for 3 to 5 minutes, then drain and rinse.","Peel the lotus root and slice it about 1 cm thick.","Put the ribs, lotus root, cuttlefish, peanuts, dates and water in a pot. Bring to a boil, then simmer on low, covered, for 2 hours until the peanuts are soft.","Add the goji berries for the last 10 minutes.","Season with salt."],
+ notes:"Slow Cooker",
+ tip:"Slow cooker: everything except the goji in on low for 6 to 8 hours after blanching the ribs.",
+ pairs:{sides:["w_pumpkinrice"]}},
+{id:"w_beefstew",course:"soup",cuisine:"western",name:"Beef Stew",asMain:true,
+ blurb:"Red wine beef stew with carrots, celery and potatoes, simmered until the beef falls apart.",
+ serves:4,prep:20,cook:120,
+ ing:["800 g beef chuck, cut into 4 cm chunks","1 tsp salt","½ tsp black pepper","2 tbsp plain flour","2 tbsp olive oil","1 onion, chopped","3 cloves garlic, minced","2 tbsp tomato paste","200 ml red wine","600 ml beef broth","3 sprigs thyme","2 bay leaves","3 carrots, cut into chunks","2 celery sticks, sliced","500 g potatoes, cut into chunks"],
+ steps:["Season the beef with salt and pepper and toss it in the flour.","Brown the beef in the oil in batches over high heat, 3 to 4 minutes per batch. Crowding stops it browning. Set aside.","Lower the heat, add the onion and cook 5 minutes, then the garlic and tomato paste for 2 minutes.","Pour in the wine, scraping up the browned bits, and boil 2 minutes.","Return the beef with the broth, thyme and bay. Cover and simmer gently for 1 hour.","Add the carrots, celery and potatoes and simmer 45 to 60 minutes more, until the beef is tender.","Remove the herbs, taste and season."],
+ tip:"Even better the next day. It also freezes well for up to 3 months.",
+ pairs:{sauces:[], sides:["w_mashed","w_salad"]}, sauceNote:"It's a stew; the gravy is built in."},
+{id:"w_tomatosoup",course:"soup",cuisine:"western",name:"Tomato Soup",
+ blurb:"Smooth, buttery tomato soup finished with cream and basil.",
+ serves:4,prep:10,cook:25,
+ ing:["30 g butter","1 onion, chopped","3 cloves garlic, minced","1 kg ripe tomatoes, roughly chopped (or 2 cans whole tomatoes)","500 ml chicken broth","1 tsp sugar","100 ml cream or milk","1 small bunch basil","Salt, to taste","Black pepper, to taste"],
+ steps:["Melt the butter and soften the onion for 6 minutes, then the garlic for 1 minute.","Add the tomatoes, broth and sugar and simmer 15 minutes.","Blend until smooth. With hot liquid, leave the blender lid's vent open and cover it with a towel.","Stir in the cream and most of the basil, torn, and season.","Serve topped with the remaining basil."],
+ tip:"Out-of-season fresh tomatoes are watery. Canned whole tomatoes give a better soup most of the year."},
+{id:"w_mushroomsoup",course:"soup",cuisine:"western",name:"Mushroom Soup",
+ blurb:"Half-blended mushroom soup: creamy, with some texture left in.",
+ serves:4,prep:10,cook:25,
+ ing:["30 g butter","500 g mushrooms, sliced","1 onion, chopped","3 cloves garlic, minced","2 tbsp plain flour","750 ml chicken broth","150 ml cream or milk","2 sprigs thyme, leaves picked","Salt, to taste","Black pepper, to taste"],
+ steps:["Melt the butter and cook the mushrooms over medium-high heat until browned, about 8 minutes. Add the onion and garlic and cook 4 minutes.","Stir in the flour and cook 1 minute.","Pour in the broth gradually, stirring, and simmer 10 minutes.","Blend half the soup and return it to the pot, so it's creamy with some texture.","Stir in the cream and thyme, heat through and season."]},
+{id:"w_jpcurry",course:"soup",cuisine:"japanese",name:"Japanese Curry",asMain:true,
+ blurb:"Mild, thick curry with chicken or beef, potato and carrot, made with roux blocks.",
+ serves:4,prep:15,cook:35,
+ ing:["1 tbsp neutral oil","2 onions, sliced","500 g chicken thigh or beef chunks, bite-size","2 carrots, cut into chunks","2 potatoes, cut into chunks","800 ml water","115 g Japanese curry roux blocks (about half a box)","1 tsp honey or grated apple, optional","600 g cooked rice"],
+ steps:["Sauté the onions in the oil for 8 to 10 minutes until soft and lightly golden.","Add the meat and cook until browned on the outside.","Add the carrots, potatoes and water. Bring to a boil, skim, and simmer 15 to 20 minutes until the vegetables are tender.","Turn off the heat and stir in the curry blocks until dissolved. Adding them off the heat stops lumps.","Simmer 5 to 10 minutes, stirring, until thick. Add the honey if you like it rounder.","Serve over rice."],
+ tip:"Beef needs about 40 minutes of simmering before the vegetables go in. Chicken thigh only needs the 15 to 20 minutes above.",
+ pairs:{sauces:[], sides:["w_japeggs","w_salad"]}, sauceNote:"The curry is the sauce."}
+];
+WEEKEND.forEach(r => { r.wk = true; });
+
 /* ---------- ingredient parsing, scaling, formatting ---------- */
 const FRAC = {"¼":.25,"½":.5,"¾":.75,"⅓":1/3,"⅔":2/3,"⅛":.125};
 const UNITS = ["small bunches","small bunch","bunches","bunch","tbsp","tsp","cups","cup","kg","g","ml","l","cloves","clove","stalks","stalk","cans","can","thumbs","thumb","slices","slice","heads","head","rashers","rasher","sheets","sheet","pinches","pinch","handfuls","handful","sprigs","sprig"];
@@ -870,7 +1241,7 @@ function scaleFor(r, portions){ return r.batch ? 1 : portions / (r.serves || 4);
 /* ---------- pantry + shopping list ---------- */
 const PANTRY = ["salt","black pepper","cayenne pepper","sugar","soy sauce","sesame oil","neutral oil","olive oil","sesame seeds","vinegar","honey","mirin","fish sauce","gochugaru","gochujang","doenjang","ground ","garam masala","chana masala","chilli powder","paprika","dried oregano","dried thyme","cumin seeds","chilli flakes","cornstarch","baking powder","garlic powder","onion powder","mayonnaise","mustard","worcestershire","kasuri methi","chaat masala","sumac","cinnamon","bay leaf","cardamom","whole cloves","turmeric","tandoori masala","ginger-garlic paste","amchur","saffron","tomato paste","barbecue sauce","wasabi","miso","sake","tahini","rice flour","glutinous rice flour","plain flour","coarse sea salt","salted shrimp"];
 function normKey(item){
-  let k = item.toLowerCase().replace(/\(optional\)/g, "").replace(/\s+/g, " ").trim();
+  let k = item.toLowerCase().replace(/\(optional\)/g, "").replace(/\s+/g, " ").trim().replace(/^(cold|softened|melted) /, "");
   k = k.replace(/(\w+)$/, w => /ies$/.test(w) ? w.slice(0,-3)+"y" : /oes$/.test(w) ? w.slice(0,-2) : (/s$/.test(w) && !/ss$/.test(w)) ? w.slice(0,-1) : w);
   return k;
 }
@@ -896,7 +1267,7 @@ function buildShopping(recipes, portions){
       let g = groups.get(key);
       if(!g){ g = {key, item:p.item, amounts:new Map(), taste:"", pantry:isPantry(p.item)}; groups.set(key, g); }
       if(p.item.length > g.item.length) g.item = p.item;
-      if(p.q === null){ const n = (p.note.split(",")[0] || "").trim(); g.taste = g.taste || (/^(a pinch|to taste|a handful)$/i.test(n) ? n : "to taste"); }
+      if(p.q === null){ const n = (p.note.split(",")[0] || "").trim(); g.taste = g.taste || (n && n.length <= 24 ? n : "to taste"); }
       else {
         let [uk, v] = normUnit(p.u, p.q * sc);
         if(uk === "small bunch"){ uk = "bunch"; v = v / 2; }
@@ -944,8 +1315,9 @@ function toast(msg){
 /* ---------- store (your own recipes, via the db capability) ---------- */
 const store = {db:null, status:"connecting", canWrite:null, mine:[]};
 let INDEX = new Map();
-function all(){ return CURATED.concat(store.mine); }
-function reindex(){ INDEX = new Map(all().map(r => [r.id, r])); }
+function all(){ return CURATED.concat(store.mine.filter(r => !r.wk)); }
+function wkAll(){ return WEEKEND.concat(store.mine.filter(r => r.wk)); }
+function reindex(){ INDEX = new Map(CURATED.concat(WEEKEND, store.mine).map(r => [r.id, r])); }
 function byId(id){ return INDEX.get(id) || null; }
 reindex();
 
@@ -957,6 +1329,10 @@ function normalizeUser(docId, d){
   const wait = num(d.wait, 0);
   return {
     id:"u_" + docId, docId, own:true,
+    wk: d.section === "weekend",
+    course: COURSES[d.course] ? d.course : "main",
+    cuisine: CUISINES[d.cuisine] ? d.cuisine : "western",
+    notes: str(d.notes, 600),
     src: SOURCES[d.src] ? d.src : "mine",
     role: ROLES[d.role] ? d.role : "veg",
     name: str(d.name, 120) || "Untitled recipe",
@@ -1035,6 +1411,8 @@ function renderDbState(){
   else msg = "Adding recipes needs you signed in to claude.ai.";
   el.textContent = msg;
   btn.disabled = !canWriteRecipes();
+  $("#wkAddBtn").disabled = !canWriteRecipes();
+  $("#wkAddBtn").title = canWriteRecipes() ? "" : msg;
 }
 
 /* ---------- box state ---------- */
@@ -1187,9 +1565,18 @@ function ingListHTML(r, portions, checkable){
   return '<ul class="ings">' + (r.ing || []).map((line, i) => {
     const p = parseIng(line);
     const q = p.q === null ? "" : fmtAmount(p.q * sc, p.u);
-    const body = '<span class="q">' + esc(q || "·") + '</span><span>' + esc(p.item) + (p.note ? ' <span class="n">' + esc(p.note) + '</span>' : "") + '</span>';
+    const item = (p.q !== null && !p.u && p.q * sc <= 1) ? singular(p.item) : p.item;
+    const body = '<span class="q">' + esc(q || "·") + '</span><span>' + esc(item) + (p.note ? ' <span class="n">' + esc(p.note) + '</span>' : "") + '</span>';
     return checkable ? '<li><input type="checkbox" id="ri-' + i + '" aria-label="Got ' + esc(p.item) + '">' + '<label for="ri-' + i + '" style="display:contents">' + body + '</label></li>' : '<li>' + body + '</li>';
   }).join("") + '</ul>';
+}
+/* "1 onions" -> "1 onion": singularise the last word before any bracket when a count drops to one. */
+function singular(item){
+  const m = item.match(/^([^(]*?)(\w+)(\s*\(.*)?$/);
+  if(!m) return item;
+  const w = m[2];
+  const s = w === "leaves" ? "leaves" : /llies$/.test(w) ? w.slice(0, -2) : /ies$/.test(w) ? w.slice(0, -3) + "y" : /oes$/.test(w) ? w.slice(0, -2) : (/s$/.test(w) && !/ss$/.test(w)) ? w.slice(0, -1) : w;
+  return m[1] + s + (m[3] || "");
 }
 function stepsHTML(r){ return '<ol class="steps">' + (r.steps || []).map(s => '<li>' + esc(s) + '</li>').join("") + '</ol>'; }
 function notesHTML(r){
@@ -1239,8 +1626,9 @@ function shoppingText(){
 /* ---------- rendering: library ---------- */
 const lib = {q:"", src:"all", role:"all", tags:new Set()};
 function renderFilters(){
-  const srcOpts = [["all","All"]].concat(SRC_ORDER.filter(s => s !== "mine" || store.mine.some(r => r.src === "mine")).map(s => [s, SOURCES[s].short]));
-  if(store.mine.length) srcOpts.push(["yours","Yours"]);
+  const minePrep = all().filter(r => r.own);
+  const srcOpts = [["all","All"]].concat(SRC_ORDER.filter(s => s !== "mine" || minePrep.some(r => r.src === "mine")).map(s => [s, SOURCES[s].short]));
+  if(minePrep.length) srcOpts.push(["yours","Yours"]);
   $("#fSrc").innerHTML = '<span class="lbl">Cuisine</span>' + srcOpts.map(([k, l]) => '<button type="button" class="chip small" data-action="fsrc" data-v="' + k + '" aria-pressed="' + (lib.src === k) + '">' + esc(l) + '</button>').join("");
   $("#fRole").innerHTML = '<span class="lbl">Slot</span>' + [["all","All"]].concat(Object.entries(ROLES)).map(([k, l]) => '<button type="button" class="chip small" data-action="frole" data-v="' + k + '" aria-pressed="' + (lib.role === k) + '">' + esc(l) + '</button>').join("");
   const tagOpts = [["veg","Vegetarian"],["spicy","Spicy"],["freezes","Freezes"],["quick","30 min or less"],["keeps5","Keeps 5+ days"]];
@@ -1294,12 +1682,310 @@ function renderLibrary(){
   }).join("");
 }
 
+/* ---------- weekend dinners: state, picker, cook sheet, library ---------- */
+const WK_KEY = "sundayPrepBox.weekend.v1";
+const WK_SLOTS = [
+  {key:"w-main", kind:"main", label:"Main"},
+  {key:"w-sauce", kind:"sauce", label:"Sauce"},
+  {key:"w-side1", kind:"side", label:"Side"},
+  {key:"w-side2", kind:"side", label:"Side"}
+];
+const WK_SLOT = Object.fromEntries(WK_SLOTS.map(s => [s.key, s]));
+let wk = lsGet(WK_KEY);
+if(!wk || typeof wk !== "object" || !wk.slots) wk = null;
+wk = Object.assign({cuisine:"all", servings:2, checked:[], slots:{}}, wk || {});
+WK_SLOTS.forEach(s => { if(!wk.slots[s.key]) wk.slots[s.key] = {id:null, locked:false}; });
+wk.servings = Math.min(12, Math.max(1, Number(wk.servings) || 2));
+if(wk.cuisine !== "all" && !CUISINES[wk.cuisine]) wk.cuisine = "all";
+function wkSave(){ lsSet(WK_KEY, wk); }
+
+function isMain(r){ return r.course === "main" || !!r.asMain; }
+function wkMains(cuisine){ return wkAll().filter(r => isMain(r) && (!cuisine || cuisine === "all" || r.cuisine === cuisine)); }
+function wkMain(){ return byId(wk.slots["w-main"].id); }
+function wkRecipes(){ return WK_SLOTS.map(s => byId(wk.slots[s.key].id)).filter(Boolean); }
+function wkSig(){ return WK_SLOTS.map(s => wk.slots[s.key].id).join("|"); }
+/* What a main goes with. Curated mains list their pairings; dishes you add join by course and cuisine. */
+function pairPool(main, kind){
+  if(!main) return [];
+  const want = r => kind === "sauce" ? r.course === "sauce" : (r.course === "side" || !!r.alsoSide);
+  const listed = main.pairs && main.pairs[kind === "sauce" ? "sauces" : "sides"];
+  if(Array.isArray(listed)){
+    if(kind === "sauce" && !listed.length) return [];
+    const extra = store.mine.filter(r => r.wk && want(r) && r.cuisine === main.cuisine);
+    return listed.map(byId).filter(Boolean).concat(extra).filter(r => r.id !== main.id);
+  }
+  const pool = wkAll().filter(r => want(r) && r.id !== main.id);
+  const same = pool.filter(r => r.cuisine === main.cuisine);
+  return same.length ? same : pool;
+}
+function wkRollSlots(keys){
+  if(keys.includes("w-main")){
+    const prev = wk.slots["w-main"].id;
+    let cands = wkMains(wk.cuisine);
+    if(!cands.length) cands = wkMains("all");
+    const fresh = cands.filter(r => r.id !== prev);
+    const m = pick(fresh.length ? fresh : cands);
+    wk.slots["w-main"].id = m ? m.id : null;
+  }
+  const main = wkMain();
+  const used = new Set(WK_SLOTS.filter(s => !keys.includes(s.key)).map(s => wk.slots[s.key].id).filter(Boolean));
+  if(main) used.add(main.id);
+  keys.filter(k => k !== "w-main").forEach(key => {
+    const prev = wk.slots[key].id;
+    const cands = pairPool(main, WK_SLOT[key].kind).filter(r => !used.has(r.id));
+    const fresh = cands.filter(r => r.id !== prev);
+    const c = pick(fresh.length ? fresh : cands);
+    wk.slots[key].id = c ? c.id : null;
+    if(c) used.add(c.id);
+  });
+}
+function wkUnlocked(except){ return WK_SLOTS.filter(s => s.key !== except && !wk.slots[s.key].locked).map(s => s.key); }
+function wkDoRoll(keys){
+  const before = wkSig();
+  wkRollSlots(keys);
+  if(wkSig() !== before) wk.checked = [];
+  wkSave();
+  wkAnimate(keys);
+  renderWkAfter();
+}
+
+function wkRenderSlot(key){
+  const cell = $('.cell[data-slot="' + key + '"]');
+  const s = wk.slots[key], r = byId(s.id), slot = WK_SLOT[key];
+  cell.dataset.role = slot.kind === "main" ? (r && r.course === "soup" ? "carb" : "protein") : (slot.kind === "sauce" ? "sauce" : "veg");
+  cell.classList.toggle("empty-slot", !r);
+  if(!r){
+    const main = wkMain();
+    let name = "Nothing here yet", sub = "Roll dinner to fill this.";
+    if(s.id && String(s.id).startsWith("u_") && store.status === "connecting") sub = "Loading your recipe…";
+    else if(main && slot.kind === "sauce"){ name = "No sauce needed"; sub = main.sauceNote || "This dish carries its own sauce."; }
+    else if(main && slot.kind === "side"){ name = "Nothing else needed"; sub = "No more sides pair with " + main.name + "."; }
+    cell.innerHTML = '<div class="cell-top"><span class="role">' + esc(slot.label) + '</span></div><div class="cell-name">' + esc(name) + '</div><div class="cell-sub">' + esc(sub) + '</div>';
+    return;
+  }
+  const meta = [fmtMin((r.prep||0) + (r.cook||0)), "serves " + r.serves];
+  if(r.wait) meta.splice(1, 0, waitText(r));
+  cell.innerHTML =
+    '<div class="cell-top"><span class="role">' + esc(slot.label) + '</span>' +
+    '<span class="cell-actions">' +
+      '<button type="button" class="icon-btn" data-action="wklock" data-slot="' + key + '" aria-pressed="' + (s.locked ? "true" : "false") + '" aria-label="' + (s.locked ? "Unlock " : "Lock ") + esc(r.name) + '" title="' + (s.locked ? "Locked: rolls skip this" : "Lock to keep it when you roll") + '">' + (s.locked ? ICONS.lock : ICONS.unlock) + '</button>' +
+      '<button type="button" class="icon-btn" data-action="wkreroll" data-slot="' + key + '" aria-label="Swap ' + esc(r.name) + '" title="Swap just this one">' + ICONS.reroll + '</button>' +
+    '</span></div>' +
+    '<button type="button" class="cell-name" data-action="open" data-id="' + esc(r.id) + '">' + esc(r.name) + '</button>' +
+    '<div class="cell-sub">' + esc(CUISINES[r.cuisine]) + (r.course === "soup" ? " · " + COURSES.soup.toLowerCase() : "") + (r.own ? " · yours" : "") + '</div>' +
+    '<div class="cell-meta">' + esc(meta.join(" · ")) + '</div>';
+}
+function wkRenderBox(){ WK_SLOTS.forEach(s => wkRenderSlot(s.key)); }
+function wkAnimate(keys){
+  if(reduceMotion){ wkRenderBox(); return; }
+  const btn = $("#wkRollBtn"); btn.classList.remove("turn"); void btn.offsetWidth; btn.classList.add("turn");
+  const main = wkMain();
+  WK_SLOTS.forEach(s => { if(!keys.includes(s.key)) wkRenderSlot(s.key); });
+  keys.forEach((key, i) => {
+    clearInterval(spinTimers[key + "i"]); clearTimeout(spinTimers[key + "t"]);
+    const cell = $('.cell[data-slot="' + key + '"]');
+    wkRenderSlot(key);
+    const nameEl = cell.querySelector("button.cell-name");
+    if(!nameEl) return;
+    const kind = WK_SLOT[key].kind;
+    const names = (kind === "main" ? wkMains("all") : pairPool(main, kind)).map(r => r.name);
+    if(names.length < 2) return;
+    cell.classList.add("spin");
+    spinTimers[key + "i"] = setInterval(() => { nameEl.textContent = pick(names); }, 65);
+    spinTimers[key + "t"] = setTimeout(() => { clearInterval(spinTimers[key + "i"]); cell.classList.remove("spin"); wkRenderSlot(key); }, 360 + i * 110);
+  });
+}
+function wkRenderControls(){
+  const cuisines = Object.keys(CUISINES).filter(c => wkMains(c).length);
+  $("#wkCuisineChips").innerHTML = [["all","Any"]].concat(cuisines.map(c => [c, CUISINES[c]])).map(([k, l]) =>
+    '<button type="button" class="chip" data-action="wkcuisine" data-v="' + k + '" aria-pressed="' + (wk.cuisine === k) + '">' + esc(l) + '</button>').join("");
+  const cur = wk.slots["w-main"].id;
+  const groups = Object.keys(CUISINES).map(c => [c, wkMains(c).sort((a, b) => a.name.localeCompare(b.name))]).filter(([, l]) => l.length);
+  $("#wkMainSel").innerHTML = '<option value="">Pick a main…</option>' + groups.map(([c, l]) =>
+    '<optgroup label="' + esc(CUISINES[c]) + '">' + l.map(r => '<option value="' + esc(r.id) + '"' + (r.id === cur ? " selected" : "") + '>' + esc(r.name) + '</option>').join("") + '</optgroup>').join("");
+  $("#wkServingsOut").textContent = wk.servings;
+}
+function wkRenderFacts(){
+  const rs = wkRecipes(), main = wkMain();
+  $("#wkTape").textContent = "Dinner for " + wk.servings + " · " + dayLabel(0);
+  if(!main){ $("#wkFacts").innerHTML = ""; return; }
+  const sauce = byId(wk.slots["w-sauce"].id);
+  const sides = ["w-side1","w-side2"].map(k => byId(wk.slots[k].id)).filter(Boolean);
+  const hands = rs.reduce((a, r) => a + (r.prep || 0), 0);
+  const longest = rs.slice().sort((a, b) => totalTime(b) - totalTime(a))[0];
+  const shop = buildShopping(rs, wk.servings);
+  $("#wkFacts").innerHTML =
+    '<div class="fact"><span class="eyebrow">Tonight</span><b>' + esc(main.name + (sauce ? " with " + sauce.name.toLowerCase() : "")) + '</b><span class="s">' + esc(sides.length ? "Sides: " + sides.map(r => r.name).join(" and ") : "No sides needed") + '</span></div>' +
+    '<div class="fact"><span class="eyebrow">Hands-on</span><b>≈ ' + fmtMin(hands) + '</b><span class="s">Prep time across all ' + rs.length + ' recipe' + (rs.length === 1 ? "" : "s") + '</span></div>' +
+    '<div class="fact"><span class="eyebrow">Ready in about</span><b>' + fmtMin(totalTime(longest)) + '</b><span class="s">Longest job: ' + esc(longest.name) + (longest.wait && longest.wait[0] >= 120 ? " (start it ahead)" : "") + '</span></div>' +
+    '<div class="fact"><span class="eyebrow">Shopping</span><b>' + shop.buy.length + ' item' + (shop.buy.length === 1 ? "" : "s") + ' to buy</b><span class="s">Plus ' + shop.pantry.length + ' pantry check' + (shop.pantry.length === 1 ? "" : "s") + '</span></div>';
+}
+function wkNotesHTML(r){
+  let h = "";
+  if(r.notes) h += '<p class="yours"><b>Your notes:</b> ' + esc(r.notes) + '</p>';
+  if(r.tip) h += '<div class="note"><b>Tip:</b> ' + esc(r.tip) + '</div>';
+  if(r.lists) h += '<div class="lists">' + Object.entries(r.lists).map(([k, items]) => '<div><h5>' + esc(k) + '</h5><ul>' + items.map(x => '<li>' + esc(x) + '</li>').join("") + '</ul></div>').join("") + '</div>';
+  return h ? '<div class="notes">' + h + '</div>' : "";
+}
+function wkMetaBits(r){
+  const b = ["Prep " + fmtMin(r.prep)];
+  if(r.cook) b.push("Cook " + fmtMin(r.cook));
+  const w = waitText(r); if(w) b.push(w);
+  b.push(CUISINES[r.cuisine]);
+  return b;
+}
+function wkRenderSheet(){
+  const rs = wkRecipes();
+  $("#wkSheetTitle").textContent = "Cook it for " + wk.servings;
+  if(!rs.length){ $("#wkShop").innerHTML = '<div class="empty">Roll dinner to build a shopping list.</div>'; $("#wkPlan").innerHTML = ""; return; }
+  const shop = buildShopping(rs, wk.servings);
+  const checked = new Set(wk.checked || []);
+  const li = x => '<li><label><input type="checkbox" data-action="wkcheck" data-key="' + esc(x.key) + '"' + (checked.has(x.key) ? " checked" : "") + '><span>' + esc(x.item) + '</span><span class="amt">' + esc(x.amt) + '</span></label></li>';
+  $("#wkShop").innerHTML =
+    '<div class="eyebrow">Dinner for ' + wk.servings + '</div><h3>Shopping list</h3>' +
+    '<div class="grp"><div class="eyebrow">Buy</div><ul>' + shop.buy.map(li).join("") + '</ul></div>' +
+    (shop.pantry.length ? '<div class="grp"><div class="eyebrow">Check the pantry</div><ul>' + shop.pantry.map(li).join("") + '</ul></div>' : "") +
+    '<div class="shop-actions"><button type="button" class="btn" data-action="wkcopy">Copy list</button></div><div id="wkCopyFallback"></div>';
+  const ordered = rs.slice().sort((a, b) => totalTime(b) - totalTime(a));
+  $("#wkPlan").innerHTML = ordered.map((r, i) =>
+    '<li class="rcard" data-role="' + COURSE_ROLE[r.course] + '">' +
+      '<div class="rcard-head"><span class="order" aria-label="Step ' + (i + 1) + '">' + (i + 1) + '</span>' +
+      '<div><div class="eyebrow">' + esc(COURSES[r.course]) + (r.own ? " · yours" : "") + '</div>' +
+      '<h3><button type="button" data-action="open" data-id="' + esc(r.id) + '">' + esc(r.name) + '</button></h3></div>' +
+      '<div class="metaline" style="grid-column:2">' + wkMetaBits(r).map(esc).map(x => '<span>' + x + '</span>').join("") + '</div></div>' +
+      '<div class="rbody" style="--rc:var(--' + COURSE_ROLE[r.course] + ')"><div><h4>Ingredients</h4>' + ingListHTML(r, wk.servings, false) + '</div>' +
+      '<div><h4>Method</h4>' + stepsHTML(r) + '</div></div>' + wkNotesHTML(r) +
+    '</li>').join("");
+}
+function wkShoppingText(){
+  const rs = wkRecipes(); const shop = buildShopping(rs, wk.servings);
+  const line = x => "- " + x.item + (x.amt ? ": " + x.amt : "");
+  return "Dinner for " + wk.servings + "\n" + rs.map(r => "  " + COURSES[r.course] + ": " + r.name).join("\n") +
+    "\n\nBuy\n" + shop.buy.map(line).join("\n") + (shop.pantry.length ? "\n\nCheck the pantry\n" + shop.pantry.map(line).join("\n") : "");
+}
+
+const wlib = {q:"", course:"all", cuisine:"all"};
+function wkMatches(r){
+  if(wlib.course !== "all" && r.course !== wlib.course) return false;
+  if(wlib.cuisine !== "all" && r.cuisine !== wlib.cuisine) return false;
+  if(wlib.q){
+    const hay = [r.name, r.aka, r.blurb, r.notes, (r.ing || []).join(" "), CUISINES[r.cuisine], COURSES[r.course]].join(" ").toLowerCase();
+    if(!wlib.q.split(/\s+/).every(w => hay.includes(w))) return false;
+  }
+  return true;
+}
+function wkCardHTML(r){
+  const onMenu = WK_SLOTS.some(s => wk.slots[s.key].id === r.id);
+  const sub = r.notes ? '<span class="sb quote">“' + esc(r.notes) + '”</span>' : '<span class="sb">' + esc(r.aka || r.blurb || "") + '</span>';
+  const badges = (onMenu ? '<span class="badge">On tonight\'s menu</span>' : "") + (r.own ? '<span class="badge">Yours</span>' : "");
+  return '<button type="button" class="card" data-role="' + COURSE_ROLE[r.course] + '" data-action="open" data-id="' + esc(r.id) + '">' +
+    '<span class="card-top"><span class="dot">' + esc(COURSES[r.course]) + '</span><span class="t">' + fmtMin((r.prep||0) + (r.cook||0)) + '</span></span>' +
+    '<span class="nm">' + esc(r.name) + '</span>' + sub +
+    (badges ? '<span class="tags">' + badges + '</span>' : "") +
+    '<span class="ft"><span>' + esc(CUISINES[r.cuisine]) + '</span><span>serves ' + r.serves + '</span>' + (r.wait ? '<span>' + esc(waitText(r)) + '</span>' : "") + '</span>' +
+  '</button>';
+}
+function renderWkLibrary(){
+  const presentCuisines = Object.keys(CUISINES).filter(c => wkAll().some(r => r.cuisine === c));
+  $("#wfCourse").innerHTML = '<span class="lbl">Course</span>' + [["all","All"]].concat(COURSE_ORDER.map(c => [c, COURSE_PLURAL[c]])).map(([k, l]) =>
+    '<button type="button" class="chip small" data-action="wfcourse" data-v="' + k + '" aria-pressed="' + (wlib.course === k) + '">' + esc(l) + '</button>').join("");
+  $("#wfCuisine").innerHTML = '<span class="lbl">Cuisine</span>' + [["all","All"]].concat(presentCuisines.map(c => [c, CUISINES[c]])).map(([k, l]) =>
+    '<button type="button" class="chip small" data-action="wfcuisine" data-v="' + k + '" aria-pressed="' + (wlib.cuisine === k) + '">' + esc(l) + '</button>').join("");
+  const list = wkAll().filter(wkMatches).sort((a, b) => a.name.localeCompare(b.name));
+  $("#wkCount").textContent = wkAll().length + " dishes. Open any one for the full recipe and what goes with it.";
+  if(!list.length){ $("#wkGroups").innerHTML = '<div class="empty">No dishes match those filters. Clear a filter or try another search word.</div>'; return; }
+  $("#wkGroups").innerHTML = COURSE_ORDER.map(c => {
+    const items = list.filter(r => r.course === c);
+    if(!items.length) return "";
+    return '<div class="group"><div class="group-head"><h3>' + esc(COURSE_PLURAL[c]) + '</h3></div><div class="cards">' + items.map(wkCardHTML).join("") + '</div></div>';
+  }).join("");
+}
+function renderWkAfter(){ wkRenderControls(); wkRenderFacts(); wkRenderSheet(); renderWkLibrary(); }
+function wkResolveMissing(){
+  if(store.status === "connecting") return;
+  const main = wkMain();
+  let keys = WK_SLOTS.filter(s => s.key !== "w-main" && wk.slots[s.key].id && !byId(wk.slots[s.key].id)).map(s => s.key);
+  if(!main){ wk.slots["w-main"].locked = false; keys = ["w-main"].concat(wkUnlocked("w-main")); }
+  if(!keys.length) return;
+  keys.forEach(k => { wk.slots[k].locked = false; });
+  wkRollSlots(keys);
+  wkSave();
+}
+function wkPut(id, asSide){
+  const r = byId(id); if(!r) return;
+  if(WK_SLOTS.some(s => wk.slots[s.key].id === id)){ toast("Already on tonight's menu"); return; }
+  if(isMain(r) && !asSide){
+    wk.slots["w-main"] = {id, locked:true};
+    wkRollSlots(wkUnlocked("w-main"));
+  } else {
+    const key = r.course === "sauce" ? "w-sauce" : (!wk.slots["w-side1"].locked ? "w-side1" : (!wk.slots["w-side2"].locked ? "w-side2" : "w-side1"));
+    wk.slots[key] = {id, locked:true};
+  }
+  wk.checked = []; wkSave();
+  wkRenderBox(); renderWkAfter();
+  if(dlg.open) dlg.close();
+  showTab("weekend");
+  toast(r.name + " is on tonight's menu");
+  const tray = $("#wkTray");
+  if(tray.scrollIntoView) tray.scrollIntoView({behavior: reduceMotion ? "auto" : "smooth", block:"center"});
+}
+function renderWkDlg(r){
+  const facts = [["Prep", fmtMin(r.prep)], ["Cook", r.cook ? fmtMin(r.cook) : "No cooking"]];
+  if(r.wait) facts.push(["Waiting", waitText(r).slice(1)]);
+  facts.push(["Course", COURSES[r.course]], ["Cuisine", CUISINES[r.cuisine]]);
+  const onMenu = WK_SLOTS.some(s => wk.slots[s.key].id === r.id);
+  const canEdit = r.own && canWriteRecipes();
+  const chips = list => '<div class="chips">' + list.map(x => '<button type="button" class="chip small" data-action="open" data-id="' + esc(x.id) + '">' + esc(x.name) + '</button>').join("") + '</div>';
+  let pairs = "";
+  if(isMain(r)){
+    const sauces = pairPool(r, "sauce"), sides = pairPool(r, "side");
+    pairs = (sauces.length ? '<h4>Sauces that go with it</h4>' + chips(sauces) : (r.sauceNote ? '<h4>Sauce</h4><p class="sub" style="margin:0 0 10px">' + esc(r.sauceNote) + '</p>' : "")) +
+            (sides.length ? '<h4>Sides that go with it</h4>' + chips(sides) : "");
+  } else {
+    const linked = wkAll().filter(m => m.id !== r.id && m.pairs && [].concat(m.pairs.sauces || [], m.pairs.sides || []).includes(r.id));
+    const own = (r.pairs && r.pairs.sides || []).map(byId).filter(Boolean);
+    const list = own.concat(linked.filter(x => !own.includes(x)));
+    if(list.length) pairs = '<h4>Goes with</h4>' + chips(list);
+  }
+  let put = "";
+  if(onMenu) put = '<span class="badge" style="align-self:center">On tonight\'s menu</span>';
+  else if(isMain(r)) put = '<button type="button" class="btn primary" data-action="wkput" data-id="' + esc(r.id) + '">Cook this tonight</button>' + (r.alsoSide ? '<button type="button" class="btn" data-action="wkput" data-side="1" data-id="' + esc(r.id) + '">Add as a side</button>' : "");
+  else if(r.course === "sauce" || r.course === "side") put = '<button type="button" class="btn primary" data-action="wkput" data-id="' + esc(r.id) + '">Add to tonight\'s dinner</button>';
+  $("#rd").innerHTML =
+    '<button type="button" class="dlg-close" data-action="close" aria-label="Close">' + ICONS.close + '</button>' +
+    '<div class="eyebrow" style="color:var(--' + COURSE_ROLE[r.course] + ')">' + esc(COURSES[r.course]) + ' · ' + esc(CUISINES[r.cuisine]) + (r.own ? " · yours" : "") + '</div>' +
+    '<h2 id="rdTitle">' + esc(r.name) + '</h2>' +
+    (r.aka ? '<div class="sub">' + esc(r.aka) + '</div>' : "") +
+    (r.blurb ? '<p class="blurb">' + esc(r.blurb) + '</p>' : "") +
+    '<div class="dlg-facts">' + facts.map(([k, v]) => '<div class="fact"><span class="eyebrow">' + esc(k) + '</span><b>' + esc(v) + '</b></div>').join("") + '</div>' +
+    '<div class="dlg-portions"><span>Amounts for</span><div class="stepper" role="group" aria-label="Servings"><button type="button" data-action="dlgportions" data-d="-1" aria-label="Fewer servings">−</button><output>' + dlgState.portions + '</output><button type="button" data-action="dlgportions" data-d="1" aria-label="More servings">+</button></div><span>serving' + (dlgState.portions === 1 ? "" : "s") + '</span></div>' +
+    '<div class="rbody" style="--rc:var(--' + COURSE_ROLE[r.course] + ')"><div><h4>Ingredients</h4>' + ingListHTML(r, dlgState.portions, true) + '</div><div><h4>Method</h4>' + stepsHTML(r) + '</div></div>' +
+    wkNotesHTML(r) +
+    (pairs ? '<div class="pairs">' + pairs + '</div>' : "") +
+    '<div class="dlg-actions">' + put +
+      (canEdit ? '<button type="button" class="btn" data-action="edit" data-id="' + esc(r.id) + '">Edit</button><button type="button" class="btn danger" data-action="delete" data-id="' + esc(r.id) + '">' + (dlgState.armed ? "Tap again to delete" : "Delete") + '</button>' : "") +
+    '</div>';
+}
+
+/* ---------- tabs ---------- */
+const TAB_KEY = "sundayPrepBox.tab";
+function showTab(name){
+  const isWk = name === "weekend";
+  $("#panel-prep").hidden = isWk;
+  $("#panel-weekend").hidden = !isWk;
+  $("#tab-prep").setAttribute("aria-selected", String(!isWk));
+  $("#tab-weekend").setAttribute("aria-selected", String(isWk));
+  $("#tab-prep").tabIndex = isWk ? -1 : 0;
+  $("#tab-weekend").tabIndex = isWk ? 0 : -1;
+  lsSet(TAB_KEY, isWk ? "weekend" : "prep");
+}
+
 /* ---------- recipe dialog ---------- */
 const dlg = $("#recipeDlg");
 const dlgState = {id:null, portions:4, armed:false};
 function openRecipe(id){
   const r = byId(id); if(!r) return;
-  dlgState.id = id; dlgState.portions = state.portions; dlgState.armed = false;
+  dlgState.id = id; dlgState.portions = r.wk ? wk.servings : state.portions; dlgState.armed = false;
   renderRecipeDlg();
   if(!dlg.open) dlg.showModal();
   $("#rd").scrollTop = 0;
@@ -1307,6 +1993,7 @@ function openRecipe(id){
 function renderRecipeDlg(){
   const r = byId(dlgState.id);
   if(!r){ if(dlg.open) dlg.close(); return; }
+  if(r.wk){ renderWkDlg(r); return; }
   const inSlot = SLOTS.find(s => state.slots[s.key].id === r.id);
   const facts = [["Prep", fmtMin(r.prep)], ["Cook", r.cook ? fmtMin(r.cook) : "No cooking"]];
   if(r.wait) facts.push(["Waiting", waitText(r).slice(1)]);
@@ -1352,20 +2039,35 @@ function setupForm(){
   $("#f-src").innerHTML = SRC_ORDER.map(s => '<option value="' + s + '">' + esc(SOURCES[s].label) + '</option>').join("");
   $("#f-role").innerHTML = Object.entries(ROLES).map(([k, l]) => '<option value="' + k + '">' + esc(l) + '</option>').join("");
   $("#f-tags").innerHTML = Object.entries(TAGS).map(([k, l]) => '<label><input type="checkbox" id="f-tag-' + k + '" value="' + k + '"> ' + esc(l) + '</label>').join("");
+  $("#f-course").innerHTML = COURSE_ORDER.map(k => '<option value="' + k + '">' + esc(COURSES[k]) + '</option>').join("");
+  $("#f-cuisine").innerHTML = Object.entries(CUISINES).map(([k, l]) => '<option value="' + k + '">' + esc(l) + '</option>').join("");
+  $("#f-section").addEventListener("change", () => setFormSection($("#f-section").value));
 }
-function openForm(r){
+function setFormSection(section){
+  const isWk = section === "weekend";
+  document.querySelectorAll("#addForm [data-for]").forEach(el => { el.hidden = el.dataset.for !== (isWk ? "weekend" : "prep"); });
+  if(!editing) $("#fdTitle").textContent = isWk ? "Add a dinner recipe" : "Add a recipe";
+  $("#fdSub").textContent = isWk ? "It joins the weekend recipes and the dinner picker." : "It joins the meal-prep library and the randomizer.";
+}
+function openForm(r, section){
   editing = r || null;
+  section = r ? (r.wk ? "weekend" : "prep") : (section === "weekend" ? "weekend" : "prep");
   $("#fdTitle").textContent = r ? "Edit recipe" : "Add a recipe";
   $("#saveBtn").textContent = r ? "Save changes" : "Save recipe";
   $("#formErr").textContent = "";
   const v = (id, val) => { $(id).value = val == null ? "" : val; };
-  v("#f-name", r ? r.name : ""); v("#f-src", r ? r.src : (["banchan","saladstop","stuffd","dabba"].includes(lib.src) ? lib.src : "banchan"));
-  v("#f-role", r ? r.role : (ROLES[lib.role] ? lib.role : "protein")); v("#f-insp", r ? r.insp : ""); v("#f-blurb", r ? r.blurb : "");
-  v("#f-serves", r ? r.serves : 4); v("#f-prep", r ? r.prep : 10); v("#f-cook", r ? r.cook : 20); v("#f-wait", r && r.wait ? r.wait[0] : 0);
+  v("#f-section", section);
+  v("#f-course", r && r.wk ? r.course : (COURSES[wlib.course] ? wlib.course : "main"));
+  v("#f-cuisine", r && r.wk ? r.cuisine : (CUISINES[wlib.cuisine] ? wlib.cuisine : "western"));
+  v("#f-notes", r ? r.notes : "");
+  v("#f-name", r ? r.name : ""); v("#f-src", r && !r.wk ? r.src : (["banchan","saladstop","stuffd","dabba"].includes(lib.src) ? lib.src : "banchan"));
+  v("#f-role", r && !r.wk ? r.role : (ROLES[lib.role] ? lib.role : "protein")); v("#f-insp", r ? r.insp : ""); v("#f-blurb", r ? r.blurb : "");
+  v("#f-serves", r ? r.serves : (section === "weekend" ? 2 : 4)); v("#f-prep", r ? r.prep : 10); v("#f-cook", r ? r.cook : 20); v("#f-wait", r && r.wait ? r.wait[0] : 0);
   v("#f-ing", r ? r.ing.join("\n") : ""); v("#f-steps", r ? r.steps.join("\n") : "");
   v("#f-fridge", r ? r.fridge : 4); v("#f-freeze", r ? r.freeze : ""); v("#f-kcal", r && r.kcal != null ? r.kcal : ""); v("#f-p", r && r.p != null ? r.p : "");
   v("#f-reheat", r ? r.reheat : ""); v("#f-tip", r ? r.tip : "");
   Object.keys(TAGS).forEach(k => { $("#f-tag-" + k).checked = !!(r && r.tags.includes(k)); });
+  setFormSection(section);
   if(dlg.open) dlg.close();
   fdlg.showModal();
   setTimeout(() => $("#f-name").focus(), 30);
@@ -1380,8 +2082,10 @@ async function submitForm(e){
   if(!steps.length){ err.textContent = "Add at least one step, one per line."; $("#f-steps").focus(); return; }
   if(!canWriteRecipes()){ err.textContent = "Saving isn't available here. Sign in to claude.ai to save recipes to this page."; return; }
   const n =(id, def) => { const raw = $(id).value; if(raw === "") return def; const x = Number(raw); return Number.isFinite(x) && x >= 0 ? x : def; };
+  const section = $("#f-section").value === "weekend" ? "weekend" : "prep";
   const payload = {
-    name, src:$("#f-src").value, role:$("#f-role").value,
+    name, section, course:$("#f-course").value, cuisine:$("#f-cuisine").value, notes:$("#f-notes").value.trim(),
+    src:$("#f-src").value, role:$("#f-role").value,
     insp:$("#f-insp").value.trim(), blurb:$("#f-blurb").value.trim(),
     serves:Math.max(1, n("#f-serves", 4)), prep:n("#f-prep", 0), cook:n("#f-cook", 0), wait:n("#f-wait", 0),
     fridge:n("#f-fridge", 3), freeze:$("#f-freeze").value.trim(), reheat:$("#f-reheat").value.trim(),
@@ -1395,7 +2099,8 @@ async function submitForm(e){
     fdlg.close();
     toast(editing ? "Saved your changes" : name + " added to the library");
     const newId = "u_" + docId;
-    if(!editing){ lib.src = payload.src; lib.role = "all"; renderLibrary(); }
+    if(!editing && section === "weekend"){ wlib.course = "all"; wlib.cuisine = "all"; renderWkLibrary(); }
+    else if(!editing){ lib.src = payload.src; lib.role = "all"; renderLibrary(); }
     setTimeout(() => { if(byId(newId)) openRecipe(newId); }, 250);
   } catch(ex){
     const code = ex && ex.code;
@@ -1432,9 +2137,18 @@ function resolveMissing(){
 function onRecipesChanged(){
   reindex();
   resolveMissing();
+  wkResolveMissing();
   renderDbState();
   renderBox(); renderAfterBox();
+  wkRenderBox(); renderWkAfter();
   if(dlg.open) renderRecipeDlg();
+}
+function copyText(text, fallbackSel){
+  const fallback = () => { const box = $(fallbackSel); box.innerHTML = '<textarea class="copy-fallback" readonly aria-label="Shopping list text"></textarea>'; const ta = box.querySelector("textarea"); ta.value = text; ta.focus(); ta.select(); toast("Select all and copy the list below"); };
+  try {
+    if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(() => toast("Shopping list copied"), fallback);
+    else fallback();
+  } catch(ex){ fallback(); }
 }
 
 document.addEventListener("click", e => {
@@ -1450,29 +2164,57 @@ document.addEventListener("click", e => {
   else if(a === "close"){ const d = t.closest("dialog"); if(d) d.close(); }
   else if(a === "putinbox"){ putInBox(t.dataset.id); }
   else if(a === "dlgportions"){ dlgState.portions = Math.min(20, Math.max(1, dlgState.portions + Number(t.dataset.d))); renderRecipeDlg(); }
-  else if(a === "add"){ if(!t.disabled) openForm(null); }
+  else if(a === "add"){ if(!t.disabled) openForm(null, t.dataset.section); }
+  else if(a === "tab"){ showTab(t.dataset.tab); }
+  else if(a === "wkroll"){ wkDoRoll(wkUnlocked()); }
+  else if(a === "wkreroll"){
+    const key = t.dataset.slot; wk.slots[key].locked = false;
+    wkDoRoll(key === "w-main" ? ["w-main"].concat(wkUnlocked("w-main")) : [key]);
+  }
+  else if(a === "wklock"){ const s = wk.slots[t.dataset.slot]; s.locked = !s.locked; wkSave(); wkRenderSlot(t.dataset.slot); const b = $('.cell[data-slot="' + t.dataset.slot + '"] [data-action="wklock"]'); if(b) b.focus(); }
+  else if(a === "wkcuisine"){
+    wk.cuisine = t.dataset.v;
+    const main = wkMain();
+    if(wk.slots["w-main"].locked && main && wk.cuisine !== "all" && main.cuisine !== wk.cuisine) wk.slots["w-main"].locked = false;
+    wkSave(); wkDoRoll(wkUnlocked());
+  }
+  else if(a === "wkservings"){ wk.servings = Math.min(12, Math.max(1, wk.servings + Number(t.dataset.d))); wkSave(); renderWkAfter(); }
+  else if(a === "wkput"){ wkPut(t.dataset.id, t.dataset.side === "1"); }
+  else if(a === "wfcourse"){ wlib.course = t.dataset.v; renderWkLibrary(); }
+  else if(a === "wfcuisine"){ wlib.cuisine = t.dataset.v; renderWkLibrary(); }
+  else if(a === "wkcopy"){ copyText(wkShoppingText(), "#wkCopyFallback"); }
   else if(a === "edit"){ openForm(byId(t.dataset.id)); }
   else if(a === "delete"){ deleteRecipe(t.dataset.id); }
   else if(a === "fsrc"){ lib.src = t.dataset.v; renderLibrary(); }
   else if(a === "frole"){ lib.role = t.dataset.v; renderLibrary(); }
   else if(a === "ftag"){ const v = t.dataset.v; if(lib.tags.has(v)) lib.tags.delete(v); else lib.tags.add(v); renderLibrary(); }
-  else if(a === "copy"){
-    const text = shoppingText();
-    const fallback = () => { const box = $("#copyFallback"); box.innerHTML = '<textarea class="copy-fallback" readonly aria-label="Shopping list text"></textarea>'; const ta = box.querySelector("textarea"); ta.value = text; ta.focus(); ta.select(); toast("Select all and copy the list below"); };
-    try {
-      if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(() => toast("Shopping list copied"), fallback);
-      else fallback();
-    } catch(ex){ fallback(); }
-  }
+  else if(a === "copy"){ copyText(shoppingText(), "#copyFallback"); }
 });
 document.addEventListener("change", e => {
   const t = e.target;
-  if(t.dataset && t.dataset.action === "check"){
-    const set = new Set(state.checked || []);
+  if(t.dataset && (t.dataset.action === "check" || t.dataset.action === "wkcheck")){
+    const target = t.dataset.action === "check" ? state : wk;
+    const set = new Set(target.checked || []);
     if(t.checked) set.add(t.dataset.key); else set.delete(t.dataset.key);
-    state.checked = [...set]; save();
+    target.checked = [...set];
+    if(target === state) save(); else wkSave();
   }
 });
+$("#wkMainSel").addEventListener("change", e => {
+  const id = e.target.value;
+  if(!id || !byId(id)) return;
+  wk.slots["w-main"] = {id, locked:true};
+  wkDoRoll(wkUnlocked("w-main"));
+});
+document.querySelector(".tabs").addEventListener("keydown", e => {
+  if(e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+  const next = $("#panel-prep").hidden ? "prep" : "weekend";
+  showTab(next);
+  $("#tab-" + next).focus();
+  e.preventDefault();
+});
+let wqTimer = null;
+$("#wq").addEventListener("input", e => { clearTimeout(wqTimer); wqTimer = setTimeout(() => { wlib.q = e.target.value.trim().toLowerCase(); renderWkLibrary(); }, 120); });
 dlg.addEventListener("click", e => { if(e.target === dlg) dlg.close(); });
 fdlg.addEventListener("click", e => { if(e.target === fdlg) fdlg.close(); });
 let qTimer = null;
@@ -1489,9 +2231,20 @@ if(missingAtBoot.length){
   else rollSlots(missingAtBoot, state.mode === "surprise" ? state.cuisine : (state.mode === "mix" ? null : state.mode));
   save();
 }
+/* Weekend picker: fill on first visit, unless the saved main is one of your own still loading. */
+if(!wkMain() && !String(wk.slots["w-main"].id || "").startsWith("u_")){
+  wk.slots["w-main"].locked = false;
+  wkRollSlots(["w-main"].concat(wkUnlocked("w-main")));
+  wkSave();
+}
+let startTab = lsGet(TAB_KEY);
+try { if(location.hash === "#weekend" || location.hash === "#prep") startTab = location.hash.slice(1); } catch(e){}
+showTab(startTab === "weekend" ? "weekend" : "prep");
 renderDbState();
 renderBox();
 renderAfterBox();
+wkRenderBox();
+renderWkAfter();
 connectDb();
 })();
 </script>
