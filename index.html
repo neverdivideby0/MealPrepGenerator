@@ -313,7 +313,7 @@ form.add{display:grid;gap:14px;margin-top:16px}
   </div>
 
   <div class="panel" id="panel-prep" role="tabpanel" aria-labelledby="tab-prep">
-  <p class="panel-intro">One protein, two vegetables, a sauce and a carb base. Recipes come from Korean banchan plus home versions of SaladStop!, Stuff'd and Dabba Street favourites.</p>
+  <p class="panel-intro">One protein, two vegetables, a sauce and a carb base. Recipes come from Korean banchan plus home versions of SaladStop!, Stuff'd, Dabba Street, The Salad Fork (The Soup Spoon) and Grains &amp; Co. favourites.</p>
   <div class="controls">
     <div class="ctl">
       <span class="eyebrow" id="mode-lbl">Cuisine for the roll</span>
@@ -464,7 +464,7 @@ form.add{display:grid;gap:14px;margin-top:16px}
     </section>
   </div>
 
-  <p class="foot">SaladStop!, Stuff'd and Dabba Street are named only to say what inspired a recipe. These are home versions written from their public menu descriptions, not the restaurants' own recipes. Calories and protein are rough per-portion estimates. Fridge times assume an airtight box in a fridge at 4°C or colder, with cooked food chilled within an hour. Weekend dinner recipes are written up from your own notes; treat the amounts as starting points. Recipes made with Generate with AI are drafts: check amounts, temperatures and fridge times before you rely on them.</p>
+  <p class="foot">SaladStop!, Stuff'd, Dabba Street, The Salad Fork (The Soup Spoon) and Grains &amp; Co. are named only to say what inspired a recipe. These are home versions written from their public menu descriptions, not the restaurants' own recipes. Calories and protein are rough per-portion estimates. Fridge times assume an airtight box in a fridge at 4°C or colder, with cooked food chilled within an hour. Weekend dinner recipes are written up from your own notes; treat the amounts as starting points. Recipes made with Generate with AI are drafts: check amounts, temperatures and fridge times before you rely on them.</p>
 </div>
 
 <dialog id="recipeDlg" aria-labelledby="rdTitle"><div class="dlg" id="rd"></div></dialog>
@@ -601,9 +601,11 @@ const SOURCES = {
   saladstop:{label:"SaladStop!-style", short:"SaladStop!", desc:"Signature salads and warm grain bowls, split into components you can batch."},
   stuffd:   {label:"Stuff'd-style", short:"Stuff'd", desc:"Kebab, burrito and bowl fillings with the sauce lineup, made at home."},
   dabba:    {label:"Dabba Street-style", short:"Dabba Street", desc:"Indian street-food bowls: tikka, curries, chutneys and biryani rice, kept light on oil."},
+  saladfork:{label:"The Salad Fork-style", short:"The Salad Fork", desc:"Components of the bowls in The Soup Spoon's Salad Fork set: Warrior, Hearth, Saigon Nourish, Seoul-Full, Cleo's and more."},
+  grainsco: {label:"Grains & Co.-style", short:"Grains & Co.", desc:"Grain bowls with local flavours: laksa, rendang and sambal, roasted veg, and millet or quinoa bases."},
   mine:     {label:"My recipes", short:"Mine", desc:"Recipes you added that don't belong to one of the four cuisines."}
 };
-const SRC_ORDER = ["banchan","saladstop","stuffd","dabba","mine"];
+const SRC_ORDER = ["banchan","saladstop","stuffd","dabba","saladfork","grainsco","mine"];
 const ROLES = {protein:"Protein", veg:"Vegetable", sauce:"Sauce", carb:"Carb base"};
 const TAGS = {veg:"Vegetarian", spicy:"Spicy", seafood:"Seafood", beef:"Beef", pork:"Pork"};
 const SLOTS = [
@@ -983,8 +985,217 @@ const CURATED = [
  blurb:"No-yeast flatbreads from flour, yogurt and baking powder. Ready in under an hour.",
  serves:4,prep:15,cook:15,wait:[30,"rest"],fridge:3,freeze:"Up to 2 months",reheat:"Dry pan 30 seconds per side, or the toaster.",kcal:250,p:9,tags:["veg"],
  ing:["300 g plain flour","2 tsp baking powder","½ tsp salt","250 g Greek yogurt"],
- steps:["Mix the flour, baking powder and salt. Add the yogurt and knead 2 to 3 minutes into a soft, slightly tacky dough.","Cover and rest 30 minutes.","Divide into 8 pieces and roll each to about 5 mm thick.","Cook in a hot dry pan for 1 to 2 minutes per side until puffed and spotted brown.","Stack in a towel so they stay soft."]}
+ steps:["Mix the flour, baking powder and salt. Add the yogurt and knead 2 to 3 minutes into a soft, slightly tacky dough.","Cover and rest 30 minutes.","Divide into 8 pieces and roll each to about 5 mm thick.","Cook in a hot dry pan for 1 to 2 minutes per side until puffed and spotted brown.","Stack in a towel so they stay soft."]},
+
+/* ===== The Salad Fork-style (The Soup Spoon's Salad Fork set) ===== */
+{id:"sf_herbchicken",src:"saladfork",role:"protein",name:"Herbed chicken fillet",insp:"Chop Chop & Cleo's Bowl",
+ blurb:"Lemon, garlic and dried-herb chicken, grilled and sliced. The plain-but-good protein of the set.",
+ serves:4,prep:10,cook:15,wait:[30,"marinate"],fridge:4,freeze:"Up to 2 months",reheat:"Eat cold over salad, or microwave 1 minute.",kcal:230,p:33,tags:[],
+ ing:["600 g boneless chicken thigh or breast","2 tbsp olive oil","1 lemon, zested and juiced","3 cloves garlic, grated","1 tsp dried oregano","1 tsp dried thyme","½ tsp dried rosemary","1 tsp salt","½ tsp black pepper","1 small bunch parsley, chopped"],
+ steps:["If using breast, pound it to an even 1.5 cm so it cooks evenly.","Mix the oil, lemon zest and juice, garlic, dried herbs, salt and pepper. Coat the chicken and marinate 30 minutes.","Cook in a hot griddle pan or under the grill for 5 to 6 minutes per side, until 75°C inside.","Rest 5 minutes, slice, and toss with the parsley."],
+ tip:"Thigh stays juicier over 4 days. Breast is leaner but dries out faster when reheated."},
+{id:"sf_srirachachicken",src:"saladfork",role:"protein",name:"Sriracha chicken",insp:"Hola Hello",
+ blurb:"Sweet-hot sriracha and honey glazed thighs with a squeeze of lime.",
+ serves:4,prep:10,cook:15,wait:[30,"marinate"],fridge:4,freeze:"Up to 2 months",reheat:"Microwave 1 to 2 minutes.",kcal:260,p:31,tags:["spicy"],
+ ing:["3 tbsp sriracha","1 tbsp honey","1 tbsp soy sauce","1 tbsp lime juice","2 cloves garlic, grated","600 g boneless chicken thigh","1 tbsp neutral oil","1 spring onion, sliced"],
+ steps:["Mix the sriracha, honey, soy sauce, lime juice and garlic. Set 2 tbsp aside for glazing.","Coat the chicken in the rest and marinate 30 minutes.","Pan-fry in the oil over medium-high heat for 5 to 6 minutes per side, until cooked through and charred at the edges.","Brush with the reserved sauce in the last minute, then slice and top with spring onion."],
+ tip:"The sugar in sriracha burns fast. Keep the heat at medium-high, not maximum."},
+{id:"sf_brisket",src:"saladfork",role:"protein",name:"Vietnamese pulled beef brisket",insp:"Saigon Nourish",
+ blurb:"Brisket braised with lemongrass, star anise and fish sauce until it shreds. Freezes beautifully.",
+ serves:6,prep:20,cook:180,fridge:4,freeze:"Up to 3 months, in its juices",reheat:"Microwave covered with a spoon of the juices, 1 to 2 minutes.",kcal:330,p:30,tags:["beef"],
+ ing:["1 kg beef brisket","1 tsp salt","1 tbsp neutral oil","2 stalks lemongrass, bruised","4 cloves garlic, smashed","1 thumb ginger, sliced","2 star anise","1 cinnamon stick","3 tbsp fish sauce","2 tbsp brown sugar","1 tbsp soy sauce","500 ml water","1 lime, juiced"],
+ steps:["Season the brisket with the salt and sear it in the oil on all sides until well browned, 8 to 10 minutes.","Add the lemongrass, garlic, ginger, star anise and cinnamon and fry 1 minute.","Add the fish sauce, sugar, soy sauce and water. Cover and simmer very gently for about 3 hours, turning once, until a fork pulls it apart easily. A pressure cooker takes about 60 minutes.","Lift out the beef and shred it with two forks. Boil the cooking liquid until reduced by half, then strain.","Toss the beef with some of the reduced liquid and the lime juice. Store the rest of the liquid with it."],
+ tip:"A slow cooker works too: 8 hours on low after searing."},
+{id:"sf_falafel",src:"saladfork",role:"protein",name:"Baked falafel",insp:"Pura Vida",
+ blurb:"Herb-packed falafel made from soaked dried chickpeas and baked instead of fried.",
+ serves:4,prep:20,cook:25,wait:[720,"soak overnight"],fridge:4,freeze:"Up to 3 months, baked",reheat:"Air-fry at 180°C for 4 minutes to re-crisp.",kcal:280,p:12,tags:["veg"],
+ ing:["250 g dried chickpeas, soaked overnight","1 small onion, roughly chopped","3 cloves garlic","1 bunch parsley","1 small bunch coriander","1½ tsp ground cumin","1 tsp ground coriander","1 tsp salt","½ tsp chilli flakes","2 tbsp plain flour","1 tsp baking powder","3 tbsp olive oil"],
+ steps:["Drain the soaked chickpeas well. Don't cook them: raw soaked chickpeas are what hold falafel together.","Pulse the chickpeas, onion, garlic, herbs, spices and salt in a food processor until it looks like coarse sand and clumps when squeezed.","Stir in the flour and baking powder, then chill 15 minutes.","Heat the oven to 200°C. Shape into about 20 small patties, brush both sides with the oil and bake on a lined tray for 20 to 25 minutes, flipping halfway, until crisp."],
+ tip:"Canned chickpeas make soft, crumbly falafel. Soaking dried ones overnight is worth it."},
+{id:"sf_onsen",src:"saladfork",role:"protein",name:"Onsen eggs",insp:"Hearth, Cleo's, Wabi Sabi & Saigon Nourish",
+ blurb:"Silky, barely set whites and custardy yolks, cooked off the heat. Two per box.",
+ serves:4,prep:2,cook:15,fridge:2,freeze:"",reheat:"Warm in hot tap water for 5 minutes, then crack over the box.",kcal:145,p:12,tags:["veg"],
+ ing:["8 eggs, at room temperature","2 l water","400 ml cold water","1 tbsp soy sauce, to serve","1 spring onion, sliced, to serve"],
+ steps:["Bring the 2 litres of water to a boil, turn off the heat and stir in the cold water. It should now be about 75°C; a thermometer helps.","Lower the room-temperature eggs in, cover, and leave off the heat for 13 minutes.","Move the eggs to cold water for 1 minute to stop the cooking. Store them unpeeled in the fridge.","To serve, crack each egg over the box and add a drop of soy sauce and some spring onion."],
+ tip:"Onsen eggs are only partly cooked, so eat them within 2 days."},
+{id:"sf_misobabycorn",src:"saladfork",role:"veg",name:"Charred miso baby corn",insp:"Warrior, Hearth, Hola Hello & Seoul-Full",
+ blurb:"Baby corn blistered in a very hot pan, then glazed with miso and honey.",
+ serves:4,prep:5,cook:10,fridge:4,freeze:"",reheat:"Eat cold or at room temp.",kcal:70,p:3,tags:["veg"],
+ ing:["1 tbsp white miso","1 tsp honey","1 tsp sesame oil","1 tsp rice vinegar","1 tbsp neutral oil","400 g baby corn, halved lengthwise","1 tsp toasted sesame seeds"],
+ steps:["Whisk the miso, honey, sesame oil and vinegar into a glaze.","Heat a pan or griddle until very hot, add the oil and lay the baby corn in one layer. Leave 2 to 3 minutes until charred, then turn and char the other side.","Turn off the heat, add the glaze and toss for 30 seconds until coated.","Finish with sesame seeds."],
+ tip:"Glazing off the heat stops the miso burning."},
+{id:"sf_pinekimchi",src:"saladfork",role:"veg",name:"Carrot-pineapple kimchi",insp:"Warrior & Seoul-Full",
+ blurb:"A quick vegan kimchi of carrot, cabbage and pineapple. Sweet, sour and gently spicy.",
+ serves:8,prep:20,cook:0,wait:[60,"salt and rest"],fridge:10,freeze:"",reheat:"Eat cold.",kcal:35,p:1,tags:["veg","spicy"],
+ ing:["300 g carrots, julienned","150 g napa cabbage, shredded","1 tsp salt","2 tbsp gochugaru","1 tbsp soy sauce","1 tbsp rice vinegar","1 tsp sugar","2 cloves garlic, grated","1 tsp ginger, grated","200 g fresh pineapple, finely diced","2 spring onions, sliced"],
+ steps:["Toss the carrot and cabbage with the salt and leave 30 minutes. Squeeze out the liquid.","Mix the gochugaru, soy sauce, vinegar, sugar, garlic and ginger into a paste.","Toss the vegetables, pineapple and spring onion with the paste until evenly red.","Pack into a jar and leave 30 minutes at room temperature before refrigerating. It's good the same day and gets tangier over a week."],
+ tip:"Soy sauce stands in for fish sauce, so it's vegan like the original."},
+{id:"sf_daikonpickle",src:"saladfork",role:"veg",name:"Asian-style daikon & carrot pickles",insp:"Hearth, Wabi Sabi & Saigon Nourish",
+ blurb:"Sweet-sour daikon and carrot matchsticks, the đồ chua that goes in bánh mì.",
+ serves:6,prep:15,cook:0,wait:[60,"pickle"],fridge:14,freeze:"",reheat:"Eat cold.",kcal:25,p:0,tags:["veg"],
+ ing:["300 g daikon, cut into matchsticks","2 carrots, cut into matchsticks","1 tsp salt","200 ml rice vinegar","150 ml warm water","3 tbsp sugar"],
+ steps:["Toss the daikon and carrot with the salt, leave 10 minutes, then rinse and squeeze dry.","Stir the vinegar, warm water and sugar until the sugar dissolves.","Pack the vegetables into a jar and pour over the brine. Refrigerate at least 1 hour."],
+ tip:"Daikon smells strong in the jar. That's normal and fades once it's out."},
+{id:"sf_kingoyster",src:"saladfork",role:"veg",name:"Basil king oyster mushrooms",insp:"Harvest Bowl",
+ blurb:"Thick king oyster slices seared golden with garlic and soy, then tossed with basil.",
+ serves:4,prep:10,cook:12,fridge:4,freeze:"",reheat:"Microwave 45 seconds or eat at room temp.",kcal:80,p:4,tags:["veg"],
+ ing:["500 g king oyster mushrooms, sliced lengthwise 1 cm thick","2 tbsp olive oil","2 cloves garlic, minced","1 tbsp soy sauce","1 small bunch basil, leaves torn","Black pepper, to taste"],
+ steps:["Score the mushroom slices in a crosshatch on one side so they cook evenly.","Sear in the oil in a hot pan, scored side down first, 3 to 4 minutes per side until golden. Work in batches.","Add the garlic and soy sauce for the last minute.","Off the heat, toss in the basil and season with pepper."]},
+{id:"sf_kaffiraioli",src:"saladfork",role:"sauce",name:"Kaffir lime aioli",insp:"Warrior & Saigon Nourish",
+ blurb:"Creamy mayo perfumed with finely chopped kaffir lime leaves and lime zest.",
+ serves:4,prep:10,cook:0,wait:[30,"infuse"],fridge:5,freeze:"",reheat:"",kcal:120,p:0,tags:["veg"],
+ ing:["4 kaffir lime leaves, central vein removed","Salt, a pinch","120 g Japanese mayonnaise","1 lime, zested and juiced","1 small clove garlic, grated","1 tsp honey"],
+ steps:["Chop the kaffir lime leaves as finely as you can, or pound them in a mortar with the salt.","Mix everything together.","Rest 30 minutes so the leaves perfume the mayo."],
+ tip:"Frozen kaffir lime leaves from the supermarket work as well as fresh."},
+{id:"sf_gingerscallion",src:"saladfork",role:"sauce",name:"Ginger scallion dressing",insp:"Hearth Bowl",
+ blurb:"Spring onion and ginger flashed with hot oil, loosened with soy and vinegar.",
+ serves:4,prep:10,cook:2,fridge:5,freeze:"",reheat:"",kcal:90,p:0,tags:["veg"],
+ ing:["4 spring onions, finely chopped","30 g ginger, peeled and finely grated","½ tsp salt","60 ml neutral oil","1 tbsp light soy sauce","1 tbsp rice vinegar","1 tsp sugar"],
+ steps:["Mix the spring onion, ginger and salt in a heatproof bowl.","Heat the oil until it shimmers and just starts to smoke, then pour it over. It should sizzle.","Once it settles, stir in the soy sauce, vinegar and sugar."],
+ tip:"It's the same base as the sauce served with Hainanese chicken rice, thinned into a dressing."},
+{id:"sf_basilvinaigrette",src:"saladfork",role:"sauce",name:"Basil vinaigrette",insp:"Chop Chop & Harvest",
+ blurb:"Bright green blended basil dressing with a little mustard and honey.",
+ serves:4,prep:5,cook:0,fridge:4,freeze:"",reheat:"",kcal:110,p:0,tags:["veg"],
+ ing:["1 small bunch basil (about 25 g)","2 tbsp white wine vinegar","1 tsp Dijon mustard","1 tsp honey","1 small clove garlic","¼ tsp salt","80 ml olive oil","Black pepper, to taste"],
+ steps:["Blend the basil, vinegar, mustard, honey, garlic and salt.","With the blender running, drizzle in the oil until it emulsifies.","Season with pepper. It darkens a little over a few days, but the flavour holds."]},
+{id:"sf_chillisoy",src:"saladfork",role:"sauce",name:"Sweet chilli soy vinaigrette",insp:"Seoul-Full Bowl",
+ blurb:"Thai sweet chilli and soy whisked with sesame oil. Five minutes, no cooking.",
+ serves:4,prep:5,cook:0,fridge:7,freeze:"",reheat:"",kcal:60,p:1,tags:["veg","spicy"],
+ ing:["3 tbsp Thai sweet chilli sauce","2 tbsp soy sauce","1 tbsp rice vinegar","1 tsp sesame oil","1 tbsp neutral oil","1 tsp gochugaru","1 tsp toasted sesame seeds"],
+ steps:["Whisk everything until combined.","Shake again before each use."]},
+{id:"sf_herbyoghurt",src:"saladfork",role:"sauce",name:"Herbed yoghurt",insp:"Hola Hello",
+ blurb:"Cooling Greek yogurt with coriander, mint, lime and a little cumin.",
+ serves:4,prep:5,cook:0,fridge:4,freeze:"",reheat:"",kcal:50,p:4,tags:["veg"],
+ ing:["200 g Greek yogurt","1 small bunch coriander, finely chopped","1 tbsp mint, finely chopped","1 clove garlic, grated","1 tbsp lime juice","¼ tsp ground cumin","¼ tsp salt"],
+ steps:["Stir everything together.","Loosen with a spoon of water if you want it drizzly."]},
+{id:"sf_redrice",src:"saladfork",role:"carb",name:"Red rice",insp:"Warrior, Hearth, Wabi Sabi, Seoul-Full & Saigon Nourish",
+ blurb:"Nutty, chewy red rice, the base of half the Salad Fork set.",
+ serves:4,prep:5,cook:40,wait:[30,"soak"],fridge:4,freeze:"Up to 1 month",reheat:"Microwave covered with a splash of water, 2 minutes.",kcal:260,p:6,tags:["veg"],
+ ing:["300 g red rice (or red cargo rice)","600 ml water","½ tsp salt"],
+ steps:["Rinse the rice and soak 30 minutes, then drain.","Cook with the water and salt on the rice cooker's brown rice setting, or simmer covered for 35 to 40 minutes until chewy-tender and the water is absorbed.","Rest 10 minutes, then fluff. Cool quickly and refrigerate within an hour."],
+ tip:"Red rice stays chewy rather than going soft, so it holds up better over 4 days than white rice."},
+{id:"sf_pestorice",src:"saladfork",role:"carb",name:"Basil pesto rice",insp:"Hola Hello",
+ blurb:"Long-grain rice folded with a quick basil and Parmesan pesto while warm.",
+ serves:4,prep:10,cook:20,fridge:4,freeze:"Up to 1 month",reheat:"Microwave covered with a splash of water, 2 minutes, or eat at room temp.",kcal:330,p:7,tags:["veg"],
+ ing:["300 g long-grain rice","480 ml water","½ tsp salt","1 bunch basil (about 40 g)","20 g Parmesan, grated","1 tbsp pine nuts, toasted","1 clove garlic","3 tbsp olive oil","1 tsp lemon juice"],
+ steps:["Cook the rice with the water and salt.","Blend the basil, Parmesan, pine nuts, garlic, oil and lemon juice into a loose pesto.","Fold the pesto through the rice while it's warm but not steaming hot, so the basil stays green."]},
+{id:"sf_fusilli",src:"saladfork",role:"carb",name:"Fusilli pasta salad base",insp:"Chop Chop",
+ blurb:"Al dente fusilli rinsed cold and dressed with lemon and olive oil so it doesn't clump.",
+ serves:4,prep:5,cook:12,fridge:4,freeze:"",reheat:"Eat cold.",kcal:280,p:9,tags:["veg"],
+ ing:["300 g fusilli","1 tbsp salt, for the pasta water","2 tbsp olive oil","1 tbsp lemon juice","½ tsp dried oregano","Black pepper, to taste"],
+ steps:["Boil the fusilli in well-salted water until just al dente; it softens a little more as it sits.","Drain and rinse under cold water to stop the cooking.","Toss with the olive oil, lemon juice, oregano and pepper so it doesn't stick together in the fridge."]},
+
+/* ===== Grains & Co.-style ===== */
+{id:"gc_paprikachicken",src:"grainsco",role:"protein",name:"Paprika chicken",insp:"Chick'N Shroom & Pesto Power",
+ blurb:"Smoky paprika-rubbed thighs, roasted and sliced.",
+ serves:4,prep:10,cook:20,wait:[30,"marinate"],fridge:4,freeze:"Up to 2 months",reheat:"Microwave 1 to 2 minutes.",kcal:250,p:31,tags:[],
+ ing:["2 tsp smoked paprika","1 tsp sweet paprika","1 tsp garlic powder","½ tsp onion powder","½ tsp dried oregano","1 tsp salt","½ tsp black pepper","2 tbsp olive oil","1 tbsp lemon juice","600 g boneless chicken thigh"],
+ steps:["Mix the spices, salt, oil and lemon juice into a paste and rub it over the chicken. Marinate 30 minutes.","Roast at 220°C for 18 to 20 minutes, or pan-fry 5 to 6 minutes per side, until 75°C inside.","Rest 5 minutes and slice."]},
+{id:"gc_basilchicken",src:"grainsco",role:"protein",name:"Thai basil chicken",insp:"Basil Bliss",
+ blurb:"Hand-chopped chicken stir-fried with garlic, chilli and a fistful of basil.",
+ serves:4,prep:10,cook:10,fridge:4,freeze:"Up to 1 month",reheat:"Microwave 1 to 2 minutes.",kcal:260,p:29,tags:["spicy"],
+ ing:["1 tbsp oyster sauce","1 tbsp light soy sauce","1 tsp dark soy sauce","1 tsp fish sauce","1 tsp sugar","2 tbsp water","1 tbsp neutral oil","4 cloves garlic, minced","3 bird's eye chillies, sliced","600 g boneless chicken thigh, finely chopped","1 bunch Thai basil, leaves picked"],
+ steps:["Mix the oyster sauce, soy sauces, fish sauce, sugar and water.","Fry the garlic and chillies in the oil over high heat for 30 seconds.","Add the chicken and stir-fry, breaking it up, for 4 to 5 minutes until cooked and slightly caramelised.","Pour in the sauce and toss 1 minute, then turn off the heat and fold in the basil until just wilted."],
+ tip:"Holy basil (kra pao) is the authentic choice. Thai sweet basil is easier to find and still good."},
+{id:"gc_roastbeef",src:"grainsco",role:"protein",name:"Roast Angus beef",insp:"Blazin' Beef",
+ blurb:"A mustard-and-garlic crusted roast, cooked medium-rare, chilled and sliced thin.",
+ serves:4,prep:10,cook:40,wait:[45,"temper and rest"],fridge:4,freeze:"Sliced, up to 2 months",reheat:"Best cold or at room temp.",kcal:280,p:34,tags:["beef"],
+ ing:["700 g beef sirloin or topside roast (Angus if you can find it)","1 tbsp olive oil","1 tsp Dijon mustard","2 cloves garlic, grated","1 tsp dried thyme","1 tsp salt","1 tsp black pepper, coarsely ground"],
+ steps:["Take the beef out of the fridge 30 minutes ahead and pat dry. Rub with the oil, mustard, garlic, thyme, salt and pepper.","Heat the oven to 220°C. Sear the beef on all sides in a hot ovenproof pan, about 5 minutes.","Roast 25 to 35 minutes until 54°C in the centre for medium-rare.","Rest at least 15 minutes, then chill completely before slicing thinly against the grain."],
+ tip:"Chilled roast beef slices much thinner, and thin slices stay tender when eaten cold."},
+{id:"gc_laksaprawns",src:"grainsco",role:"protein",name:"Laksa prawns",insp:"Majulah Laksa",
+ blurb:"Prawns tossed in fried laksa paste and coconut milk, finished with laksa leaves.",
+ serves:4,prep:10,cook:8,fridge:2,freeze:"",reheat:"Eat cold or at room temp; reheating makes prawns rubbery.",kcal:170,p:22,tags:["seafood","spicy"],
+ ing:["1 tbsp neutral oil","2 tbsp laksa paste (store-bought)","80 ml coconut milk","1 tsp sugar","500 g peeled prawns, deveined","1 tbsp lime juice","1 small bunch laksa leaves (Vietnamese coriander), chopped"],
+ steps:["Fry the laksa paste in the oil over medium heat for 2 minutes until fragrant and the oil turns red.","Add the coconut milk and sugar and simmer 1 minute.","Add the prawns and cook 2 to 3 minutes, turning, until just pink and coated.","Finish with the lime juice and laksa leaves."],
+ tip:"A good store-bought laksa paste saves an hour of pounding."},
+{id:"gc_rendangtempeh",src:"grainsco",role:"protein",name:"Rendang tempeh",insp:"Rasa Nusantara",
+ blurb:"Golden tempeh cooked down in a thick, dark rendang with toasted coconut.",
+ serves:4,prep:15,cook:35,fridge:5,freeze:"Up to 2 months",reheat:"Microwave 1 to 2 minutes.",kcal:300,p:18,tags:["veg","spicy"],
+ ing:["400 g tempeh, cut into 2 cm cubes","2 tbsp neutral oil","3 tbsp rendang paste (store-bought)","1 stalk lemongrass, bruised","2 kaffir lime leaves, torn","200 ml coconut milk","1 tsp palm or brown sugar","½ tsp salt","2 tbsp kerisik (toasted desiccated coconut)"],
+ steps:["Steam or simmer the tempeh in water for 10 minutes to take away its bitterness. Drain and pat dry.","Pan-fry the tempeh in the oil until golden on all sides. Set aside.","In the same pan, fry the rendang paste, lemongrass and lime leaves for 3 to 4 minutes until fragrant.","Add the coconut milk, sugar and salt and simmer, stirring, for 10 to 15 minutes until thick and the oil separates.","Stir in the tempeh and kerisik and cook about 5 minutes more, until the sauce clings and darkens."],
+ tip:"Make kerisik by toasting desiccated coconut in a dry pan until deep golden, then pounding it. Check the paste label if you need it vegetarian; some contain shrimp."},
+{id:"gc_sambalfish",src:"grainsco",role:"protein",name:"Sambal fish",insp:"Rasa Nusantara",
+ blurb:"Turmeric-rubbed white fish pan-fried and topped with fried sambal and lime.",
+ serves:4,prep:10,cook:12,fridge:2,freeze:"",reheat:"Microwave gently at half power for 1 minute.",kcal:210,p:26,tags:["seafood","spicy"],
+ ing:["4 white fish fillets (seabass, barramundi or dory, about 125 g each)","½ tsp salt","½ tsp ground turmeric","1 tbsp neutral oil","3 tbsp sambal chilli (store-bought or homemade)","1 tsp sugar","1 tbsp lime juice"],
+ steps:["Pat the fish dry and rub with the salt and turmeric.","Pan-fry in the oil over medium-high heat, 3 minutes per side, until just cooked. Set aside.","Lower the heat and fry the sambal with the sugar for 1 to 2 minutes until fragrant.","Spoon the sambal over the fish and squeeze over the lime."],
+ tip:"Seabass and barramundi hold together better than dory over a couple of days."},
+{id:"gc_pumpkin",src:"grainsco",role:"veg",name:"Roasted pumpkin",insp:"Basil Bliss",
+ blurb:"Honey and cinnamon roasted pumpkin, caramelised at the edges.",
+ serves:4,prep:10,cook:25,fridge:4,freeze:"Up to 1 month",reheat:"Eat at room temp or microwave 1 minute.",kcal:100,p:2,tags:["veg"],
+ ing:["800 g pumpkin or butternut squash, cut into 2.5 cm cubes","2 tbsp olive oil","1 tsp honey","½ tsp ground cinnamon","½ tsp salt","¼ tsp black pepper"],
+ steps:["Heat the oven to 210°C.","Toss the pumpkin with the oil, honey, cinnamon, salt and pepper.","Roast in one layer for about 25 minutes, turning once, until caramelised at the edges and tender."],
+ tip:"Japanese kabocha keeps its shape best, and its skin is edible once roasted."},
+{id:"gc_cauliflower",src:"grainsco",role:"veg",name:"Garlic roasted cauliflower",insp:"Most bowls",
+ blurb:"Cauliflower roasted until browned, with garlic added halfway so it doesn't burn.",
+ serves:4,prep:10,cook:25,fridge:4,freeze:"",reheat:"Air-fry at 180°C for 3 minutes, or eat at room temp.",kcal:90,p:4,tags:["veg"],
+ ing:["1 head cauliflower (about 800 g), cut into florets","2 tbsp olive oil","½ tsp salt","¼ tsp black pepper","4 cloves garlic, minced","1 tbsp lemon juice","1 tbsp parsley, chopped"],
+ steps:["Heat the oven to 220°C.","Toss the florets with the oil, salt and pepper and roast 15 minutes.","Toss in the garlic and roast 8 to 10 minutes more, until browned.","Finish with the lemon juice and parsley."]},
+{id:"gc_broccoli",src:"grainsco",role:"veg",name:"Roasted broccoli with garlic chips",insp:"Majulah Laksa & Tori Umami",
+ blurb:"Charred broccoli with crisp golden garlic chips, packed separately to stay crunchy.",
+ serves:4,prep:10,cook:18,fridge:4,freeze:"",reheat:"Eat at room temp or microwave 45 seconds; add the chips after.",kcal:110,p:5,tags:["veg"],
+ ing:["2 heads broccoli (about 600 g), cut into florets","2 tbsp olive oil","½ tsp salt","6 cloves garlic, thinly sliced","3 tbsp neutral oil","½ lemon, juiced"],
+ steps:["Heat the oven to 220°C. Toss the broccoli with the olive oil and salt and roast 15 to 18 minutes until the tips char.","Meanwhile, put the sliced garlic in the neutral oil in a cold pan and heat gently, stirring, until pale gold, 4 to 5 minutes.","Lift the chips onto paper towels; they crisp as they cool. Keep the garlic oil.","Toss the broccoli with the lemon juice and a spoon of the garlic oil. Pack the garlic chips separately."]},
+{id:"gc_jalapenoranch",src:"grainsco",role:"sauce",name:"Jalapeño ranch",insp:"Majulah Laksa",
+ blurb:"Tangy ranch blended with pickled jalapeño and coriander.",
+ serves:4,prep:10,cook:0,fridge:5,freeze:"",reheat:"",kcal:110,p:2,tags:["veg","spicy"],
+ ing:["80 g mayonnaise","80 g Greek yogurt","2 pickled jalapeños, finely chopped","1 tbsp jalapeño pickling liquid","1 small bunch coriander, chopped","1 tbsp chives, chopped","½ tsp garlic powder","½ tsp onion powder","1 tbsp lime juice","¼ tsp salt"],
+ steps:["Blend or whisk everything until smooth and pale green.","Thin with a little milk or water if you want it drizzly."]},
+{id:"gc_mangovinaigrette",src:"grainsco",role:"sauce",name:"Spicy mango vinaigrette",insp:"Chick'N Shroom",
+ blurb:"Ripe mango blended with lime, chilli and olive oil.",
+ serves:4,prep:10,cook:0,fridge:4,freeze:"",reheat:"",kcal:90,p:0,tags:["veg","spicy"],
+ ing:["1 ripe mango, peeled and chopped (about 150 g flesh)","2 tbsp lime juice","1 tbsp apple cider vinegar","1 tsp honey","1 red chilli, deseeded","3 tbsp olive oil","¼ tsp salt"],
+ steps:["Blend everything until smooth.","Taste and adjust: more chilli for heat, more lime if the mango is very sweet."]},
+{id:"gc_pestoaioli",src:"grainsco",role:"sauce",name:"Roasted pesto aioli",insp:"Pesto Power",
+ blurb:"Basil and toasted pine nut pesto folded into mayo, with a mellow roasted garlic note.",
+ serves:4,prep:10,cook:5,fridge:5,freeze:"",reheat:"",kcal:140,p:2,tags:["veg"],
+ ing:["1 tbsp pine nuts","1 clove garlic, unpeeled","1 small bunch basil (about 25 g)","15 g Parmesan, grated","1 tbsp olive oil","1 tsp lemon juice","100 g mayonnaise"],
+ steps:["Toast the pine nuts in a dry pan until golden. Toast the garlic clove in its skin in the same pan until soft, about 5 minutes, then peel.","Blend the basil, pine nuts, garlic, Parmesan, oil and lemon juice into a paste.","Fold the paste into the mayonnaise."]},
+{id:"gc_lemonsambal",src:"grainsco",role:"sauce",name:"Lemon sambal",insp:"Rasa Nusantara",batch:true,
+ blurb:"Fried chilli-shallot sambal brightened with lemon. A jar lasts weeks.",
+ serves:8,prep:15,cook:15,fridge:14,freeze:"Up to 3 months",reheat:"",kcal:60,p:1,tags:["spicy"],
+ ing:["10 dried chillies, soaked in hot water 15 minutes","4 fresh red chillies","6 shallots","3 cloves garlic","1 tsp belacan (shrimp paste), toasted","4 tbsp neutral oil","1 tbsp sugar","½ tsp salt","1 lemon, zested and juiced"],
+ steps:["Blend the soaked dried chillies, fresh chillies, shallots, garlic and belacan into a paste, adding a splash of water if needed.","Fry the paste in the oil over medium-low heat, stirring often, for 12 to 15 minutes until dark red and the oil separates.","Stir in the sugar and salt and cook 1 minute more.","Off the heat, stir in the lemon zest and juice. Cool and jar."],
+ tip:"Frying until the oil splits from the paste is what makes sambal keep. Undercooked paste turns sour."},
+{id:"gc_garlicquinoa",src:"grainsco",role:"carb",name:"Garlic quinoa",insp:"Basil Bliss & Blazin' Beef",
+ blurb:"Quinoa toasted with garlic before simmering, finished with parsley.",
+ serves:4,prep:5,cook:20,fridge:4,freeze:"Up to 2 months",reheat:"Microwave covered with a splash of water, or eat cold.",kcal:230,p:8,tags:["veg"],
+ ing:["1 tbsp olive oil","4 cloves garlic, minced","250 g quinoa, rinsed","500 ml water or vegetable stock","½ tsp salt","1 tbsp parsley, chopped"],
+ steps:["Fry the garlic in the oil over medium heat for 1 minute until fragrant, not brown.","Add the quinoa and toast 1 minute.","Add the water and salt, bring to a boil, then cover and simmer 15 minutes.","Rest 5 minutes covered, fluff, and fold in the parsley."]},
+{id:"gc_turmericmillet",src:"grainsco",role:"carb",name:"Turmeric millet",insp:"Rasa Nusantara",
+ blurb:"Fluffy golden millet cooked with shallot, turmeric and lemongrass.",
+ serves:4,prep:5,cook:25,fridge:4,freeze:"Up to 2 months",reheat:"Microwave covered with a splash of water, 2 minutes.",kcal:230,p:6,tags:["veg"],
+ ing:["250 g millet","1 tbsp neutral oil","1 shallot, finely chopped","1 tsp ground turmeric","600 ml water","½ tsp salt","1 stalk lemongrass, bruised"],
+ steps:["Rinse the millet, then toast it in a dry pot for 3 minutes until it smells nutty.","Add the oil and shallot and cook 2 minutes, then the turmeric for 30 seconds.","Add the water, salt and lemongrass. Bring to a boil, cover and simmer 18 to 20 minutes until the water is absorbed.","Rest 5 minutes, remove the lemongrass and fluff."],
+ tip:"Millet turns gluey if stirred while cooking. Keep the lid on and fluff only at the end."},
+{id:"gc_mushroommillet",src:"grainsco",role:"carb",name:"Mushroom millet",insp:"Chick'N Shroom & Pesto Power",
+ blurb:"Millet simmered in stock with browned mushrooms, garlic and thyme.",
+ serves:4,prep:10,cook:25,fridge:4,freeze:"Up to 2 months",reheat:"Microwave covered with a splash of water, 2 minutes.",kcal:250,p:8,tags:["veg"],
+ ing:["250 g millet","1 tbsp butter","1 tbsp olive oil","200 g mushrooms, finely chopped","2 cloves garlic, minced","½ tsp dried thyme","600 ml vegetable or chicken stock","½ tsp salt","Black pepper, to taste"],
+ steps:["Rinse the millet and toast it in a dry pot for 3 minutes.","Add the butter, oil and mushrooms and cook 5 minutes until the mushrooms brown. Add the garlic and thyme for 1 minute.","Add the stock and salt, bring to a boil, cover and simmer 18 to 20 minutes.","Rest 5 minutes and fluff. Season with pepper."]},
+{id:"gc_laksapasta",src:"grainsco",role:"carb",name:"Laksa pasta",insp:"Majulah Laksa",
+ blurb:"Spaghetti tossed in a quick laksa and coconut sauce.",
+ serves:4,prep:5,cook:15,fridge:3,freeze:"",reheat:"Microwave with a splash of water for 1 to 2 minutes, or eat at room temp.",kcal:380,p:11,tags:["spicy"],
+ ing:["300 g spaghetti or linguine","1 tbsp salt, for the pasta water","1 tbsp neutral oil","2 tbsp laksa paste (store-bought)","120 ml coconut milk","1 tsp sugar","1 small bunch laksa leaves, chopped"],
+ steps:["Boil the pasta in well-salted water until al dente. Keep a mug of pasta water.","Fry the laksa paste in the oil for 2 minutes until fragrant.","Add the coconut milk and sugar and simmer 2 minutes.","Toss in the pasta with a splash of pasta water until glossy and coated. Finish with the laksa leaves."],
+ tip:"Most laksa pastes contain dried shrimp, so this isn't vegetarian unless your paste is."}
 ];
+/* Existing recipes that also appear in the newer brands' bowls: one recipe, listed under each source. */
+const ALSO = {
+  bulgogi:{saladfork:"Seoul-Full Bowl"},
+  teriyakichicken:{saladfork:"Warrior Bowl", grainsco:"Tori Umami Bowl"},
+  misosalmon:{saladfork:"Wabi Sabi"},
+  caesardressing:{saladfork:"Cleo's Bowl"},
+  carrotginger:{saladfork:"Pura Vida (carrot sesame)"},
+  edamamecorn:{saladfork:"Wabi Sabi", grainsco:"Basil Bliss & Tori Umami"},
+  lemongrassvinaigrette:{grainsco:"Basil Bliss Bowl"},
+  honeymustard:{grainsco:"Blazin' Beef Bowl"},
+  beethummus:{grainsco:"Blazin' Beef & Pesto Power"},
+  roastedsesame:{grainsco:"Tori Umami Bowl (Japanese sesame)"}
+};
+CURATED.forEach(r => { if(ALSO[r.id]) r.also = ALSO[r.id]; });
+function inSrc(r, s){ return r.src === s || !!(r.also && r.also[s]); }
 
 /* ---------- weekend dinners (not meal prep). `notes` holds the owner's own comments. ---------- */
 const COURSES = {main:"Main", soup:"Soup & stew", side:"Side", sauce:"Sauce"};
@@ -1231,8 +1442,8 @@ WEEKEND.forEach(r => { r.wk = true; });
 
 /* ---------- ingredient parsing, scaling, formatting ---------- */
 const FRAC = {"¼":.25,"½":.5,"¾":.75,"⅓":1/3,"⅔":2/3,"⅛":.125};
-const UNITS = ["small bunches","small bunch","bunches","bunch","tbsp","tsp","cups","cup","kg","g","ml","l","cloves","clove","stalks","stalk","cans","can","thumbs","thumb","slices","slice","heads","head","rashers","rasher","sheets","sheet","pinches","pinch","handfuls","handful","sprigs","sprig"];
-const UNIT_CANON = {"small bunches":"small bunch","bunches":"bunch","cups":"cup","cloves":"clove","stalks":"stalk","cans":"can","thumbs":"thumb","slices":"slice","heads":"head","rashers":"rasher","sheets":"sheet","pinches":"pinch","handfuls":"handful","sprigs":"sprig"};
+const UNITS = ["small bunches","small bunch","bunches","bunch","tbsp","tsp","cups","cup","kg","g","ml","l","small cloves","small clove","cloves","clove","stalks","stalk","cans","can","thumbs","thumb","slices","slice","heads","head","rashers","rasher","sheets","sheet","pinches","pinch","handfuls","handful","sprigs","sprig"];
+const UNIT_CANON = {"small cloves":"clove","small clove":"clove","small bunches":"small bunch","bunches":"bunch","cups":"cup","cloves":"clove","stalks":"stalk","cans":"can","thumbs":"thumb","slices":"slice","heads":"head","rashers":"rasher","sheets":"sheet","pinches":"pinch","handfuls":"handful","sprigs":"sprig"};
 const UNIT_PLURAL = {"small bunch":"small bunches","bunch":"bunches","cup":"cups","clove":"cloves","stalk":"stalks","can":"cans","thumb":"thumbs","slice":"slices","head":"heads","rasher":"rashers","sheet":"sheets","pinch":"pinches","handful":"handfuls","sprig":"sprigs"};
 
 function parseIng(line){
@@ -1284,7 +1495,7 @@ function fmtAmount(q, u, loose){
 function scaleFor(r, portions){ return r.batch ? 1 : portions / (r.serves || 4); }
 
 /* ---------- pantry + shopping list ---------- */
-const PANTRY = ["salt","black pepper","cayenne pepper","sugar","soy sauce","sesame oil","neutral oil","olive oil","sesame seeds","vinegar","honey","mirin","fish sauce","gochugaru","gochujang","doenjang","ground ","garam masala","chana masala","chilli powder","paprika","dried oregano","dried thyme","cumin seeds","chilli flakes","cornstarch","baking powder","garlic powder","onion powder","mayonnaise","mustard","worcestershire","kasuri methi","chaat masala","sumac","cinnamon","bay leaf","cardamom","whole cloves","turmeric","tandoori masala","ginger-garlic paste","amchur","saffron","tomato paste","barbecue sauce","wasabi","miso","sake","tahini","rice flour","glutinous rice flour","plain flour","coarse sea salt","salted shrimp"];
+const PANTRY = ["salt","black pepper","cayenne pepper","sugar","soy sauce","sesame oil","neutral oil","olive oil","sesame seeds","vinegar","honey","mirin","fish sauce","gochugaru","gochujang","doenjang","ground ","garam masala","chana masala","chilli powder","paprika","dried oregano","dried thyme","cumin seeds","chilli flakes","cornstarch","baking powder","garlic powder","onion powder","mayonnaise","mustard","worcestershire","kasuri methi","chaat masala","sumac","cinnamon","bay leaf","cardamom","whole cloves","turmeric","tandoori masala","ginger-garlic paste","amchur","saffron","tomato paste","barbecue sauce","wasabi","miso","sake","tahini","rice flour","glutinous rice flour","plain flour","coarse sea salt","salted shrimp","laksa paste","rendang paste","sriracha","sweet chilli sauce","oyster sauce","star anise","belacan"];
 function normKey(item){
   let k = item.toLowerCase().replace(/\(optional\)/g, "").replace(/\s+/g, " ").trim().replace(/^(cold|softened|melted) /, "");
   k = k.replace(/(\w+)$/, w => /ies$/.test(w) ? w.slice(0,-3)+"y" : /oes$/.test(w) ? w.slice(0,-2) : (/s$/.test(w) && !/ss$/.test(w)) ? w.slice(0,-1) : w);
@@ -1470,11 +1681,11 @@ if(!state || typeof state !== "object" || !state.slots) state = null;
 state = Object.assign({mode:"surprise", portions:4, cuisine:null, checked:[], slots:{}}, state || {});
 SLOTS.forEach(s => { if(!state.slots[s.key]) state.slots[s.key] = {id:null, locked:false}; });
 state.portions = Math.min(10, Math.max(1, Number(state.portions) || 4));
-const MODES = ["surprise","banchan","saladstop","stuffd","dabba","mix"];
+const MODES = ["surprise","banchan","saladstop","stuffd","dabba","saladfork","grainsco","mix"];
 if(!MODES.includes(state.mode)) state.mode = "surprise";
 function save(){ lsSet(LS_KEY, state); }
 
-function recipesFor(role, src){ return all().filter(r => r.role === role && (!src || r.src === src)); }
+function recipesFor(role, src){ return all().filter(r => r.role === role && (!src || inSrc(r, src))); }
 function feasibleSources(){
   return SRC_ORDER.filter(s => recipesFor("protein", s).length >= 1 && recipesFor("veg", s).length >= 2 && recipesFor("sauce", s).length >= 1 && recipesFor("carb", s).length >= 1);
 }
@@ -1542,7 +1753,7 @@ function renderSlot(key){
       '<button type="button" class="icon-btn" data-action="reroll" data-slot="' + key + '" aria-label="Swap ' + esc(r.name) + ' for another ' + esc(ROLES[role].toLowerCase()) + '" title="Swap just this one">' + ICONS.reroll + '</button>' +
     '</span></div>' +
     '<button type="button" class="cell-name" data-action="open" data-id="' + esc(r.id) + '">' + esc(r.name) + '</button>' +
-    '<div class="cell-sub">' + esc(srcLabel(r.src)) + (r.insp ? " · " + esc(r.insp) : "") + (r.own ? " · yours" : "") + '</div>' +
+    '<div class="cell-sub">' + cellSourceLine(r) + (r.own ? " · yours" : "") + '</div>' +
     '<div class="cell-meta">' + esc(meta.join(" · ")) + '</div>';
 }
 function renderBox(){ SLOTS.forEach(s => renderSlot(s.key)); }
@@ -1570,16 +1781,26 @@ function animate(keys){
 
 /* ---------- rendering: controls, facts, warnings ---------- */
 function renderControls(){
-  const labels = {surprise:"Surprise me", banchan:"Banchan", saladstop:"SaladStop!", stuffd:"Stuff'd", dabba:"Dabba Street", mix:"Mix all four"};
+  const labels = {surprise:"Surprise me", banchan:"Banchan", saladstop:"SaladStop!", stuffd:"Stuff'd", dabba:"Dabba Street", saladfork:"The Salad Fork", grainsco:"Grains & Co.", mix:"Mix all"};
   const titles = {surprise:"One cuisine per roll, picked at random", mix:"Any component from any cuisine"};
   $("#modeChips").innerHTML = MODES.map(m =>
     '<button type="button" class="chip" data-action="mode" data-mode="' + m + '" aria-pressed="' + (state.mode === m) + '"' + (titles[m] ? ' title="' + titles[m] + '"' : "") + '>' + esc(labels[m]) + '</button>').join("");
   $("#portionsOut").textContent = state.portions;
 }
 function cuisineSummary(rs){
-  const srcs = [...new Set(rs.map(r => r.src))];
   if(!rs.length) return "";
-  return srcs.length === 1 ? "All " + srcLabel(srcs[0]) : "Mixed: " + srcs.map(s => (SOURCES[s] || SOURCES.mine).short).join(", ");
+  const common = SRC_ORDER.filter(s => rs.every(r => inSrc(r, s)));
+  const pick1 = common.includes(boxContextSrc()) ? boxContextSrc() : common[0];
+  if(pick1) return "All " + srcLabel(pick1);
+  return "Mixed: " + [...new Set(rs.map(r => r.src))].map(s => (SOURCES[s] || SOURCES.mine).short).join(", ");
+}
+/* The source this box was rolled for (a pinned cuisine, or Surprise me's pick). */
+function boxContextSrc(){ return SOURCES[state.mode] ? state.mode : state.cuisine; }
+/* A shared recipe rolled for another brand shows that brand's bowl, e.g. "The Salad Fork-style · Warrior Bowl". */
+function cellSourceLine(r){
+  const ctx = boxContextSrc();
+  if(ctx && r.src !== ctx && r.also && r.also[ctx]) return esc(srcLabel(ctx)) + " · " + esc(r.also[ctx]);
+  return esc(srcLabel(r.src)) + (r.insp ? " · " + esc(r.insp) : "");
 }
 function renderFacts(){
   const rs = boxRecipes();
@@ -1683,7 +1904,7 @@ function renderFilters(){
   $("#fTag").innerHTML = '<span class="lbl">Only</span>' + tagOpts.map(([k, l]) => '<button type="button" class="chip small" data-action="ftag" data-v="' + k + '" aria-pressed="' + lib.tags.has(k) + '">' + esc(l) + '</button>').join("");
 }
 function matches(r){
-  if(lib.src === "yours" ? !r.own : (lib.src !== "all" && r.src !== lib.src)) return false;
+  if(lib.src === "yours" ? !r.own : (lib.src !== "all" && !inSrc(r, lib.src))) return false;
   if(lib.role !== "all" && r.role !== lib.role) return false;
   for(const t of lib.tags){
     if(t === "veg" && !(r.tags || []).includes("veg")) return false;
@@ -1698,8 +1919,9 @@ function matches(r){
   }
   return true;
 }
-function cardHTML(r){
+function cardHTML(r, groupSrc){
   const inBox = SLOTS.some(s => state.slots[s.key].id === r.id);
+  const shared = groupSrc && r.src !== groupSrc && r.also && r.also[groupSrc];
   const foot = ["keeps " + keepsText(r)];
   if(r.kcal != null) foot.push(r.kcal + " kcal");
   if(r.p != null) foot.push(r.p + " g P");
@@ -1708,7 +1930,7 @@ function cardHTML(r){
   return '<button type="button" class="card" data-role="' + r.role + '" data-action="open" data-id="' + esc(r.id) + '">' +
     '<span class="card-top"><span class="dot">' + esc(ROLES[r.role]) + '</span><span class="t">' + fmtMin((r.prep||0) + (r.cook||0)) + '</span></span>' +
     '<span class="nm">' + esc(r.name) + '</span>' +
-    '<span class="sb">' + esc(r.ko || (r.insp ? "Inspired by " + r.insp : r.blurb || "")) + '</span>' +
+    '<span class="sb">' + esc(shared ? "In " + r.also[groupSrc] + " · shared with " + SOURCES[r.src].short : (r.ko || (r.insp ? "Inspired by " + r.insp : r.blurb || ""))) + '</span>' +
     ((tags || r.own || inBox) ? '<span class="tags">' + (inBox ? '<span class="badge">In your box</span>' : "") + (r.own ? '<span class="badge">Yours</span>' : "") + tags + '</span>' : "") +
     '<span class="ft">' + foot.map(esc).map(x => '<span>' + x + '</span>').join("") + '</span>' +
   '</button>';
@@ -1722,11 +1944,12 @@ function renderLibrary(){
     $("#groups").innerHTML = '<div class="empty">No recipes match those filters. Clear a filter or try another search word.</div>';
     return;
   }
-  $("#groups").innerHTML = SRC_ORDER.map(src => {
-    const items = list.filter(r => r.src === src);
+  const groupSrcs = SOURCES[lib.src] ? [lib.src] : SRC_ORDER;
+  $("#groups").innerHTML = groupSrcs.map(src => {
+    const items = list.filter(r => lib.src === "yours" ? r.src === src : inSrc(r, src));
     if(!items.length) return "";
     return '<div class="group"><div class="group-head"><h3>' + esc(SOURCES[src].label) + '</h3><p>' + esc(SOURCES[src].desc) + '</p></div>' +
-      '<div class="cards">' + items.map(cardHTML).join("") + '</div></div>';
+      '<div class="cards">' + items.map(r => cardHTML(r, src)).join("") + '</div></div>';
   }).join("");
 }
 
@@ -2056,6 +2279,7 @@ function renderRecipeDlg(){
     '<div class="eyebrow" style="color:var(--' + r.role + ')">' + esc(ROLES[r.role]) + ' · ' + esc(srcLabel(r.src)) + (r.own ? " · yours" : "") + '</div>' +
     '<h2 id="rdTitle">' + esc(r.name) + '</h2>' +
     ((r.ko || r.insp) ? '<div class="sub">' + esc(r.ko || "Inspired by " + r.insp) + '</div>' : "") +
+    (r.also ? '<div class="sub">Also in ' + esc(Object.entries(r.also).map(([s, b]) => (SOURCES[s] || SOURCES.mine).short + " (" + b + ")").join(" and ")) + '</div>' : "") +
     (r.blurb ? '<p class="blurb">' + esc(r.blurb) + '</p>' : "") +
     '<div class="dlg-facts">' + facts.map(([k, v]) => '<div class="fact"><span class="eyebrow">' + esc(k) + '</span><b>' + esc(v) + '</b></div>').join("") + '</div>' +
     (r.batch
@@ -2251,7 +2475,7 @@ function aiRecipePrompt(section, request){
     L.push("If course is main, choose pairings ONLY from these existing recipes, by id. Sauces: " + JSON.stringify(sauces) + ". Sides: " + JSON.stringify(sides) + ". Pick 0 to 2 sauces and 2 to 4 sides that genuinely suit the dish. If the dish carries its own sauce, give an empty sauces list and a short sauceNote saying so (e.g. \"The curry is the sauce.\"). For any other course, give empty lists.");
     L.push('Reply with only one JSON object of this shape: {"name":"Claypot Chicken Rice","course":"main","cuisine":"chinese","blurb":"One sentence describing the dish.","serves":2,"prep":15,"cook":30,"wait":30,"ing":["..."],"steps":["..."],"tip":"One practical tip, or empty","pairs":{"sauces":[],"sides":["w_koreanspinach"]},"sauceNote":"The soy dressing is the sauce."}');
   } else {
-    L.push("src is the style: banchan (Korean side dishes), saladstop (SaladStop!-style salad and grain-bowl components), stuffd (Stuff'd-style kebab, burrito and bowl fillings), dabba (Dabba Street-style Indian bowls), or mine (anything else). role is one of: protein, veg, sauce, carb. insp is the restaurant menu item it imitates, or empty.");
+    L.push("src is the style: banchan (Korean side dishes), saladstop (SaladStop!-style salad and grain-bowl components), stuffd (Stuff'd-style kebab, burrito and bowl fillings), dabba (Dabba Street-style Indian bowls), saladfork (The Salad Fork-style bowls from The Soup Spoon), grainsco (Grains & Co.-style grain bowls with local flavours), or mine (anything else). role is one of: protein, veg, sauce, carb. insp is the restaurant menu item it imitates, or empty.");
     L.push("fridge is how many days it keeps in an airtight box at 4°C. Be conservative: about 3 to 4 for cooked dishes, 2 to 3 for seafood and cut fresh vegetables, longer only for pickles, ferments and acidic sauces. freeze is a short note like \"Up to 2 months\", or empty if it doesn't freeze well. reheat says how to reheat or serve it. kcal and p are rough per-portion calories and grams of protein. tags may include: veg (vegetarian), spicy, seafood, beef, pork.");
     L.push('Reply with only one JSON object of this shape: {"name":"Gochujang Chicken","src":"banchan","role":"protein","insp":"","blurb":"One sentence.","serves":4,"prep":15,"cook":20,"wait":30,"ing":["..."],"steps":["..."],"tip":"","fridge":4,"freeze":"Up to 2 months","reheat":"Microwave 2 minutes.","kcal":300,"p":28,"tags":["spicy"]}');
   }
@@ -2329,7 +2553,7 @@ function aiIdeasPrompt(section, theme){
   L.push("They already have these, so don't suggest them or near-duplicates: " + JSON.stringify(have));
   L.push(isWk
     ? 'Reply with only a JSON array of 5 objects: [{"name":"Claypot Chicken Rice","why":"One short sentence on why it suits them.","course":"main","cuisine":"chinese"}]. course is one of main, soup, side, sauce. cuisine is one of ' + Object.keys(CUISINES).join(", ") + "."
-    : 'Reply with only a JSON array of 5 objects: [{"name":"Gochujang Chicken","why":"One short sentence.","src":"banchan","role":"protein"}]. src is one of banchan, saladstop, stuffd, dabba, mine. role is one of protein, veg, sauce, carb.');
+    : 'Reply with only a JSON array of 5 objects: [{"name":"Gochujang Chicken","why":"One short sentence.","src":"banchan","role":"protein"}]. src is one of banchan, saladstop, stuffd, dabba, saladfork, grainsco, mine. role is one of protein, veg, sauce, carb.');
   return L.join("\n\n");
 }
 function aiIdeas(){

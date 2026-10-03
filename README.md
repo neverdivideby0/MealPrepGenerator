@@ -5,7 +5,7 @@
 - **Meal prep.** Hit **Roll the box** and it picks one protein, two vegetables, one sauce and one carb base. You get the full recipe for each, a merged shopping list scaled to how many boxes you're making, and a warning when something won't last the week.
 - **Weekend dinners.** Recipes you've made or want to try, which aren't meant for meal prep. Roll a main, or choose one, and it suggests a sauce and two sides that go with it (for example, steak with black pepper sauce, mash and creamed spinach).
 
-The meal-prep library has 67 components from four sources:
+The meal-prep library has 101 components from six sources:
 
 | Source | What's in it |
 | --- | --- |
@@ -13,6 +13,10 @@ The meal-prep library has 67 components from four sources:
 | SaladStop!-style | Components of signature salads and warm bowls (Sabai Sabai, Yeobo Yeobo, Kokoro, Inhale Ex-Kale, Hail Caesar, Tuna San, Go Geisha) |
 | Stuff'd-style | Kebab, burrito and bowl fillings plus the sauce lineup (habanero, mayo cucumber, roasted sesame, BBQ mayo, honey mustard) |
 | Dabba Street-style | Butter chicken, tikka, paneer, chana masala, chutneys, tzatziki, beetroot hummus, biryani rice, roti, pita |
+| The Salad Fork-style | Components of The Soup Spoon's Salad Fork set (Warrior, Hearth, Hola Hello, Wabi Sabi, Chop Chop, Cleo's, Harvest, Pura Vida, Saigon Nourish, Seoul-Full): herbed and sriracha chicken, pulled brisket, falafel, onsen eggs, miso baby corn, carrot-pineapple kimchi, kaffir lime aioli, ginger scallion dressing, red rice |
+| Grains & Co.-style | Paprika and Thai basil chicken, roast beef, laksa prawns, rendang tempeh, sambal fish, roasted pumpkin/cauliflower/broccoli, jalapeño ranch, mango vinaigrette, pesto aioli, lemon sambal, garlic quinoa, turmeric and mushroom millet, laksa pasta |
+
+Ten existing recipes also appear in the newer brands' bowls, such as bulgogi in Seoul-Full and teriyaki chicken in Warrior and Tori Umami. Rather than duplicate them, each one is tagged with the extra source, so a Grains & Co. roll can pick them and the library lists them under both.
 
 The restaurant recipes are home versions written from public menu descriptions. They are not the restaurants' own recipes, and the restaurant names are used only to say what inspired each one.
 
@@ -88,7 +92,8 @@ Curated recipes live in the `CURATED` array in `index.html`. Each entry looks li
  tip:"Optional tip."}
 ```
 
-- `src` is one of `banchan`, `saladstop`, `stuffd`, `dabba`, `mine`.
+- `src` is one of `banchan`, `saladstop`, `stuffd`, `dabba`, `saladfork`, `grainsco`, `mine`.
+- To list an existing recipe under another source too, add it to the `ALSO` map: `{bulgogi: {saladfork: "Seoul-Full Bowl"}}` (source → the bowl it appears in).
 - `role` is one of `protein`, `veg`, `sauce`, `carb`.
 - `ko` (optional) holds the Korean name line for banchan.
 - `batch: true` marks recipes made in a fixed batch (kimchi, hot sauce) that shouldn't scale with box count.
